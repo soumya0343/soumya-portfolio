@@ -38,7 +38,7 @@
   font-family: var(--font-serif);
   font-size: clamp(8rem, 14vw, 14rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.06);
+  color: rgba(var(--color-text-rgb), 0.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -76,7 +76,7 @@
   font-size: 0.85rem;
   font-weight: 300;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(var(--color-text-rgb), 0.5);
   max-width: 440px;
 }
 
@@ -90,13 +90,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.3rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.05);
   text-decoration: none;
   transition: padding-left 0.3s ease;
 }
 
 .contact__link:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(var(--color-text-rgb), 0.05);
 }
 
 .contact__link:hover {
@@ -108,7 +108,7 @@
   font-size: 0.55rem;
   font-weight: 600;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(var(--color-text-rgb), 0.3);
   min-width: 120px;
 }
 
@@ -124,12 +124,12 @@
 }
 
 .contact__link:hover .contact__link-value {
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(var(--color-text-rgb), 0.95);
 }
 
 .contact__link-arrow {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(var(--color-text-rgb), 0.2);
   transition:
     transform 0.3s ease,
     color 0.3s ease;
@@ -150,5 +150,5 @@
   font-size: 0.6rem;
   font-weight: 400;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(var(--color-text-rgb), 0.2);
 }

@@ -38,7 +38,7 @@
   font-family: var(--font-serif);
   font-size: clamp(8rem, 14vw, 14rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.06);
+  color: rgba(var(--color-text-rgb), 0.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -81,7 +81,7 @@
   font-size: 0.55rem;
   font-weight: 600;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(var(--color-text-rgb), 0.3);
   text-transform: uppercase;
 }
 
@@ -96,9 +96,9 @@
   font-size: 0.72rem;
   font-weight: 400;
   letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(var(--color-text-rgb), 0.7);
+  background: rgba(var(--color-text-rgb), 0.04);
+  border: 1px solid rgba(var(--color-text-rgb), 0.08);
   border-radius: 4px;
   padding: 0.45rem 0.9rem;
   transition:
@@ -108,7 +108,7 @@
 }
 
 .skills__tag:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.95);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(var(--color-text-rgb), 0.08);
+  color: rgba(var(--color-text-rgb), 0.95);
+  border-color: rgba(var(--color-text-rgb), 0.15);
 }

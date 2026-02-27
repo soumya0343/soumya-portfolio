@@ -31,7 +31,7 @@
   font-family: var(--font-serif);
   font-size: clamp(8rem, 14vw, 14rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.06);
+  color: rgba(var(--color-text-rgb), 0.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;

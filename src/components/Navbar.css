@@ -8,10 +8,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2.5rem;
-  background: rgba(10, 10, 10, 0.65);
+  background: rgba(var(--color-bg-rgb), 0.65);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.06);
+  transition: background-color var(--transition-smooth);
 }
 
 .navbar__brand {
@@ -63,4 +64,25 @@
   right: 0;
   height: 1px;
   background: var(--color-accent);
+}
+
+.navbar__theme-toggle {
+  margin-left: 1.5rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 4px;
+  background: rgba(var(--color-text-rgb), 0.05);
+  border: 1px solid rgba(var(--color-text-rgb), 0.1);
+  color: var(--color-text);
+  transition: all var(--transition-smooth);
+}
+
+[data-theme="light"] .navbar__theme-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.navbar__theme-toggle:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: transparent;
 }

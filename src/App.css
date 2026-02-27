@@ -59,18 +59,16 @@
   pointer-events: none;
 }
 
-/* Global Noise Overlay for all dark backgrounds */
-.app::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opactity='0.15'/%3E%3C/svg%3E");
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 90; /* Sits above all sections but below the navbar (100) */
+/* Obsolete .app::after removed in favor of global body::after grain */
+
+/* Fluid Canvas Invert for Light Mode */
+iframe {
+  transition: filter 0.8s ease;
+}
+
+[data-theme="light"] iframe {
+  /* Inverts the dark colored fluid art to bright, white/light colored backgrounds with dark flowing ink */
+  filter: invert(1) hue-rotate(180deg);
 }
 
 /* Ensure sections stay above the global noise */

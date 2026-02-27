@@ -1,6 +1,32 @@
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 
 const Navbar = () => {
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  useEffect(() => {
+    // Check local storage on mount
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      setIsLightMode(true);
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setIsLightMode((prev) => {
+      const newTheme = !prev;
+      if (newTheme) {
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+        localStorage.setItem("theme", "dark");
+      }
+      return newTheme;
+    });
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar__brand">
@@ -30,6 +56,15 @@ const Navbar = () => {
         <a href="#contact" className="navbar__link">
           CONTACT
         </a>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="navbar__link navbar__theme-toggle"
+          aria-label="Toggle theme"
+        >
+          {isLightMode ? "DARK" : "LIGHT"}
+        </button>
       </div>
     </nav>
   );

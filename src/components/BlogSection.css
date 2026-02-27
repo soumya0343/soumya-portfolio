@@ -38,7 +38,7 @@
   font-family: var(--font-serif);
   font-size: clamp(8rem, 14vw, 14rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.06);
+  color: rgba(var(--color-text-rgb), 0.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -71,13 +71,13 @@
 
 .blog-post {
   padding: 1.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.05);
   cursor: pointer;
   transition: background 0.4s ease;
 }
 
 .blog-post:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(var(--color-text-rgb), 0.05);
 }
 
 .blog-post:hover {
@@ -97,12 +97,12 @@
   font-size: 0.55rem;
   font-weight: 600;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(var(--color-text-rgb), 0.3);
   text-transform: uppercase;
 }
 
 .blog-post__divider {
-  color: rgba(255, 255, 255, 0.12);
+  color: rgba(var(--color-text-rgb), 0.12);
   font-size: 0.55rem;
 }
 
@@ -116,7 +116,7 @@
 }
 
 .blog-post:hover .blog-post__title {
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(var(--color-text-rgb), 0.95);
 }
 
 .blog-post__excerpt {
