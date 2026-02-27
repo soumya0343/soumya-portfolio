@@ -17,8 +17,8 @@ const HeroSection = () => {
           </span>
         </h1>
         <p className="hero__tagline" data-reveal="up" data-reveal-delay="2">
-          A passionate developer crafting immersive digital experiences where
-          elegant design meets powerful engineering.
+          A Full-Stack Developer engineering scalable backends, automated
+          pipelines, and intelligent AI integrations.
         </p>
         <div className="hero__actions" data-reveal="up" data-reveal-delay="3">
           <a href="#work" className="hero__cta">

@@ -3,6 +3,8 @@ import HeroSection from "./components/HeroSection";
 import FluidCanvas from "./components/FluidCanvas";
 import PhilosophySection from "./components/PhilosophySection";
 import ExperienceSection from "./components/ExperienceSection";
+import EducationSection from "./components/EducationSection";
+import CoCurricularSection from "./components/CoCurricularSection";
 import ProjectsSection from "./components/ProjectsSection";
 import SkillsSection from "./components/SkillsSection";
 import BlogSection from "./components/BlogSection";
@@ -45,10 +47,16 @@ function App() {
       {/* Page 5: Skills */}
       <SkillsSection />
 
-      {/* Page 6: Blogs */}
+      {/* Page 6: Education */}
+      <EducationSection />
+
+      {/* Page 7: Co-Curricular */}
+      <CoCurricularSection />
+
+      {/* Page 8: Blogs */}
       <BlogSection />
 
-      {/* Page 7: Contact */}
+      {/* Page 9: Contact */}
       <ContactSection />
     </div>
   );

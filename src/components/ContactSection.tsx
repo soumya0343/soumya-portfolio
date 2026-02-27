@@ -29,19 +29,19 @@ const ContactSection = () => {
 
           <div className="contact__links">
             <a
-              href="mailto:hello@soumyagupta.dev"
+              href="mailto:soumya0343@gmail.com"
               className="contact__link"
               data-reveal="left"
               data-reveal-delay="3"
             >
               <span className="contact__link-label">EMAIL</span>
               <span className="contact__link-value">
-                hello@soumyagupta.dev
+                soumya0343@gmail.com
                 <span className="contact__link-arrow">→</span>
               </span>
             </a>
             <a
-              href="https://linkedin.com/in/soumyagupta"
+              href="https://www.linkedin.com/in/soumya-gupta-9bb270263"
               target="_blank"
               rel="noopener noreferrer"
               className="contact__link"
@@ -55,7 +55,7 @@ const ContactSection = () => {
               </span>
             </a>
             <a
-              href="https://github.com/soumyagupta"
+              href="https://github.com/soumya0343"
               target="_blank"
               rel="noopener noreferrer"
               className="contact__link"
@@ -64,12 +64,12 @@ const ContactSection = () => {
             >
               <span className="contact__link-label">GITHUB</span>
               <span className="contact__link-value">
-                @soumyagupta
+                @soumya0343
                 <span className="contact__link-arrow">→</span>
               </span>
             </a>
             <a
-              href="https://twitter.com/soumyagupta"
+              href="https://twitter.com/soumya0343"
               target="_blank"
               rel="noopener noreferrer"
               className="contact__link"
@@ -78,7 +78,7 @@ const ContactSection = () => {
             >
               <span className="contact__link-label">TWITTER / X</span>
               <span className="contact__link-value">
-                @soumyagupta
+                @soumya0343
                 <span className="contact__link-arrow">→</span>
               </span>
             </a>

@@ -5,44 +5,43 @@ const SideNav = () => {
     <>
       {/* Section links overlaid on the right panel */}
       <div className="sidenav">
-        <a href="#profile" className="sidenav__item">
+        <a href="#hero" className="sidenav__item">
           <span className="sidenav__number">01</span>
-          <span className="sidenav__label">PROFILE</span>
+          <span className="sidenav__label">HOME</span>
+        </a>
+        <a href="#philosophy" className="sidenav__item">
+          <span className="sidenav__number">02</span>
+          <span className="sidenav__label">PHILOSOPHY</span>
+        </a>
+        <a href="#experience" className="sidenav__item">
+          <span className="sidenav__number">03</span>
+          <span className="sidenav__label">EXPERIENCE</span>
         </a>
         <a href="#work" className="sidenav__item">
-          <span className="sidenav__number">02</span>
-          <span className="sidenav__label">WORK</span>
-        </a>
-        <a href="#manifesto" className="sidenav__item">
-          <span className="sidenav__number">03</span>
-          <span className="sidenav__label">MANIFESTO</span>
-        </a>
-        <a href="#works" className="sidenav__item">
           <span className="sidenav__number">04</span>
           <span className="sidenav__label">WORKS</span>
         </a>
-        <a href="#blog" className="sidenav__item">
+        <a href="#skills" className="sidenav__item">
           <span className="sidenav__number">05</span>
+          <span className="sidenav__label">SKILLS</span>
+        </a>
+        <a href="#education" className="sidenav__item">
+          <span className="sidenav__number">06</span>
+          <span className="sidenav__label">EDUCATION</span>
+        </a>
+        <a href="#cocurricular" className="sidenav__item">
+          <span className="sidenav__number">07</span>
+          <span className="sidenav__label">LEADERSHIP</span>
+        </a>
+        <a href="#blog" className="sidenav__item">
+          <span className="sidenav__number">08</span>
           <span className="sidenav__label">BLOGS</span>
         </a>
         <a href="#contact" className="sidenav__item">
-          <span className="sidenav__number">06</span>
+          <span className="sidenav__number">09</span>
           <span className="sidenav__label">CONTACT</span>
         </a>
       </div>
-
-      {/* Vertical contact text on far right edge */}
-      <div className="contact-rail">
-        <span className="contact-rail__text">CONTACT ME</span>
-        <span className="contact-rail__divider">|</span>
-        <span className="contact-rail__text">CONTACT ME</span>
-      </div>
-
-      {/* Get in touch button bottom right */}
-      <a href="mailto:hello@soumyagupta.dev" className="get-in-touch">
-        <span>GET IN TOUCH</span>
-        <span className="get-in-touch__arrow">→</span>
-      </a>
     </>
   );
 };
