@@ -12,6 +12,13 @@
   display: block;
 }
 
+.fluid-canvas__iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
 .fluid-canvas__overlay {
   position: absolute;
   top: 0;

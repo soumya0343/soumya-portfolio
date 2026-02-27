@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fluid Art</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #000;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+      }
+      #ui,
+      #cur {
+        display: none !important;
+      }
+      canvas {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      #ui {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        padding: 18px;
+        min-width: 205px;
+        color: #fff;
+        font-family: "Courier New", monospace;
+        opacity: 1;
+        transition: opacity 0.5s;
+      }
+      #ui h3 {
+        font-size: 9px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 2px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .lbl {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.55);
+        min-width: 78px;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 86px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.14);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+      }
+      .v {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.28);
+        min-width: 24px;
+        text-align: right;
+      }
+      .sec {
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        color: rgba(255, 255, 255, 0.28);
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .prow {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 2px;
+      }
+      .pb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .pb:hover {
+        transform: scale(1.18);
+      }
+      .pb.on {
+        border-color: rgba(255, 255, 255, 0.8);
+      }
+      #cur {
+        position: fixed;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        z-index: 100;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+        transition:
+          width 0.15s,
+          height 0.15s;
+      }
+      #cur.big {
+        width: 36px;
+        height: 36px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="cur"></div>
+
+    <div id="ui">
+      <h3>Fluid Art</h3>
+      <div class="sec">Palette</div>
+      <div class="prow" id="prow"></div>
+      <div class="sec">Flow</div>
+      <div class="row">
+        <span class="lbl">Speed</span>
+        <input type="range" id="sp" min="1" max="20" value="5" />
+        <span class="v" id="sp-v">5</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Scale</span>
+        <input type="range" id="sc" min="1" max="12" value="4" />
+        <span class="v" id="sc-v">4</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Warp depth</span
+        ><input type="range" id="wd" min="1" max="20" value="2" />
+        <span class="v" id="wd-v">2</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Contrast</span>
+        <input type="range" id="ct" min="1" max="10" value="5" />
+        <span class="v" id="ct-v">5</span>
+      </div>
+      <div class="sec">Mouse</div>
+      <div class="row">
+        <span class="lbl">Ripple size</span
+        ><input type="range" id="mr" min="20" max="300" value="99" /><span
+          class="v"
+          id="mr-v"
+          >99</span
+        >
+      </div>
+      <div class="row">
+        <span class="lbl">Ripple str</span>
+        <input type="range" id="ms" min="0" max="20" value="3" />
+        <span class="v" id="ms-v">3</span>
+      </div>
+      <div class="sec">Texture</div>
+      <div class="row">
+        <span class="lbl">Grain</span>
+        <input type="range" id="gr" min="0" max="100" value="68" />
+        <span class="v" id="gr-v">68</span>
+      </div>
+    </div>
+
+    <script>
+      // ── Canvas ──────────────────────────────────────────────────────────
+      const C = document.getElementById("c");
+      const X = C.getContext("2d");
+      const curEl = document.getElementById("cur");
+      let W, H, imgData, pix;
+
+      function resize() {
+        W = C.width = window.innerWidth;
+        H = C.height = window.innerHeight;
+        imgData = X.createImageData(W, H);
+        pix = imgData.data;
+      }
+
+      // ── Palettes ────────────────────────────────────────────────────────
+      const PALS = [
+        {
+          n: "Lava",
+          c: [
+            "#110000",
+            "#5c0000",
+            "#c43000",
+            "#ee6600",
+            "#ffaa00",
+            "#ff4400",
+            "#991100",
+          ],
+        },
+        {
+          n: "Ocean",
+          c: [
+            "#000510",
+            "#001055",
+            "#0033bb",
+            "#0077ee",
+            "#00bbff",
+            "#004499",
+            "#000820",
+          ],
+        },
+        {
+          n: "Dusk",
+          c: [
+            "#080008",
+            "#2e0040",
+            "#7a0066",
+            "#cc0077",
+            "#ff44aa",
+            "#880055",
+            "#1a0022",
+          ],
+        },
+        {
+          n: "Jungle",
+          c: [
+            "#000500",
+            "#001800",
+            "#005511",
+            "#00991f",
+            "#55ee22",
+            "#007711",
+            "#000d00",
+          ],
+        },
+        {
+          n: "Ember",
+          c: [
+            "#000000",
+            "#1c0300",
+            "#5e0f00",
+            "#b52200",
+            "#ff4400",
+            "#dd0011",
+            "#600000",
+          ],
+        },
+        {
+          n: "Gold",
+          c: [
+            "#080400",
+            "#321200",
+            "#7a4000",
+            "#ccaa00",
+            "#ffee33",
+            "#bb7700",
+            "#2e0e00",
+          ],
+        },
+        {
+          n: "Glacier",
+          c: [
+            "#000810",
+            "#001540",
+            "#003399",
+            "#1166cc",
+            "#66bbff",
+            "#0044aa",
+            "#000a1a",
+          ],
+        },
+        {
+          n: "Plum",
+          c: [
+            "#06000a",
+            "#1f0038",
+            "#5500aa",
+            "#8833ee",
+            "#cc88ff",
+            "#6600bb",
+            "#110020",
+          ],
+        },
+      ];
+
+      let PAL = PALS[0];
+      // Select palette via URL query param, e.g. ?palette=ocean
+      const urlParams = new URLSearchParams(window.location.search);
+      const palName = (urlParams.get("palette") || "").toLowerCase();
+      const palMatch = PALS.find((p) => p.n.toLowerCase() === palName);
+      if (palMatch) PAL = palMatch;
+      const prow = document.getElementById("prow");
+      PALS.forEach((p, i) => {
+        const b = document.createElement("div");
+        b.className = "pb" + (i === 0 ? " on" : "");
+        b.title = p.n;
+        b.style.background = `linear-gradient(135deg,${p.c[0]},${p.c[3]},${p.c[6]})`;
+        b.addEventListener("click", () => {
+          document
+            .querySelectorAll(".pb")
+            .forEach((x) => x.classList.remove("on"));
+          b.classList.add("on");
+          PAL = p;
+        });
+        prow.appendChild(b);
+      });
+
+      // ── Controls ────────────────────────────────────────────────────────
+      let SP = 5,
+        SC = 4,
+        WD = 2,
+        CT = 5,
+        MR = 99,
+        MS = 3,
+        GR = 68;
+      function bind(id, vid, fmt, cb) {
+        const el = document.getElementById(id),
+          ve = document.getElementById(vid);
+        el.addEventListener("input", () => {
+          cb(+el.value);
+          ve.textContent = fmt(+el.value);
+        });
+      }
+      bind(
+        "sp",
+        "sp-v",
+        (v) => `${v}`,
+        (v) => (SP = v),
+      );
+      bind(
+        "sc",
+        "sc-v",
+        (v) => `${v}`,
+        (v) => (SC = v),
+      );
+      bind(
+        "wd",
+        "wd-v",
+        (v) => `${v}`,
+        (v) => (WD = v),
+      );
+      bind(
+        "ct",
+        "ct-v",
+        (v) => `${v}`,
+        (v) => (CT = v),
+      );
+      bind(
+        "mr",
+        "mr-v",
+        (v) => `${v}`,
+        (v) => (MR = v),
+      );
+      bind(
+        "ms",
+        "ms-v",
+        (v) => `${v}`,
+        (v) => (MS = v),
+      );
+      bind(
+        "gr",
+        "gr-v",
+        (v) => `${v}`,
+        (v) => (GR = v),
+      );
+
+      // ── Mouse ────────────────────────────────────────────────────────────
+      const M = {
+        x: -9999,
+        y: -9999,
+        vx: 0,
+        vy: 0,
+        px: -9999,
+        py: -9999,
+        down: false,
+      };
+      window.addEventListener("mousemove", (e) => {
+        M.vx = (e.clientX - M.px) * 0.4;
+        M.vy = (e.clientY - M.py) * 0.4;
+        M.px = M.x;
+        M.py = M.y;
+        M.x = e.clientX;
+        M.y = e.clientY;
+        curEl.style.left = e.clientX + "px";
+        curEl.style.top = e.clientY + "px";
+      });
+      window.addEventListener("mousedown", () => {
+        M.down = true;
+        curEl.classList.add("big");
+      });
+      window.addEventListener("mouseup", () => {
+        M.down = false;
+        curEl.classList.remove("big");
+      });
+
+      // Smooth mouse velocity
+      let smvx = 0,
+        smvy = 0;
+
+      // ── Perlin Noise ────────────────────────────────────────────────────
+      const perm = new Uint8Array(512);
+      {
+        const p = new Uint8Array(256);
+        for (let i = 0; i < 256; i++) p[i] = i;
+        for (let i = 255; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [p[i], p[j]] = [p[j], p[i]];
+        }
+        for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
+      }
+      function fade(t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+      }
+      function lerp(a, b, t) {
+        return a + t * (b - a);
+      }
+      function grad(h, x, y) {
+        h &= 3;
+        return (h & 1 ? -x : x) + (h & 2 ? -y : y);
+      }
+      function noise(x, y) {
+        const X = Math.floor(x) & 255,
+          Y = Math.floor(y) & 255;
+        x -= Math.floor(x);
+        y -= Math.floor(y);
+        const u = fade(x),
+          v = fade(y);
+        const a = perm[X] + Y,
+          b = perm[X + 1] + Y;
+        return lerp(
+          lerp(grad(perm[a], x, y), grad(perm[b], x - 1, y), u),
+          lerp(grad(perm[a + 1], x, y - 1), grad(perm[b + 1], x - 1, y - 1), u),
+          v,
+        );
+      }
+
+      // fBm — fractal brownian motion (layered noise octaves)
+      function fbm(x, y, oct) {
+        let v = 0,
+          a = 0.5,
+          f = 1,
+          m = 0;
+        for (let i = 0; i < oct; i++) {
+          v += noise(x * f, y * f) * a;
+          m += a;
+          a *= 0.5;
+          f *= 2.1;
+        }
+        return v / m;
+      }
+
+      // ── Color map ────────────────────────────────────────────────────────
+      // Returns [r,g,b] for a value 0..1 mapped through PAL
+      function hexRgb(h) {
+        return [
+          parseInt(h.slice(1, 3), 16),
+          parseInt(h.slice(3, 5), 16),
+          parseInt(h.slice(5, 7), 16),
+        ];
+      }
+
+      function palColor(t) {
+        const stops = PAL.c;
+        const n = stops.length - 1;
+        const pos = Math.max(0, Math.min(1, t)) * n;
+        const i = Math.min(n - 1, pos | 0);
+        const f = pos - i;
+        const [r1, g1, b1] = hexRgb(stops[i]);
+        const [r2, g2, b2] = hexRgb(stops[i + 1]);
+        return [
+          (r1 + (r2 - r1) * f) | 0,
+          (g1 + (g2 - g1) * f) | 0,
+          (b1 + (b2 - b1) * f) | 0,
+        ];
+      }
+
+      // ── Mouse warp field ─────────────────────────────────────────────────
+      // Accumulate ripple displacement as a 2D float field (low res)
+      const DR = 4; // downsample ratio
+      let dW, dH, dX, dY;
+      function initDist() {
+        dW = Math.ceil(W / DR);
+        dH = Math.ceil(H / DR);
+        dX = new Float32Array(dW * dH);
+        dY = new Float32Array(dW * dH);
+      }
+
+      function splatMouse() {
+        if (M.x < 0) return;
+        smvx += (M.vx - smvx) * 0.3;
+        smvy += (M.vy - smvy) * 0.3;
+        const spd = Math.sqrt(smvx * smvx + smvy * smvy);
+        if (spd < 0.1 && !M.down) return;
+
+        const r = MR / DR;
+        const str = MS * 0.08 * (M.down ? 2.5 : 1);
+        const cx = M.x / DR,
+          cy = M.y / DR;
+        const x0 = Math.max(0, (cx - r) | 0),
+          x1 = Math.min(dW - 1, (cx + r + 1) | 0);
+        const y0 = Math.max(0, (cy - r) | 0),
+          y1 = Math.min(dH - 1, (cy + r + 1) | 0);
+        for (let dy = y0; dy <= y1; dy++) {
+          for (let dx = x0; dx <= x1; dx++) {
+            const ddx = dx - cx,
+              ddy = dy - cy;
+            const d2 = ddx * ddx + ddy * ddy,
+              r2 = r * r;
+            if (d2 > r2) continue;
+            const fall = (1 - d2 / r2) * (1 - d2 / r2); // sharper falloff
+            const idx = dy * dW + dx;
+            dX[idx] += smvx * str * fall;
+            dY[idx] += smvy * str * fall;
+          }
+        }
+      }
+
+      function decayDist() {
+        for (let i = 0; i < dX.length; i++) {
+          dX[i] *= 0.92;
+          dY[i] *= 0.92;
+        }
+      }
+
+      function sampleDist(wx, wy) {
+        const bx = wx / DR,
+          by = wy / DR;
+        const ix = bx | 0,
+          iy = by | 0;
+        if (ix < 0 || iy < 0 || ix >= dW - 1 || iy >= dH - 1) return [0, 0];
+        const fx = bx - ix,
+          fy = by - iy;
+        const i00 = iy * dW + ix,
+          i10 = i00 + 1,
+          i01 = i00 + dW,
+          i11 = i01 + 1;
+        const dx =
+          dX[i00] * (1 - fx) * (1 - fy) +
+          dX[i10] * fx * (1 - fy) +
+          dX[i01] * (1 - fx) * fy +
+          dX[i11] * fx * fy;
+        const dy =
+          dY[i00] * (1 - fx) * (1 - fy) +
+          dY[i10] * fx * (1 - fy) +
+          dY[i01] * (1 - fx) * fy +
+          dY[i11] * fx * fy;
+        return [dx, dy];
+      }
+
+      // ── Grain ────────────────────────────────────────────────────────────
+      const GS = 512;
+      const gbuf = new Uint8Array(GS * GS);
+      for (let i = 0; i < gbuf.length; i++) gbuf[i] = (Math.random() * 255) | 0;
+
+      // ── RENDER ───────────────────────────────────────────────────────────
+      // The look we want:
+      //   • Large, WIDE sweeping color bands (like in the reference)
+      //   • Bands curve gently — one big S-curve across the frame
+      //   • Heavy grain texture on top
+      //   • Slow, barely-perceptible animation
+      //
+      // Technique: double domain-warped fBm with VERY LOW frequency (big scale)
+      // The key is using a large spatial scale so the noise features are HUGE
+      // relative to the canvas — you only see a small part of one noise "mountain"
+      // which looks like a smooth broad band.
+
+      const CELL = 3; // 3px blocks for performance (was 2)
+      let t = 0;
+
+      function render() {
+        t += 0.0003 * SP;
+
+        const baseScale = 0.0008 * SC; // SMALL number = HUGE features = big sweeping bands
+
+        // Domain warp amounts — large enough to bend bands significantly
+        const w1Amp = WD * 0.8;
+        const w2Amp = WD * 0.35;
+
+        // Contrast power — higher = sharper band edges
+        const gamma = 0.4 + CT * 0.18;
+
+        splatMouse();
+        decayDist();
+
+        const fW = Math.ceil(W / CELL);
+        const fH = Math.ceil(H / CELL);
+
+        for (let cy = 0; cy < fH; cy++) {
+          const wy = cy * CELL;
+          for (let cx = 0; cx < fW; cx++) {
+            const wx = cx * CELL;
+
+            // Mouse warp offset
+            const [mx, my] = sampleDist(wx, wy);
+
+            // Base coords in noise space (very zoomed out = big smooth features)
+            let nx = (cx + mx * 8) * baseScale;
+            let ny = (cy + my * 8) * baseScale;
+
+            // ── Domain warp layer 1 ──
+            // Offset the sampling point by another noise value
+            // This is what creates the big sweeping BENDS in the bands
+            const q1x = fbm(nx + 0.0, ny + 0.0, 4);
+            const q1y = fbm(nx + 5.2, ny + 1.3, 4);
+
+            const p1x = nx + w1Amp * q1x;
+            const p1y = ny + w1Amp * q1y;
+
+            // ── Domain warp layer 2 ──
+            // Second warp pass = the subtle secondary folds you see in the reference
+            const q2x = fbm(p1x + 1.7 + t, p1y + 9.2, 3);
+            const q2y = fbm(p1x + 8.3, p1y + 2.8 + t * 0.7, 3);
+
+            const p2x = p1x + w2Amp * q2x;
+            const p2y = p1y + w2Amp * q2y;
+
+            // ── Final noise sample ──
+            // Use just 1–2 octaves so the result is SMOOTH, not noisy
+            // Smooth = big bands; many octaves = rough texture
+            let v = fbm(p2x + t * 0.3, p2y + t * 0.18, 2);
+
+            // Map from roughly [-0.5,0.5] to [0,1]
+            v = v * 0.5 + 0.5;
+            v = Math.max(0, Math.min(1, v));
+
+            // Apply contrast curve to make band transitions sharper
+            // (creates that crisp edge between light and dark areas in the reference)
+            v = Math.pow(v, gamma);
+
+            // Map to color
+            const [r, g, b] = palColor(v);
+
+            // Write CELL×CELL block
+            for (let dy2 = 0; dy2 < CELL && wy + dy2 < H; dy2++) {
+              for (let dx2 = 0; dx2 < CELL && wx + dx2 < W; dx2++) {
+                const i4 = ((wy + dy2) * W + (wx + dx2)) * 4;
+                pix[i4] = r;
+                pix[i4 + 1] = g;
+                pix[i4 + 2] = b;
+                pix[i4 + 3] = 255;
+              }
+            }
+          }
+        }
+
+        X.putImageData(imgData, 0, 0);
+
+        // ── Grain overlay ──
+        if (GR > 0) {
+          const grAlpha = (GR / 100) * 0.55; // strong grain like the reference
+          // Use a 2nd canvas approach for tiled grain
+          X.save();
+          X.globalCompositeOperation = "overlay";
+          X.globalAlpha = grAlpha;
+
+          const ox = (Math.random() * GS) | 0,
+            oy = (Math.random() * GS) | 0;
+
+          // Fast: draw with repeated putImageData tiles
+          // Use temporary canvas for pattern
+          if (!_grainC) {
+            _grainC = document.createElement("canvas");
+            _grainC.width = GS;
+            _grainC.height = GS;
+            const gx = _grainC.getContext("2d");
+            const gi = gx.createImageData(GS, GS);
+            for (let i = 0; i < gbuf.length; i++) {
+              gi.data[i * 4] =
+                gi.data[i * 4 + 1] =
+                gi.data[i * 4 + 2] =
+                  gbuf[i];
+              gi.data[i * 4 + 3] = 255;
+            }
+            gx.putImageData(gi, 0, 0);
+          }
+          const pat = X.createPattern(_grainC, "repeat");
+          const m = new DOMMatrix();
+          m.translateSelf(ox, oy);
+          pat.setTransform(m);
+          X.fillStyle = pat;
+          X.fillRect(0, 0, W, H);
+          X.restore();
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      let _grainC = null;
+
+      resize();
+      initDist();
+      window.addEventListener("resize", () => {
+        resize();
+        initDist();
+      });
+      render();
+
+      // UI fade
+      let _ht;
+      const ui = document.getElementById("ui");
+      function resetFade() {
+        clearTimeout(_ht);
+        ui.style.opacity = "1";
+        _ht = setTimeout(() => (ui.style.opacity = "0.15"), 3500);
+      }
+      window.addEventListener("mousemove", resetFade);
+      resetFade();
+    </script>
+  </body>
+</html>
