@@ -1,0 +1,108 @@
+/* Section navigation overlay */
+.sidenav {
+  position: fixed;
+  top: 2.5rem;
+  right: 3.5rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-end;
+}
+
+.sidenav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  transition: all var(--transition-smooth);
+  padding: 0.3rem 0;
+}
+
+.sidenav__item:hover {
+  color: var(--color-text);
+}
+
+.sidenav__number {
+  opacity: 0.6;
+  font-size: 0.6rem;
+}
+
+/* Vertical contact rail */
+.contact-rail {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.8rem;
+}
+
+.contact-rail__text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color var(--transition-smooth);
+  cursor: pointer;
+}
+
+.contact-rail__text:hover {
+  color: var(--color-accent);
+}
+
+.contact-rail__divider {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+}
+
+/* Get in touch button */
+.get-in-touch {
+  position: fixed;
+  bottom: 2rem;
+  right: 2.5rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  transition: all var(--transition-smooth);
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.get-in-touch:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.get-in-touch__arrow {
+  font-size: 0.9rem;
+  transition: transform var(--transition-smooth);
+}
+
+.get-in-touch:hover .get-in-touch__arrow {
+  transform: translateX(3px);
+}

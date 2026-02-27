@@ -1,0 +1,136 @@
+.experience {
+  display: grid;
+  grid-template-columns: 58fr 42fr;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.experience__left {
+  position: relative;
+  height: 100%;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 6rem;
+  overflow: hidden;
+}
+
+/* Subtle gradient edge where left meets right */
+.experience__left::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(to right, var(--color-bg), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.experience__right {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Subtle inner glow on the right panel edge */
+.experience__right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(8, 8, 8, 0.6), transparent);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.experience__title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  color: var(--color-text);
+  margin-bottom: 4rem;
+}
+
+/* Vertical Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* The vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 0;
+  left: 2px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.timeline__item {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 3rem;
+}
+
+.timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+/* Dot node */
+.timeline__node {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  z-index: 2;
+  transition: background var(--transition-smooth);
+}
+
+.timeline__item:hover .timeline__node {
+  background: var(--color-accent);
+}
+
+.timeline__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.timeline__year {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.timeline__role {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text);
+}
+
+.timeline__desc {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 400px;
+}

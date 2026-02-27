@@ -1,0 +1,60 @@
+/* ===== App Layout ===== */
+.app {
+  width: 100%;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__section {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.app__layout {
+  display: grid;
+  grid-template-columns: 58fr 42fr;
+  height: 100%;
+  width: 100%;
+}
+
+.app__left {
+  position: relative;
+  background: var(--color-bg);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Subtle gradient edge where left meets right */
+.app__left::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(to right, var(--color-bg), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.app__right {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Subtle inner glow on the right panel edge */
+.app__right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(8, 8, 8, 0.6), transparent);
+  z-index: 3;
+  pointer-events: none;
+}
