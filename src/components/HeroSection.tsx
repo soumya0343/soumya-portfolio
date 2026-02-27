@@ -28,7 +28,7 @@ const HeroSection = () => {
           elegant design meets powerful engineering.
         </p>
         <a href="#work" className="hero__cta hero__animate">
-          <span className="hero__cta-text">VIEW SELECTED WORK</span>
+          <span className="hero__cta-text">VIEW PROJECTS</span>
         </a>
       </div>
     </section>

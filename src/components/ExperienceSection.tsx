@@ -26,6 +26,7 @@ const ExperienceSection = () => {
   return (
     <section className="experience" id="work">
       <div className="experience__left">
+        <span className="experience__number">03</span>
         <h2 className="experience__title">Experience</h2>
 
         <div className="timeline">

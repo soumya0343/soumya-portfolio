@@ -57,6 +57,20 @@
   margin-bottom: 4rem;
 }
 
+/* Large faded section number */
+.experience__number {
+  position: absolute;
+  top: 0.5rem;
+  left: -0.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(8rem, 14vw, 14rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* Vertical Timeline */
 .timeline {
   display: flex;

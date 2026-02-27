@@ -4,6 +4,7 @@ import FluidCanvas from "./components/FluidCanvas";
 import SideNav from "./components/SideNav";
 import PhilosophySection from "./components/PhilosophySection";
 import ExperienceSection from "./components/ExperienceSection";
+import ProjectsSection from "./components/ProjectsSection";
 import "./App.css";
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
 
       {/* Page 3: Experience */}
       <ExperienceSection />
+
+      {/* Page 4: Projects */}
+      <ProjectsSection />
     </div>
   );
 }
