@@ -13,38 +13,40 @@ interface Project {
 
 const projects: Project[] = [
   {
-    category: "01 / DIGITAL INSTALLATION",
-    title: "Aetheris Framework",
+    category: "01 / PRODUCTIVITY PLATFORM",
+    title: "Zync",
     description:
-      "An experiential WebGL framework designed for large-scale digital installations. It leverages custom shaders and generative algorithms to create immersive, reactive audio-visual environments that respond to human presence in real-time.",
-    tech: ["WebGL", "Three.js", "GLSL", "React"],
-    link: "https://example.com/aetheris",
-    imageGradient: "linear-gradient(135deg, #d32f2f, #ff8f00)",
+      "A full-stack task, goal, and journaling application featuring drag-and-drop Kanban, nested task trees, scalable Firestore schema, and granular progress tracking.",
+    tech: ["React 19", "TypeScript", "Node.js", "Express", "Firebase"],
+    link: "https://github.com",
+    imageGradient: "linear-gradient(135deg, #1e3c72, #2a5298)",
   },
   {
-    category: "02 / EDITORIAL DESIGN",
-    title: "Monolith Annual",
+    category: "02 / CREATIVE PORTFOLIO",
+    title: "Digital Portfolio",
     description:
-      "A brutalist digital editorial experience that challenges traditional reading paradigms. Featuring extreme typography, horizontal scrolling narratives, and harsh monochromatic contrasts to emphasize unvarnished truth in journalism.",
-    tech: ["Next.js", "GSAP", "Tailwind CSS"],
-    imageGradient: "linear-gradient(135deg, #cddc39, #ffea00)",
+      "An immersive, cinematic personal portfolio blending WebGL-powered fluid art with rigorous brutalist typography, dynamic theming, and multi-threaded interactive scroll animations.",
+    tech: ["React", "TypeScript", "Vite", "WebGL"],
+    link: "https://github.com",
+    imageGradient: "linear-gradient(135deg, #0f2027, #203a43)",
   },
   {
-    category: "03 / BRAND IDENTITY",
-    title: "Lumina Studio",
+    category: "03 / DEVELOPER TOOLING",
+    title: "CodeSentinel",
     description:
-      "Complete digital rebranding for a boutique architecture firm. The design system relies on negative space, structured grids, and subtle motion to reflect the physical spaces the studio creates—translating concrete and light into pixels.",
-    tech: ["Figma", "React", "Framer Motion"],
-    link: "https://example.com/lumina",
-    imageGradient: "linear-gradient(135deg, #3e2723, #795548)",
+      "A cross-editor extension for AI-powered code review. It combines Gemini-based semantic analysis with deterministic static analysis to detect SOLID violations, security risks, and architectural issues with offline capabilities.",
+    tech: ["TypeScript", "VS Code API", "Gemini", "Node.js"],
+    link: "https://github.com",
+    imageGradient: "linear-gradient(135deg, #4b134f, #c94b4b)",
   },
   {
-    category: "04 / WEB EXPERIENCE",
-    title: "Velvet Horizon",
+    category: "04 / FINTECH PLATFORM",
+    title: "StockWise",
     description:
-      "An award-winning interactive portfolio for a luxury fashion designer. The site uses fluid transitions and high-performance canvas rendering to simulate the tactile feeling of premium fabrics and materials on screen.",
-    tech: ["Vue.js", "Canvas API", "WebGL"],
-    imageGradient: "linear-gradient(135deg, #b71c1c, #f44336)",
+      "A gamified investment platform tailored for college students, featuring a custom Node.js backend engine for XP, achievements, and milestones. Shipped a production-ready MVP in 24 hours to secure 2nd place among 47 teams.",
+    tech: ["React.js", "Tailwind CSS", "Node.js", "REST APIs"],
+    link: "https://github.com",
+    imageGradient: "linear-gradient(135deg, #11998e, #38ef7d)",
   },
 ];
 

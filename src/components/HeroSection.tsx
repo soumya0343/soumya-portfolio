@@ -20,14 +20,20 @@ const HeroSection = () => {
           A passionate developer crafting immersive digital experiences where
           elegant design meets powerful engineering.
         </p>
-        <a
-          href="#work"
-          className="hero__cta"
-          data-reveal="up"
-          data-reveal-delay="3"
-        >
-          <span className="hero__cta-text">VIEW PROJECTS</span>
-        </a>
+        <div className="hero__actions" data-reveal="up" data-reveal-delay="3">
+          <a href="#work" className="hero__cta">
+            <span className="hero__cta-text">VIEW PROJECTS</span>
+          </a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero__cta hero__cta--secondary"
+          >
+            <span className="hero__cta-text">DOWNLOAD RESUME</span>
+            <span className="hero__cta-icon">↓</span>
+          </a>
+        </div>
       </div>
     </section>
   );

@@ -6,24 +6,33 @@ const skillGroups = [
     items: [
       "JavaScript",
       "TypeScript",
+      "C/C++",
+      "Go/GoLang",
       "Python",
       "Java",
-      "C++",
-      "SQL",
       "HTML/CSS",
     ],
   },
   {
     category: "FRAMEWORKS",
-    items: ["React", "Next.js", "Node.js", "Express", "Django", "TailwindCSS"],
+    items: ["ReactJs", "NextJs", "NodeJs", "Express", "Flutter/Dart", "Tailwind CSS"],
   },
   {
-    category: "TOOLS & PLATFORMS",
-    items: ["Git", "Docker", "AWS", "Firebase", "Figma", "Linux", "CI/CD"],
+    category: "TOOLS & CORE",
+    items: [
+      "Git/GitHub",
+      "Docker",
+      "Firebase",
+      "MCP Server",
+      "REST APIs",
+      "LLM",
+      "OOP",
+      "DSA",
+    ],
   },
   {
     category: "DATABASES",
-    items: ["PostgreSQL", "MongoDB", "Redis", "MySQL"],
+    items: ["PostgreSQL", "MongoDB", "Redis", "Elasticsearch", "MySQL", "NOSQL", "Firebase"],
   },
 ];
 

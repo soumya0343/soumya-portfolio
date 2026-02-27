@@ -35,9 +35,17 @@
   margin-bottom: 3rem;
 }
 
+.hero__actions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap; /* In case narrow screen */
+}
+
 .hero__cta {
   display: inline-flex;
   align-items: center;
+  gap: 0.8rem;
   padding: 1rem 2.2rem;
   border: 1px solid var(--color-border);
   font-family: var(--font-sans);
@@ -48,7 +56,8 @@
   color: var(--color-text);
   transition: all var(--transition-smooth);
   position: relative;
-  }
+  overflow: hidden;
+}
 
 .hero__cta::before {
   content: "";
@@ -71,9 +80,23 @@
   color: var(--color-bg);
 }
 
-.hero__cta-text {
+.hero__cta-text,
+.hero__cta-icon {
   position: relative;
   z-index: 1;
+}
+
+.hero__cta--secondary {
+  border-color: rgba(var(--color-text-rgb), 0.15);
+  color: var(--color-text-muted);
+}
+
+.hero__cta--secondary::before {
+  background: var(--color-text);
+}
+
+.hero__cta--secondary:hover {
+  border-color: var(--color-text);
 }
 
 /* Staggered reveal animation */
