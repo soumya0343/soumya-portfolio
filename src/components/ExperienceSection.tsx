@@ -34,7 +34,7 @@ const ExperienceSection = () => {
         <div className="timeline">
           {experiences.map((exp, index) => (
             <div
-              className="timeline__item"
+              className={`timeline__item ${index === 0 ? "timeline__item--current" : ""}`}
               key={index}
               data-reveal="up"
               data-reveal-delay={index + 1}

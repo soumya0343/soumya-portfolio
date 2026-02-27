@@ -2,8 +2,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-}
+  }
 
 .blue-fluid-canvas__el {
   width: 100%;

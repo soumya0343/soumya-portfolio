@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   height: 100%;
+  flex: 1;
   padding: 0 4rem;
   padding-top: 2rem;
 }
@@ -26,7 +27,7 @@
 
 .hero__tagline {
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 300;
   line-height: 1.7;
   color: var(--color-text-muted);
@@ -40,15 +41,14 @@
   padding: 1rem 2.2rem;
   border: 1px solid var(--color-border);
   font-family: var(--font-sans);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-text);
   transition: all var(--transition-smooth);
   position: relative;
-  overflow: hidden;
-}
+  }
 
 .hero__cta::before {
   content: "";
@@ -56,7 +56,7 @@
   top: 0;
   left: -100%;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background: var(--color-accent);
   transition: left var(--transition-smooth);
   z-index: 0;

@@ -1,7 +1,7 @@
 .contact {
   display: grid;
   grid-template-columns: 38fr 62fr;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   position: relative;
 }
@@ -9,12 +9,13 @@
 .contact__left {
   position: relative;
   height: 100%;
-  overflow: hidden;
-}
+  display: flex;
+  flex-direction: column;
+  }
 
 .contact__fluid {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   border: none;
   display: block;
 }
@@ -22,13 +23,14 @@
 .contact__right {
   position: relative;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 8rem 5rem 4rem;
-  overflow: hidden;
-}
+  }
 
 /* Large faded section number */
 .contact__number {
@@ -56,7 +58,7 @@
 
 .contact__subtitle {
   font-family: var(--font-sans);
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.15em;
   color: var(--color-text-muted);
@@ -73,7 +75,7 @@
 
 .contact__intro {
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 300;
   line-height: 1.8;
   color: rgba(var(--color-text-rgb), 0.5);
@@ -105,7 +107,7 @@
 
 .contact__link-label {
   font-family: var(--font-sans);
-  font-size: 0.55rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   color: rgba(var(--color-text-rgb), 0.3);
@@ -147,7 +149,7 @@
 
 .contact__copyright {
   font-family: var(--font-sans);
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-weight: 400;
   letter-spacing: 0.08em;
   color: rgba(var(--color-text-rgb), 0.2);
