@@ -3,6 +3,7 @@ import HeroSection from "./components/HeroSection";
 import FluidCanvas from "./components/FluidCanvas";
 import SideNav from "./components/SideNav";
 import PhilosophySection from "./components/PhilosophySection";
+import ExperienceSection from "./components/ExperienceSection";
 import "./App.css";
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
 
       {/* Page 2: Philosophy */}
       <PhilosophySection />
+
+      {/* Page 3: Experience */}
+      <ExperienceSection />
     </div>
   );
 }
