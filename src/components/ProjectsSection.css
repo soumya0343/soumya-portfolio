@@ -50,7 +50,7 @@
   line-height: 0.8;
   pointer-events: none;
   user-select: none;
-    /* Shift slightly off-screen if desired, keeping within wrapper for now */
+  /* Shift slightly off-screen if desired, keeping within wrapper for now */
   transform: translateX(20%);
 }
 
@@ -84,7 +84,33 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   position: relative;
-    /* Basic grainy texture effect */
+  overflow: hidden; /* Ensure image and overlay don't break corners */
+}
+
+/* Base image styling */
+.project-card__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1; /* Sits above gradient background, below overlays */
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover .project-card__img {
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+/* Gradient overlay to ensure text readability if overlaid, or just for mood */
+.project-card__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Noise overlay */
@@ -98,6 +124,7 @@
   opacity: 0.3;
   mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 3; /* Top most overlay */
 }
 
 .project-card__info {
@@ -201,7 +228,7 @@
   border: 1px solid rgba(var(--color-text-rgb), 0.08);
   display: flex;
   flex-direction: row; /* Side by side */
-   /* Hide scroll on outer container */
+  /* Hide scroll on outer container */
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   opacity: 0;
   transform: translateY(20px);
@@ -270,6 +297,17 @@
   height: 100%;
   flex-shrink: 0;
   position: relative;
+  overflow: hidden;
+}
+
+.project-modal__banner-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
 }
 
 /* Add noise overlay to banner as well */
@@ -281,6 +319,7 @@
   opacity: 0.3;
   mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 2;
 }
 
 /* Old modal body position, removed */
@@ -309,7 +348,38 @@
   font-weight: 300;
   line-height: 1.8;
   color: rgba(var(--color-text-rgb), 0.85);
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem; /* Reduced to accommodate list */
+}
+
+.project-modal__details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.project-modal__details-point {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(var(--color-text-rgb), 0.75);
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+.project-modal__details-point::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  font-size: 1.2rem;
+  color: var(--color-accent);
+  opacity: 0.8;
+  font-family: var(--font-sans);
+  font-weight: bold;
 }
 
 .project-modal__tech {
