@@ -8,11 +8,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2.5rem;
-  pointer-events: none;
-}
-
-.navbar > * {
-  pointer-events: auto;
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .navbar__brand {

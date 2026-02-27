@@ -584,7 +584,7 @@
       // relative to the canvas — you only see a small part of one noise "mountain"
       // which looks like a smooth broad band.
 
-      const CELL = 4; // 4px blocks for embedded performance
+      const CELL = 3; // 3px blocks for embedded performance
       let t = 0;
 
       function render() {
@@ -700,6 +700,7 @@
           const pat = X.createPattern(_grainC, "repeat");
           const m = new DOMMatrix();
           m.translateSelf(ox, oy);
+          m.scaleSelf(0.5, 0.5); // make grain texture 2x smaller visually
           pat.setTransform(m);
           X.fillStyle = pat;
           X.fillRect(0, 0, W, H);

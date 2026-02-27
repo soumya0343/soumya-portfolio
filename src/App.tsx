@@ -9,15 +9,17 @@ import BlogSection from "./components/BlogSection";
 import ContactSection from "./components/ContactSection";
 import ContactCTA from "./components/ContactCTA";
 import useScrollReveal from "./hooks/useScrollReveal";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
   useScrollReveal();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="app">
-      <Navbar />
-      <ContactCTA />
+      {!isModalOpen && <Navbar />}
+      {!isModalOpen && <ContactCTA />}
 
       {/* Page 1: Hero */}
       <section className="app__section" id="home">
@@ -38,7 +40,7 @@ function App() {
       <ExperienceSection />
 
       {/* Page 4: Projects */}
-      <ProjectsSection />
+      <ProjectsSection onModalToggle={setIsModalOpen} />
 
       {/* Page 5: Skills */}
       <SkillsSection />
