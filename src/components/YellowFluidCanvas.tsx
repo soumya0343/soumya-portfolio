@@ -7,6 +7,7 @@ const YellowFluidCanvas = () => {
         src="/fluid-art.html?palette=jungle"
         className="yellow-fluid-canvas__iframe"
         title="Yellow Fluid Art"
+        loading="lazy"
       />
     </div>
   );

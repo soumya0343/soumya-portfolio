@@ -21,6 +21,14 @@ const SideNav = () => {
           <span className="sidenav__number">04</span>
           <span className="sidenav__label">WORKS</span>
         </a>
+        <a href="#blog" className="sidenav__item">
+          <span className="sidenav__number">05</span>
+          <span className="sidenav__label">BLOGS</span>
+        </a>
+        <a href="#contact" className="sidenav__item">
+          <span className="sidenav__number">06</span>
+          <span className="sidenav__label">CONTACT</span>
+        </a>
       </div>
 
       {/* Vertical contact text on far right edge */}

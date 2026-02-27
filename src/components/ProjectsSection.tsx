@@ -28,15 +28,28 @@ const ProjectsSection = () => {
     <section className="projects" id="works">
       <div className="projects__header">
         <div className="projects__header-content">
-          <h2 className="projects__title">Projects</h2>
-          <p className="projects__subtitle">CURATED PROJECTS 2022—2024</p>
+          <h2 className="projects__title" data-reveal="up">
+            Projects
+          </h2>
+          <p
+            className="projects__subtitle"
+            data-reveal="up"
+            data-reveal-delay="1"
+          >
+            CURATED PROJECTS 2022—2024
+          </p>
         </div>
         <span className="projects__number">04</span>
       </div>
 
       <div className="projects__grid">
         {projects.map((project, index) => (
-          <div className="project-card" key={index}>
+          <div
+            className="project-card"
+            key={index}
+            data-reveal="up"
+            data-reveal-delay={index + 1}
+          >
             <div
               className="project-card__image"
               style={{ background: project.imageGradient }}

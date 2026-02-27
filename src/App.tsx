@@ -1,17 +1,23 @@
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import FluidCanvas from "./components/FluidCanvas";
-import SideNav from "./components/SideNav";
 import PhilosophySection from "./components/PhilosophySection";
 import ExperienceSection from "./components/ExperienceSection";
 import ProjectsSection from "./components/ProjectsSection";
+import SkillsSection from "./components/SkillsSection";
+import BlogSection from "./components/BlogSection";
+import ContactSection from "./components/ContactSection";
+import ContactCTA from "./components/ContactCTA";
+import useScrollReveal from "./hooks/useScrollReveal";
 import "./App.css";
 
 function App() {
+  useScrollReveal();
+
   return (
     <div className="app">
       <Navbar />
-      <SideNav />
+      <ContactCTA />
 
       {/* Page 1: Hero */}
       <section className="app__section" id="home">
@@ -33,6 +39,15 @@ function App() {
 
       {/* Page 4: Projects */}
       <ProjectsSection />
+
+      {/* Page 5: Skills */}
+      <SkillsSection />
+
+      {/* Page 6: Blogs */}
+      <BlogSection />
+
+      {/* Page 7: Contact */}
+      <ContactSection />
     </div>
   );
 }

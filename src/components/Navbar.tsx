@@ -9,14 +9,26 @@ const Navbar = () => {
         <span className="navbar__brand-year">2026</span>
       </div>
       <div className="navbar__links">
-        <a href="#index" className="navbar__link">
-          INDEX
+        <a href="#home" className="navbar__link navbar__link--active">
+          HOME
         </a>
-        <a href="#profile" className="navbar__link navbar__link--active">
-          PROFILE
+        <a href="#manifesto" className="navbar__link">
+          PHILOSOPHY
         </a>
         <a href="#work" className="navbar__link">
-          WORK
+          EXPERIENCE
+        </a>
+        <a href="#works" className="navbar__link">
+          PROJECTS
+        </a>
+        <a href="#skills" className="navbar__link">
+          SKILLS
+        </a>
+        <a href="#blog" className="navbar__link">
+          BLOGS
+        </a>
+        <a href="#contact" className="navbar__link">
+          CONTACT
         </a>
       </div>
     </nav>

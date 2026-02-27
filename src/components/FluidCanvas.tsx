@@ -7,6 +7,7 @@ const FluidCanvas = () => {
         src="/fluid-art.html"
         className="fluid-canvas__iframe"
         title="Fluid Art"
+        loading="lazy"
       />
     </div>
   );

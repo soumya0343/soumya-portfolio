@@ -1,0 +1,114 @@
+.skills {
+  display: grid;
+  grid-template-columns: 38fr 62fr;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.skills__left {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.skills__fluid {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.skills__right {
+  position: relative;
+  height: 100%;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 5rem;
+  overflow: hidden;
+}
+
+/* Large faded section number */
+.skills__number {
+  position: absolute;
+  top: 0.5rem;
+  right: -0.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(8rem, 14vw, 14rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.skills__title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.skills__subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.skills__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.skills__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.skills__group-title {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+
+.skills__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skills__tag {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.skills__tag:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.15);
+}

@@ -1,0 +1,49 @@
+.contact-cta {
+  position: fixed;
+  bottom: 2rem;
+  right: 2.5rem;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.contact-cta:hover {
+  transform: translateY(-3px);
+}
+
+.contact-cta__text {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.3s ease;
+}
+
+.contact-cta:hover .contact-cta__text {
+  color: var(--color-text);
+}
+
+.contact-cta__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent, #ff4400);
+  animation: contact-pulse 2s ease-in-out infinite;
+}
+
+@keyframes contact-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}

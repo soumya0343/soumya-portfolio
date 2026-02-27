@@ -27,11 +27,18 @@ const ExperienceSection = () => {
     <section className="experience" id="work">
       <div className="experience__left">
         <span className="experience__number">03</span>
-        <h2 className="experience__title">Experience</h2>
+        <h2 className="experience__title" data-reveal="up">
+          Experience
+        </h2>
 
         <div className="timeline">
           {experiences.map((exp, index) => (
-            <div className="timeline__item" key={index}>
+            <div
+              className="timeline__item"
+              key={index}
+              data-reveal="up"
+              data-reveal-delay={index + 1}
+            >
               <div className="timeline__node"></div>
               <div className="timeline__content">
                 <span className="timeline__year">{exp.year}</span>

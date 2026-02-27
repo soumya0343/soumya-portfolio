@@ -584,10 +584,14 @@
       // relative to the canvas — you only see a small part of one noise "mountain"
       // which looks like a smooth broad band.
 
-      const CELL = 3; // 3px blocks for performance (was 2)
+      const CELL = 4; // 4px blocks for embedded performance
       let t = 0;
 
       function render() {
+        if (!isVisible) {
+          requestAnimationFrame(render);
+          return;
+        }
         t += 0.0003 * SP;
 
         const baseScale = 0.0008 * SC; // SMALL number = HUGE features = big sweeping bands
@@ -713,6 +717,28 @@
         resize();
         initDist();
       });
+      // ── Visibility-based pause (for iframe embeds) ──
+      let isVisible = true;
+      document.addEventListener("visibilitychange", () => {
+        isVisible = !document.hidden;
+      });
+      // Also pause when iframe is not in parent viewport
+      try {
+        const obs = new IntersectionObserver(
+          ([e]) => {
+            isVisible = e.isIntersecting;
+          },
+          { threshold: 0.01 },
+        );
+        if (window.frameElement) obs.observe(window.frameElement);
+        else {
+          // standalone mode — observe the canvas
+          obs.observe(C);
+        }
+      } catch (e) {
+        /* cross-origin — just stay visible */
+      }
+
       render();
 
       // UI fade
