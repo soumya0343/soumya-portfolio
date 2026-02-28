@@ -1,12 +1,12 @@
 .cocurricular {
   display: grid;
-  grid-template-columns: 62fr 38fr;
+  grid-template-columns: 38fr 62fr;
   min-height: 100vh;
   width: 100%;
   position: relative;
 }
 
-.cocurricular__right {
+.cocurricular__left {
   position: relative;
   height: 100%;
   display: flex;
@@ -20,7 +20,7 @@
   display: block;
 }
 
-.cocurricular__left {
+.cocurricular__right {
   position: relative;
   height: 100%;
   display: flex;
@@ -129,11 +129,11 @@
     grid-template-columns: 1fr;
   }
 
-  .cocurricular__right {
+  .cocurricular__left {
     min-height: 40vh;
   }
 
-  .cocurricular__left {
+  .cocurricular__right {
     padding: 6rem 2rem;
   }
 }

@@ -1,12 +1,22 @@
 .education {
   display: grid;
-  grid-template-columns: 38fr 62fr;
+  grid-template-columns: 62fr 38fr;
   min-height: 100vh;
   width: 100%;
   position: relative;
 }
 
 .education__left {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 5rem 4rem;
+  background: var(--color-bg);
+}
+
+.education__right {
   position: relative;
   height: 100%;
   display: flex;
@@ -18,16 +28,6 @@
   min-height: 100%;
   border: none;
   display: block;
-}
-
-.education__right {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 8rem 5rem 4rem;
-  background: var(--color-bg);
 }
 
 .education__number {
@@ -156,7 +156,7 @@
     grid-template-columns: 1fr;
   }
 
-  .education__left {
+  .education__right {
     min-height: 40vh;
   }
 

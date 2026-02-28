@@ -162,12 +162,10 @@ const ProjectsSection = ({ onModalToggle }: ProjectsSectionProps) => {
             data-reveal="up"
             data-reveal-delay="1"
           >
-            CURATED PROJECTS 2022—2024
+            CURATED PROJECTS 2022—2026
           </p>
         </div>
-        <span className="projects__number">
-          {projects.length < 10 ? `0${projects.length}` : projects.length}
-        </span>
+        <span className="projects__number">04</span>
       </div>
 
       <div className="projects__grid">

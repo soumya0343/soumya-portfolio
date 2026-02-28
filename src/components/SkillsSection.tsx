@@ -15,7 +15,14 @@ const skillGroups = [
   },
   {
     category: "FRAMEWORKS",
-    items: ["ReactJs", "NextJs", "NodeJs", "Express", "Flutter/Dart", "Tailwind CSS"],
+    items: [
+      "ReactJs",
+      "NextJs",
+      "NodeJs",
+      "Express",
+      "Flutter/Dart",
+      "Tailwind CSS",
+    ],
   },
   {
     category: "TOOLS & CORE",
@@ -32,7 +39,15 @@ const skillGroups = [
   },
   {
     category: "DATABASES",
-    items: ["PostgreSQL", "MongoDB", "Redis", "Elasticsearch", "MySQL", "NOSQL", "Firebase"],
+    items: [
+      "PostgreSQL",
+      "MongoDB",
+      "Redis",
+      "Elasticsearch",
+      "MySQL",
+      "NOSQL",
+      "Firebase",
+    ],
   },
 ];
 
@@ -41,7 +56,7 @@ const SkillsSection = () => {
     <section className="skills" id="skills">
       <div className="skills__left">
         <iframe
-          src="/fluid-art.html?palette=ember"
+          src="/fluid-art.html?palette=gold"
           className="skills__fluid"
           title="Skills Fluid Art"
           loading="lazy"

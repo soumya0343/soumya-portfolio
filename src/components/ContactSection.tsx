@@ -12,7 +12,7 @@ const ContactSection = () => {
         />
       </div>
       <div className="contact__right">
-        <span className="contact__number">07</span>
+        <span className="contact__number">09</span>
         <h2 className="contact__title" data-reveal="up">
           Get in Touch
         </h2>

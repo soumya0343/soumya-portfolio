@@ -12,9 +12,18 @@ const CoCurricularSection = () => {
   return (
     <section className="cocurricular" id="cocurricular">
       <div className="cocurricular__left">
+        <iframe
+          src="/fluid-art.html?palette=warm"
+          className="cocurricular__fluid"
+          title="CoCurricular Fluid Art"
+          loading="lazy"
+        />
+      </div>
+      <div className="cocurricular__right">
         <span className="cocurricular__number">07</span>
         <h2 className="cocurricular__title" data-reveal="up">
-          Leadership &<br /> Activities
+          Leadership &<br />
+          Activities
         </h2>
         <p
           className="cocurricular__subtitle"
@@ -44,14 +53,6 @@ const CoCurricularSection = () => {
             </div>
           ))}
         </div>
-      </div>
-      <div className="cocurricular__right">
-        <iframe
-          src="/fluid-art.html?palette=warm"
-          className="cocurricular__fluid"
-          title="CoCurricular Fluid Art"
-          loading="lazy"
-        />
       </div>
     </section>
   );

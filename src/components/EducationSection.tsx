@@ -26,14 +26,6 @@ const EducationSection = () => {
   return (
     <section className="education" id="education">
       <div className="education__left">
-        <iframe
-          src="/fluid-art.html?palette=monochrome"
-          className="education__fluid"
-          title="Education Fluid Art"
-          loading="lazy"
-        />
-      </div>
-      <div className="education__right">
         <span className="education__number">06</span>
         <h2 className="education__title" data-reveal="up">
           Education
@@ -68,6 +60,14 @@ const EducationSection = () => {
             </div>
           ))}
         </div>
+      </div>
+      <div className="education__right">
+        <iframe
+          src="/fluid-art.html?palette=teal"
+          className="education__fluid"
+          title="Education Fluid Art"
+          loading="lazy"
+        />
       </div>
     </section>
   );

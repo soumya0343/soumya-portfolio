@@ -4,7 +4,7 @@ const BlogSection = () => {
   return (
     <section className="blog" id="blog">
       <div className="blog__left">
-        <span className="blog__number">07</span>
+        <span className="blog__number">08</span>
         <h2 className="blog__title" data-reveal="up">
           Blogs
         </h2>
