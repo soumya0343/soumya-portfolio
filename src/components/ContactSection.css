@@ -1,3 +1,5 @@
+/* ===== Contact Section — Terminal Theme ===== */
+
 .contact {
   display: grid;
   grid-template-columns: 38fr 62fr;
@@ -11,7 +13,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  }
+}
 
 .contact__fluid {
   width: 100%;
@@ -26,11 +28,9 @@
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   padding: 8rem 5rem 4rem;
-  }
+}
 
 /* Large faded section number */
 .contact__number {
@@ -59,10 +59,9 @@
 .contact__subtitle {
   font-family: var(--font-sans);
   font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+  font-weight: 400;
+  letter-spacing: 0.05em;
   color: var(--color-text-muted);
-  text-transform: uppercase;
   margin-bottom: 2.5rem;
 }
 
@@ -70,77 +69,230 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
-.contact__intro {
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  font-weight: 300;
-  line-height: 1.8;
-  color: rgba(var(--color-text-rgb), 0.5);
-  max-width: 440px;
+/* ===== Terminal Window ===== */
+
+.terminal {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.contact__links {
-  display: flex;
-  flex-direction: column;
-}
-
-.contact__link {
+/* Window Chrome Bar */
+.terminal__chrome {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.3rem 0;
-  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.05);
-  text-decoration: none;
-  transition: padding-left 0.3s ease;
+  padding: 0.8rem 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.contact__link:first-child {
-  border-top: 1px solid rgba(var(--color-text-rgb), 0.05);
+.terminal__dots {
+  display: flex;
+  gap: 7px;
 }
 
-.contact__link:hover {
-  padding-left: 1rem;
+.terminal__dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
 }
 
-.contact__link-label {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  color: rgba(var(--color-text-rgb), 0.3);
-  min-width: 120px;
+.terminal__dot--red {
+  background: #ff5f57;
+}
+.terminal__dot--yellow {
+  background: #febc2e;
+}
+.terminal__dot--green {
+  background: #28c840;
 }
 
-.contact__link-value {
-  font-family: var(--font-serif);
-  font-size: 1rem;
-  font-weight: 300;
-  color: var(--color-text);
+.terminal__path {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.03em;
+}
+
+/* Terminal Body */
+.terminal__body {
+  padding: 1.8rem 1.5rem 1.5rem;
+}
+
+/* Prompt Line */
+.terminal__prompt {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.terminal__arrow {
+  color: var(--color-accent);
+  font-size: 0.9rem;
+}
+
+.terminal__cmd {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+/* Input Fields — always dark inside terminal */
+.terminal__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.terminal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.terminal__field--full {
+  margin-bottom: 1rem;
+}
+
+.terminal__flag {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.terminal__input,
+.terminal__textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.82);
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.terminal__input::placeholder,
+.terminal__textarea::placeholder {
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.terminal__input:focus,
+.terminal__textarea:focus {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.terminal__input:disabled,
+.terminal__textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.terminal__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Submit Button */
+.terminal__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+}
+
+.terminal__submit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.terminal__submit:hover:not(:disabled) {
+  color: var(--color-accent-hover);
+  transform: translateX(4px);
+}
+
+.terminal__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.terminal__submit--sending {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.terminal__submit--success {
+  color: #28c840 !important;
+}
+
+.terminal__submit--error {
+  color: #ff5f57 !important;
+}
+
+.terminal__submit-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ===== Footer Meta ===== */
+
+.contact__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.contact__reply {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.7rem;
+  font-style: italic;
+  color: rgba(var(--color-text-rgb), 0.25);
+  letter-spacing: 0.02em;
+}
+
+.contact__socials {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.contact__social-link {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(var(--color-text-rgb), 0.3);
+  text-decoration: none;
+  letter-spacing: 0.04em;
   transition: color 0.3s ease;
 }
 
-.contact__link:hover .contact__link-value {
-  color: rgba(var(--color-text-rgb), 0.95);
-}
-
-.contact__link-arrow {
-  font-size: 1rem;
-  color: rgba(var(--color-text-rgb), 0.2);
-  transition:
-    transform 0.3s ease,
-    color 0.3s ease;
-}
-
-.contact__link:hover .contact__link-arrow {
-  transform: translateX(6px);
+.contact__social-link:hover {
   color: var(--color-text);
 }
+
+/* ===== Copyright Footer ===== */
 
 .contact__footer {
   margin-top: auto;
@@ -153,4 +305,71 @@
   font-weight: 400;
   letter-spacing: 0.08em;
   color: rgba(var(--color-text-rgb), 0.2);
+}
+
+/* ===== Light Mode ===== */
+
+[data-theme="light"] .terminal {
+  background: #f0ede8;
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="light"] .terminal__chrome {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .terminal__path {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .terminal__cmd {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="light"] .terminal__flag {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .terminal__input,
+[data-theme="light"] .terminal__textarea {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="light"] .terminal__input::placeholder,
+[data-theme="light"] .terminal__textarea::placeholder {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .terminal__input:focus,
+[data-theme="light"] .terminal__textarea:focus {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 768px) {
+  .contact {
+    grid-template-columns: 1fr;
+  }
+
+  .contact__left {
+    height: 30vh;
+  }
+
+  .contact__right {
+    padding: 3rem 1.5rem 2rem;
+  }
+
+  .terminal__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .contact__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
 }
