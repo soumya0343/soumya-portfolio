@@ -1,49 +1,179 @@
-.contact-cta {
+/* ===== Expandable Right-Edge Contact Panel ===== */
+
+.cta-panel {
   position: fixed;
-  bottom: 2rem;
-  right: 2.5rem;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 90;
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+/* ─── Tab (always visible) ─── */
+.cta-panel__tab {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
+  justify-content: center;
+  gap: 0.5rem;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 1.1rem 0.55rem;
+  background: var(--color-bg-subtle);
+  border: 1px solid rgba(var(--color-text-rgb), 0.08);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+  outline: none;
 }
 
-.contact-cta:hover {
-  transform: translateY(-3px);
+.cta-panel__tab:hover {
+  background: rgba(var(--color-text-rgb), 0.06);
+  border-color: rgba(var(--color-text-rgb), 0.14);
 }
 
-.contact-cta__text {
+.cta-panel__tab-text {
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
-  color: rgba(var(--color-text-rgb), 0.6);
-  transition: color 0.3s ease;
+  letter-spacing: 0.18em;
+  color: rgba(var(--color-text-rgb), 0.5);
+  transition: color 0.25s ease;
 }
 
-.contact-cta:hover .contact-cta__text {
+.cta-panel__tab:hover .cta-panel__tab-text,
+.cta-panel--open .cta-panel__tab-text {
   color: var(--color-text);
 }
 
-.contact-cta__dot {
-  width: 8px;
-  height: 8px;
+.cta-panel__dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--color-accent, #ff4400);
-  animation: contact-pulse 2s ease-in-out infinite;
+  background: var(--color-accent);
+  animation: cta-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
-@keyframes contact-pulse {
+@keyframes cta-pulse {
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
   50% {
-    transform: scale(1.4);
-    opacity: 0.6;
+    transform: scale(1.5);
+    opacity: 0.55;
   }
+}
+
+/* ─── Drawer ─── */
+.cta-panel__drawer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.4rem 1.2rem;
+  background: var(--color-bg-subtle);
+  border: 1px solid rgba(var(--color-text-rgb), 0.08);
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+
+  /* Hidden state: collapsed to the right */
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-width: 0;
+  transition:
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    padding 0.3s ease,
+    border-width 0.3s ease;
+}
+
+.cta-panel--open .cta-panel__drawer {
+  max-width: 180px;
+  opacity: 1;
+  padding: 1.4rem 1.2rem;
+  border-width: 1px;
+}
+
+.cta-panel__label {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(var(--color-text-rgb), 0.3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cta-panel__socials {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.cta-panel__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(var(--color-text-rgb), 0.35);
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cta-panel__icon:hover {
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.cta-panel__divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(var(--color-text-rgb), 0.07);
+}
+
+/* ─── Terminal Button ─── */
+.cta-panel__terminal-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.72rem;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cta-panel__terminal-btn:hover {
+  color: var(--color-accent-hover);
+  transform: translateX(3px);
+}
+
+.cta-panel__terminal-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ─── Light mode ─── */
+[data-theme="light"] .cta-panel__tab,
+[data-theme="light"] .cta-panel__drawer {
+  background: var(--color-bg-subtle);
+  border-color: rgba(var(--color-text-rgb), 0.1);
 }

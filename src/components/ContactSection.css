@@ -275,21 +275,24 @@
 
 .contact__socials {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
+  align-items: center;
 }
 
 .contact__social-link {
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: rgba(var(--color-text-rgb), 0.3);
   text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: color 0.3s ease;
+  transition:
+    color 0.25s ease,
+    transform 0.2s ease;
 }
 
 .contact__social-link:hover {
-  color: var(--color-text);
+  color: var(--color-accent);
+  transform: translateY(-2px);
 }
 
 /* ===== Copyright Footer ===== */

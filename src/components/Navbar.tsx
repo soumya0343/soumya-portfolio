@@ -1,16 +1,48 @@
 import { useState, useEffect } from "react";
 import "./Navbar.css";
 
+const NAV_SECTIONS = [
+  { id: "home", label: "HOME" },
+  { id: "manifesto", label: "ABOUT ME" },
+  { id: "work", label: "EXPERIENCE" },
+  { id: "works", label: "PROJECTS" },
+  { id: "skills", label: "SKILLS" },
+  { id: "blog", label: "BLOGS" },
+  { id: "contact", label: "CONTACT" },
+];
+
 const Navbar = () => {
   const [isLightMode, setIsLightMode] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
+  // Persist theme on mount
   useEffect(() => {
-    // Check local storage on mount
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") {
       setIsLightMode(true);
       document.documentElement.setAttribute("data-theme", "light");
     }
+  }, []);
+
+  // Track active section via IntersectionObserver
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    NAV_SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { threshold: 0.4 },
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((obs) => obs.disconnect());
   }, []);
 
   const toggleTheme = () => {
@@ -35,27 +67,15 @@ const Navbar = () => {
         <span className="navbar__brand-year">2026</span>
       </div>
       <div className="navbar__links">
-        <a href="#home" className="navbar__link navbar__link--active">
-          HOME
-        </a>
-        <a href="#manifesto" className="navbar__link">
-          PHILOSOPHY
-        </a>
-        <a href="#work" className="navbar__link">
-          EXPERIENCE
-        </a>
-        <a href="#works" className="navbar__link">
-          PROJECTS
-        </a>
-        <a href="#skills" className="navbar__link">
-          SKILLS
-        </a>
-        <a href="#blog" className="navbar__link">
-          BLOGS
-        </a>
-        <a href="#contact" className="navbar__link">
-          CONTACT
-        </a>
+        {NAV_SECTIONS.map(({ id, label }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className={`navbar__link${activeSection === id ? " navbar__link--active" : ""}`}
+          >
+            {label}
+          </a>
+        ))}
 
         {/* Theme Toggle Button */}
         <button

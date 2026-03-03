@@ -17,11 +17,12 @@ const HeroSection = () => {
           </span>
         </h1>
         <p className="hero__tagline" data-reveal="up" data-reveal-delay="2">
-          A Full-Stack Developer engineering scalable backends, automated
-          pipelines, and intelligent AI integrations.
+          Full-stack engineer. From architecting backends and data pipelines to
+          crafting pixel-perfect interfaces, I build products that work well and
+          feel even better.
         </p>
         <div className="hero__actions" data-reveal="up" data-reveal-delay="3">
-          <a href="#work" className="hero__cta">
+          <a href="#works" className="hero__cta">
             <span className="hero__cta-text">VIEW PROJECTS</span>
           </a>
           <a

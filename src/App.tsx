@@ -9,7 +9,7 @@ import ProjectsSection from "./components/ProjectsSection";
 import SkillsSection from "./components/SkillsSection";
 import BlogSection from "./components/BlogSection";
 import ContactSection from "./components/ContactSection";
-import ContactCTA from "./components/ContactCTA";
+
 import useScrollReveal from "./hooks/useScrollReveal";
 import { useState } from "react";
 import "./App.css";
@@ -21,7 +21,6 @@ function App() {
   return (
     <div className="app">
       {!isModalOpen && <Navbar />}
-      {!isModalOpen && <ContactCTA />}
 
       {/* Page 1: Hero */}
       <section className="app__section" id="home">

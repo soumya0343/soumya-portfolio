@@ -1,9 +1,12 @@
+/* ===== About Me (Philosophy) Section ===== */
+
 .philosophy {
   display: grid;
   grid-template-columns: 38fr 62fr;
   min-height: 100vh;
   width: 100%;
   position: relative;
+  overflow-x: hidden;
 }
 
 .philosophy__left {
@@ -11,7 +14,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  }
+}
 
 .philosophy__right {
   position: relative;
@@ -19,11 +22,9 @@
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 4rem 5rem;
-  }
+  padding: 5rem 5rem 3.5rem;
+  gap: 2.5rem;
+}
 
 /* Large faded section number */
 .philosophy__number {
@@ -33,32 +34,158 @@
   font-family: var(--font-serif);
   font-size: clamp(8rem, 14vw, 14rem);
   font-weight: 300;
-  color: rgba(var(--color-text-rgb), 0.06);
+  color: rgba(var(--color-text-rgb), 0.05);
   line-height: 1;
   pointer-events: none;
   user-select: none;
+}
+
+/* ─── Identity Block ─── */
+.philosophy__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.philosophy__index {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
 }
 
 .philosophy__title {
   font-family: var(--font-serif);
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 3.5vw, 3rem);
   letter-spacing: -0.01em;
-  margin-bottom: 2.5rem;
   color: var(--color-text);
+  margin: 0;
+  line-height: 1.1;
 }
 
-.philosophy__columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+.philosophy__tagline {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.philosophy__quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(var(--color-text-rgb), 0.5);
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1rem;
+  margin: 0;
+}
+
+/* ─── Core Focus ─── */
+.philosophy__focus {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.philosophy__section-label {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--color-text-rgb), 0.3);
+}
+
+.philosophy__focus-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.philosophy__focus-tag {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border: 1px solid rgba(var(--color-text-rgb), 0.1);
+  border-radius: 4px;
+  padding: 0.3rem 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+/* ─── Bio ─── */
+.philosophy__bio {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .philosophy__text {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 300;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--color-text-muted);
+  text-align: justify;
+}
+
+.philosophy__text--accent {
+  color: rgba(var(--color-text-rgb), 0.65);
+  font-style: italic;
+}
+
+/* ─── Beyond Engineering ─── */
+.philosophy__beyond {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(var(--color-text-rgb), 0.06);
+}
+
+/* ─── Social Icons ─── */
+.philosophy__socials {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.philosophy__social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(var(--color-text-rgb), 0.3);
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.philosophy__social-icon:hover {
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .philosophy {
+    grid-template-columns: 1fr;
+  }
+
+  .philosophy__left {
+    height: 30vh;
+  }
+
+  .philosophy__right {
+    padding: 3rem 1.5rem 2rem;
+  }
 }
