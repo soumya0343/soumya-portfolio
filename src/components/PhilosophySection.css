@@ -79,7 +79,7 @@
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 0.9rem;
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1.7;
   color: rgba(var(--color-text-rgb), 0.5);
   border-left: 2px solid var(--color-accent);
