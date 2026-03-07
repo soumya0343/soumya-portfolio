@@ -1,75 +1,82 @@
-# React + TypeScript + Vite
+# Soumya's Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive portfolio website built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://soumya-portfolio-nine.vercel.app/](https://soumya-portfolio-nine.vercel.app/)
 
-## React Compiler
+## Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **Immersive Design**: Cinematic portfolio with WebGL-powered fluid art and brutalist typography
+- **Interactive Experience**: Multi-threaded scroll animations with Intersection Observer API
+- **Dynamic Theming**: Dark and light mode support with CSS variables and iframe color inversion
+- **Responsive Layout**: Customized sidebar and layout for seamless experience across devices
+- **Performance Optimized**: Built with Vite and TypeScript for optimal bundle sizing and rapid hydration
 
-Note: This will impact Vite dev & build performances.
+## Technologies
 
-## Expanding the ESLint configuration
+- React + TypeScript
+- Vite (Build tool)
+- CSS-in-JS styling
+- Fluid canvas animations
+- Responsive design
+- WebGL for interactive visualizations
+- Intersection Observer API for scroll animations
+- Dynamic theming with CSS variables
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Project Sections
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The portfolio showcases:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Hero Section**: Personal introduction with call-to-action buttons
+- **Philosophy Section**: Professional philosophy and approach
+- **Experience Section**: Work experience with timeline layout and fluid animations
+- **Projects Section**: Interactive project showcase with modal details
+- **Skills Section**: Technical skills and competencies
+- **Education Section**: Academic background
+- **Co-Curricular Section**: Additional activities and achievements
+- **Blog Section**: Written content and insights
+- **Contact Section**: Contact information and form
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Highlights
+
+### Featured Projects
+
+1. **Zync** - Full-stack task, goal, and journaling application with Kanban board and nested task trees
+2. **Digital Portfolio** - This very portfolio with WebGL fluid art and cinematic design
+3. **CodeSentinel** - AI-powered code review extension for VS Code
+4. **StockWise** - Gamified investment platform for college students
+5. **Mandala Studio** - Interactive generative art creation tool
+6. **Infinite Canvas RPG** - Environmentally-themed roguelike game
+
+## Development
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Build
+
+```bash
+npm run build
+```
+
+### Preview
+
+```bash
+npm run preview
 ```
