@@ -151,17 +151,39 @@
   margin-bottom: 1.5rem;
 }
 
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .education {
+    grid-template-columns: 55fr 45fr;
+  }
+
+  .education__left {
+    padding: 6rem 3.5rem 3rem;
+  }
+}
+
 @media (max-width: 900px) {
   .education {
     grid-template-columns: 1fr;
   }
 
   .education__right {
-    min-height: 40vh;
+    height: 25vh;
+    min-height: auto;
+    order: -1;
   }
 
-  .education__right {
-    padding: 6rem 2rem;
+  .education__fluid {
+    min-height: auto;
+    height: 100%;
+  }
+
+  .education__left {
+    padding: 3rem 1.5rem;
+  }
+
+  .education__number {
+    font-size: 6rem;
   }
 }
 
@@ -169,5 +191,19 @@
   .education-item__header {
     flex-direction: column;
     gap: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .education__left {
+    padding: 2rem 1rem;
+  }
+
+  .education__right {
+    height: 20vh;
+  }
+
+  .education__subtitle {
+    margin-bottom: 2rem;
   }
 }

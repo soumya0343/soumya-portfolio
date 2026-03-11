@@ -106,3 +106,12 @@
 .get-in-touch:hover .get-in-touch__arrow {
   transform: translateX(3px);
 }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .sidenav,
+  .contact-rail,
+  .get-in-touch {
+    display: none;
+  }
+}

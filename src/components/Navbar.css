@@ -92,3 +92,117 @@
   color: var(--color-bg);
   border-color: transparent;
 }
+
+/* ===== Hamburger Button (hidden on desktop) ===== */
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 110;
+}
+
+.navbar__hamburger-line {
+  width: 22px;
+  height: 1.5px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animate to X when open */
+.navbar--menu-open .navbar__hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(4px, 5px);
+}
+.navbar--menu-open .navbar__hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.navbar--menu-open .navbar__hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -5px);
+}
+
+/* ===== Mobile Overlay ===== */
+.navbar__mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(var(--color-bg-rgb), 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  z-index: 105;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.navbar__mobile-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navbar__mobile-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navbar__mobile-link {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__mobile-link:hover,
+.navbar__mobile-link--active {
+  color: var(--color-text);
+}
+
+.navbar__mobile-link--active {
+  color: var(--color-accent);
+}
+
+.navbar__theme-toggle--mobile {
+  margin-top: 1rem;
+  width: 44px;
+  height: 44px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .navbar__links {
+    gap: 0.6rem;
+  }
+
+  .navbar__link {
+    font-size: 0.55rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar__links {
+    display: none;
+  }
+
+  .navbar__hamburger {
+    display: flex;
+  }
+}

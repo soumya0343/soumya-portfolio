@@ -14,6 +14,7 @@ const NAV_SECTIONS = [
 const Navbar = () => {
   const [isLightMode, setIsLightMode] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Persist theme on mount
   useEffect(() => {
@@ -45,6 +46,18 @@ const Navbar = () => {
     return () => observers.forEach((obs) => obs.disconnect());
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
   const toggleTheme = () => {
     setIsLightMode((prev) => {
       const newTheme = !prev;
@@ -59,13 +72,19 @@ const Navbar = () => {
     });
   };
 
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isMobileMenuOpen ? "navbar--menu-open" : ""}`}>
       <div className="navbar__brand">
         <span className="navbar__brand-text">PORTFOLIO</span>
         <span className="navbar__brand-divider">/</span>
         <span className="navbar__brand-year">2026</span>
       </div>
+
+      {/* Desktop Links */}
       <div className="navbar__links">
         {NAV_SECTIONS.map(({ id, label }) => (
           <a
@@ -100,6 +119,77 @@ const Navbar = () => {
             <svg
               width="16"
               height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {/* Hamburger Button (mobile only, shown via CSS) */}
+      <button
+        className="navbar__hamburger"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isMobileMenuOpen}
+      >
+        <span className="navbar__hamburger-line" />
+        <span className="navbar__hamburger-line" />
+        <span className="navbar__hamburger-line" />
+      </button>
+
+      {/* Mobile Overlay */}
+      <div
+        className={`navbar__mobile-overlay ${isMobileMenuOpen ? "navbar__mobile-overlay--open" : ""}`}
+      >
+        <div className="navbar__mobile-links">
+          {NAV_SECTIONS.map(({ id, label }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              className={`navbar__mobile-link${activeSection === id ? " navbar__mobile-link--active" : ""}`}
+              onClick={handleMobileLinkClick}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+        <button
+          onClick={toggleTheme}
+          className="navbar__theme-toggle navbar__theme-toggle--mobile"
+          aria-label="Toggle theme"
+        >
+          {isLightMode ? (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          ) : (
+            <svg
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

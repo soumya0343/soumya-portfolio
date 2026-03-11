@@ -176,16 +176,41 @@
 }
 
 /* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .philosophy {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .philosophy__right {
+    padding: 4rem 3.5rem 3rem;
+  }
+}
+
 @media (max-width: 768px) {
   .philosophy {
     grid-template-columns: 1fr;
   }
 
   .philosophy__left {
-    height: 30vh;
+    height: 25vh;
   }
 
   .philosophy__right {
     padding: 3rem 1.5rem 2rem;
+  }
+
+  .philosophy__number {
+    font-size: 6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .philosophy__right {
+    padding: 2rem 1rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .philosophy__left {
+    height: 20vh;
   }
 }

@@ -177,3 +177,10 @@
   background: var(--color-bg-subtle);
   border-color: rgba(var(--color-text-rgb), 0.1);
 }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cta-panel {
+    display: none;
+  }
+}

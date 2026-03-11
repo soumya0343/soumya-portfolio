@@ -11,7 +11,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  }
+}
 
 .skills__fluid {
   width: 100%;
@@ -30,7 +30,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 4rem 5rem;
-  }
+}
 
 /* Large faded section number */
 .skills__number {
@@ -113,4 +113,53 @@
   background: rgba(var(--color-text-rgb), 0.08);
   color: rgba(var(--color-text-rgb), 0.95);
   border-color: rgba(var(--color-text-rgb), 0.15);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .skills {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .skills__right {
+    padding: 3rem 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .skills {
+    grid-template-columns: 1fr;
+  }
+
+  .skills__left {
+    height: 25vh;
+    min-height: auto;
+  }
+
+  .skills__fluid {
+    min-height: auto;
+    height: 100%;
+  }
+
+  .skills__right {
+    padding: 3rem 1.5rem;
+  }
+
+  .skills__number {
+    font-size: 6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .skills__right {
+    padding: 2rem 1rem;
+  }
+
+  .skills__left {
+    height: 20vh;
+  }
+
+  .skills__subtitle {
+    margin-bottom: 2rem;
+  }
 }

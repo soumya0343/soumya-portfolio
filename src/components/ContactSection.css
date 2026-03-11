@@ -353,13 +353,28 @@
 
 /* ===== Responsive ===== */
 
+@media (max-width: 1024px) {
+  .contact {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .contact__right {
+    padding: 6rem 3.5rem 3rem;
+  }
+}
+
 @media (max-width: 768px) {
   .contact {
     grid-template-columns: 1fr;
   }
 
   .contact__left {
-    height: 30vh;
+    height: 25vh;
+  }
+
+  .contact__fluid {
+    min-height: auto;
+    height: 100%;
   }
 
   .contact__right {
@@ -374,5 +389,27 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.8rem;
+  }
+
+  .contact__number {
+    font-size: 6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact__right {
+    padding: 2rem 1rem;
+  }
+
+  .contact__left {
+    height: 20vh;
+  }
+
+  .terminal__body {
+    padding: 1.2rem 1rem;
+  }
+
+  .contact__subtitle {
+    margin-bottom: 1.5rem;
   }
 }

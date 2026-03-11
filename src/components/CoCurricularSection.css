@@ -163,17 +163,38 @@
   border-radius: 50%;
 }
 
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .cocurricular {
+    grid-template-columns: 45fr 55fr;
+  }
+
+  .cocurricular__right {
+    padding: 6rem 3.5rem 3rem;
+  }
+}
+
 @media (max-width: 900px) {
   .cocurricular {
     grid-template-columns: 1fr;
   }
 
   .cocurricular__left {
-    min-height: 40vh;
+    height: 25vh;
+    min-height: auto;
+  }
+
+  .cocurricular__fluid {
+    min-height: auto;
+    height: 100%;
   }
 
   .cocurricular__right {
-    padding: 6rem 2rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .cocurricular__number {
+    font-size: 6rem;
   }
 }
 
@@ -181,5 +202,19 @@
   .cocurricular-item__header {
     flex-direction: column;
     gap: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cocurricular__right {
+    padding: 2rem 1rem;
+  }
+
+  .cocurricular__left {
+    height: 20vh;
+  }
+
+  .cocurricular__subtitle {
+    margin-bottom: 2rem;
   }
 }
