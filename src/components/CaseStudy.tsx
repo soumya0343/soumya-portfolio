@@ -109,62 +109,62 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
       {TopBar}
 
       <header className="pj-hero">
-        <div className="pj-wrap">
-          <div className="pj-cat rv">{p.cat}</div>
-          <h1 className="pj-title rv" data-d="1">
-            {p.title}
-          </h1>
-          <p className="pj-one rv" data-d="2">
-            {p.one}
-          </p>
-          <div className="pj-actions rv" data-d="3">
-            {p.link && (
-              <a className="btn btn--primary" href={p.link} target="_blank" rel="noopener noreferrer">
-                View Repo ↗
-              </a>
-            )}
-            <button className="btn btn--ghost" onClick={onBack} style={{ background: "none" }}>
-              ← All Projects
-            </button>
+        <div className="pj-wrap pj-hero__grid">
+          <div className="pj-hero__text">
+            <div className="pj-cat rv">{p.cat}</div>
+            <h1 className="pj-title rv" data-d="1">
+              {p.title}
+            </h1>
+            <p className="pj-one rv" data-d="2">
+              {p.one}
+            </p>
+            <div className="pj-actions rv" data-d="3">
+              {p.link && (
+                <a className="btn btn--primary" href={p.link} target="_blank" rel="noopener noreferrer">
+                  View Repo ↗
+                </a>
+              )}
+              <button className="btn btn--ghost" onClick={onBack} style={{ background: "none" }}>
+                ← All Projects
+              </button>
+            </div>
+            <div className="pj-meta rv" data-d="4">
+              <div className="pj-meta__cell">
+                <div className="pj-meta__k">Role</div>
+                <div className="pj-meta__v">{d.role || "—"}</div>
+              </div>
+              <div className="pj-meta__cell">
+                <div className="pj-meta__k">Type</div>
+                <div className="pj-meta__v">{d.type || p.cat}</div>
+              </div>
+              <div className="pj-meta__cell">
+                <div className="pj-meta__k">Stack</div>
+                <div className="pj-meta__v">{stack}</div>
+              </div>
+            </div>
           </div>
-          <div className="pj-meta rv" data-d="4">
-            <div className="pj-meta__cell">
-              <div className="pj-meta__k">Role</div>
-              <div className="pj-meta__v">{d.role || "—"}</div>
+
+          <div className="pj-shot rv" id="pjShot">
+            <div className="pj-shot__chrome">
+              <span style={{ display: "flex", gap: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#e5383b" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#b1a7a6" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#d3d3d3" }} />
+              </span>
+              <span className="pj-shot__url">soumya.dev/work/{p.slug}</span>
             </div>
-            <div className="pj-meta__cell">
-              <div className="pj-meta__k">Type</div>
-              <div className="pj-meta__v">{d.type || p.cat}</div>
-            </div>
-            <div className="pj-meta__cell">
-              <div className="pj-meta__k">Stack</div>
-              <div className="pj-meta__v">{stack}</div>
+            <div className="pj-shot__img">
+              {p.image ? (
+                <img src={p.image} alt={`${p.title} screenshot`} loading="eager" />
+              ) : (
+                <div className="pj-shot__ph">
+                  <span>// {p.title} · preview</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </header>
-
-      <div className="pj-wrap">
-        <div className="pj-shot rv" id="pjShot">
-          <div className="pj-shot__chrome">
-            <span style={{ display: "flex", gap: 6 }}>
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#e5383b" }} />
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#b1a7a6" }} />
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#d3d3d3" }} />
-            </span>
-            <span className="pj-shot__url">soumya.dev/work/{p.slug}</span>
-          </div>
-          <div className="pj-shot__img">
-            {p.image ? (
-              <img src={p.image} alt={`${p.title} screenshot`} loading="eager" />
-            ) : (
-              <div className="pj-shot__ph">
-                <span>// {p.title} · preview</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       <main className="pj-wrap" aria-label="Case study">
         {d.overview && (

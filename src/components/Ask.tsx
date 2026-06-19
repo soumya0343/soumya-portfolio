@@ -1,23 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { AGENT_KB, AGENT_FALLBACK, type KBItem } from "../data/portfolio";
+import { AGENT_KB, AGENT_FALLBACK } from "../data/portfolio";
 
-interface ToolChip {
-  name: string;
-  done: boolean;
-}
 interface Msg {
   id: number;
   role: "user" | "bot";
   text: string;
-  tools: ToolChip[];
   typing: boolean;
 }
 
-const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+const GREETING = "Hi — I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
+const SUGGESTIONS = AGENT_KB.map((k) => k.q);
 
-function match(text: string): KBItem | null {
+/** Scripted fallback used when the live model is unreachable / over quota / not configured. */
+function fallbackAnswer(text: string): string {
   const t = text.toLowerCase();
-  let best: KBItem | null = null;
+  let best: (typeof AGENT_KB)[number] | null = null;
   let score = 0;
   for (const item of AGENT_KB) {
     let s = 0;
@@ -27,18 +24,16 @@ function match(text: string): KBItem | null {
       best = item;
     }
   }
-  return score > 0 ? best : null;
+  return best ? best.a : AGENT_FALLBACK;
 }
 
 export default function Ask() {
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const [messages, setMessages] = useState<Msg[]>([{ id: 0, role: "bot", text: GREETING, typing: false }]);
   const [field, setField] = useState("");
-  const [showSuggest, setShowSuggest] = useState(false);
   const streamRef = useRef<HTMLDivElement>(null);
   const busyRef = useRef(false);
-  const autoTimer = useRef<number | null>(null);
   const idRef = useRef(0);
-  const reduce = useRef(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const historyRef = useRef<{ role: "user" | "assistant"; content: string }[]>([]);
 
   const scrollDown = () => {
     const s = streamRef.current;
@@ -49,90 +44,50 @@ export default function Ask() {
   const update = (id: number, patch: (m: Msg) => Msg) =>
     setMessages((prev) => prev.map((m) => (m.id === id ? patch(m) : m)));
 
-  const addUser = (text: string) => {
+  const add = (role: "user" | "bot", text: string, typing = false) => {
     const id = ++idRef.current;
-    setMessages((prev) => [...prev, { id, role: "user", text, tools: [], typing: false }]);
-    return id;
-  };
-  const addAgentShell = () => {
-    const id = ++idRef.current;
-    setMessages((prev) => [...prev, { id, role: "bot", text: "", tools: [], typing: true }]);
+    setMessages((prev) => [...prev, { id, role, text, typing }]);
     return id;
   };
 
-  async function runTools(id: number, tools: string[]) {
-    for (const name of tools) {
-      update(id, (m) => ({ ...m, tools: [...m.tools, { name, done: false }] }));
-      scrollDown();
-      await sleep(reduce.current ? 60 : 480);
-      update(id, (m) => ({
-        ...m,
-        tools: m.tools.map((tc) => (tc.name === name ? { ...tc, done: true } : tc)),
-      }));
-      await sleep(reduce.current ? 40 : 180);
-    }
-  }
-
-  async function streamText(id: number, text: string) {
-    update(id, (m) => ({ ...m, typing: false, text: "" }));
-    if (reduce.current) {
-      update(id, (m) => ({ ...m, text }));
-      scrollDown();
-      return;
-    }
-    const words = text.split(" ");
-    let acc = "";
-    for (let i = 0; i < words.length; i++) {
-      acc += (i ? " " : "") + words[i];
-      const snapshot = acc;
-      update(id, (m) => ({ ...m, text: snapshot }));
-      scrollDown();
-      await sleep(18 + Math.random() * 26);
-    }
-  }
-
-  async function ask(item: KBItem | null, userText?: string) {
-    if (busyRef.current) return;
+  async function ask(text: string) {
+    const q = text.trim();
+    if (!q || busyRef.current) return;
     busyRef.current = true;
     setField("");
-    addUser(userText || (item ? item.q : ""));
-    await sleep(reduce.current ? 60 : 320);
-    const id = addAgentShell();
-    await sleep(reduce.current ? 60 : 520);
-    const data = item || { tools: ["query_profile"], a: AGENT_FALLBACK };
-    await runTools(id, data.tools);
-    await streamText(id, data.a);
+
+    add("user", q);
+    const history = historyRef.current.slice();
+    historyRef.current.push({ role: "user", content: q });
+    const id = add("bot", "", true);
+
+    let acc = "";
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ message: q, history }),
+      });
+      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        const snapshot = acc;
+        update(id, (m) => ({ ...m, typing: false, text: snapshot }));
+        scrollDown();
+      }
+    } catch {
+      /* network / quota / not-configured — fall through to the scripted answer below */
+    }
+
+    const answer = acc.trim() || fallbackAnswer(q);
+    update(id, (m) => ({ ...m, typing: false, text: answer }));
+    historyRef.current.push({ role: "assistant", content: answer });
     busyRef.current = false;
   }
-
-  const stopAuto = () => {
-    if (autoTimer.current) {
-      clearTimeout(autoTimer.current);
-      autoTimer.current = null;
-    }
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-    setMessages([]);
-    (async () => {
-      const id = addAgentShell();
-      await sleep(reduce.current ? 60 : 500);
-      if (cancelled) return;
-      await streamText(id, "Hi — I'm Soumya's agent. Ask me anything about her work, or tap a question below.");
-      setShowSuggest(true);
-      if (!reduce.current) {
-        autoTimer.current = window.setTimeout(() => {
-          if (!busyRef.current) ask(AGENT_KB[0]);
-        }, 2600);
-      }
-    })();
-    return () => {
-      cancelled = true;
-      stopAuto();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <section id="ask" className="ask">
@@ -145,13 +100,13 @@ export default function Ask() {
         <div className="ask__grid">
           <div className="ask__lead rv">
             <p className="ask__copy">
-              Don't want to read the whole page? <b>Interrogate the agent.</b> It's a small on-device model that knows
-              my projects, experience, and results — ask it anything, or tap a question.
+              Don't want to read the whole page? <b>Interrogate the agent.</b> It's an LLM that knows my projects,
+              experience, and results — ask it anything, or tap a question.
             </p>
             <ul className="ask__feat">
               <li>Answers about AI, backend, frontend &amp; impact</li>
-              <li>Shows its tool calls as it reasons</li>
-              <li>Runs entirely in your browser — no network</li>
+              <li>Streams its answer token by token</li>
+              <li>Grounded in my real projects &amp; results</li>
             </ul>
           </div>
           <div className="ask__panel rv" data-d="1">
@@ -168,7 +123,7 @@ export default function Ask() {
                 </span>
                 <span className="agent__id">
                   <span className="agent__name">soumya.agent</span>
-                  <span className="agent__model">llm · function-calling · streaming</span>
+                  <span className="agent__model">llm · streaming · grounded</span>
                 </span>
                 <span className="agent__status">
                   <span className="hero__dot" /> online
@@ -187,20 +142,6 @@ export default function Ask() {
                         ◆
                       </span>
                       <div className="ag-body">
-                        <div className="ag-tools">
-                          {m.tools.map((tc, i) => (
-                            <span className={`ag-tool${tc.done ? " done" : ""}`} key={i}>
-                              {tc.done ? (
-                                <svg className="ag-tool-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              ) : (
-                                <span className="ag-tool-spin" />
-                              )}
-                              <code>{tc.name}</code>
-                            </span>
-                          ))}
-                        </div>
                         <div className="ag-bubble">
                           {m.typing ? (
                             <span className="ag-typing">
@@ -219,20 +160,11 @@ export default function Ask() {
               </div>
 
               <div className="agent__suggest" id="agentSuggest">
-                {showSuggest &&
-                  AGENT_KB.map((item) => (
-                    <button
-                      type="button"
-                      className="ag-chip"
-                      key={item.q}
-                      onClick={() => {
-                        stopAuto();
-                        ask(item);
-                      }}
-                    >
-                      {item.q}
-                    </button>
-                  ))}
+                {SUGGESTIONS.map((q) => (
+                  <button type="button" className="ag-chip" key={q} onClick={() => ask(q)}>
+                    {q}
+                  </button>
+                ))}
               </div>
 
               <form
@@ -240,10 +172,7 @@ export default function Ask() {
                 id="agentForm"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const v = field.trim();
-                  if (!v || busyRef.current) return;
-                  stopAuto();
-                  ask(match(v), v);
+                  ask(field);
                 }}
               >
                 <span className="agent__caret" aria-hidden="true">
@@ -257,7 +186,6 @@ export default function Ask() {
                   aria-label="Ask the agent about Soumya"
                   value={field}
                   onChange={(e) => setField(e.target.value)}
-                  onFocus={stopAuto}
                 />
                 <button type="submit" className="agent__send" aria-label="Send">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
