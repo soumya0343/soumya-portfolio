@@ -13,6 +13,7 @@ import CaseStudy from "./components/CaseStudy";
 import Splash from "./components/Splash";
 import { useTheme } from "./hooks/useTheme";
 import { useScrollReveal } from "./hooks/useScrollReveal";
+import { usePageTime } from "./hooks/usePageTime";
 
 function readSlug(): string | null {
   return new URLSearchParams(window.location.search).get("id");
@@ -43,6 +44,9 @@ export default function App() {
 
   // Reveal-on-scroll re-binds whenever the route changes.
   useScrollReveal([slug]);
+
+  // Report active time-on-page per route to Vercel Analytics.
+  usePageTime(slug === null ? "home" : `case:${slug}`);
 
   if (slug !== null) {
     return <CaseStudy slug={slug} onBack={back} onNavigate={openCase} onToggleTheme={toggleTheme} />;

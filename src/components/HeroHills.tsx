@@ -92,12 +92,18 @@ const FRAGMENT = `
   precision highp float;
   #define GLSLIFY 1
   varying vec3 vPosition;
+  uniform vec3 uColor;
   void main(void) {
     float opacity = (96.0 - length(vPosition)) / 256.0 * 0.7;
-    vec3 color = vec3(0.90, 0.22, 0.23);
-    gl_FragColor = vec4(color, opacity);
+    gl_FragColor = vec4(uColor, opacity);
   }
 `;
+
+// Hill red per theme — darker, deeper red in light mode for contrast against the pale page.
+const COLOR_DARK = new THREE.Vector3(0.9, 0.22, 0.23);
+const COLOR_LIGHT = new THREE.Vector3(0.62, 0.1, 0.12);
+const hillColor = () =>
+  document.documentElement.getAttribute("data-theme") === "light" ? COLOR_LIGHT : COLOR_DARK;
 
 export default function HeroHills() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -127,7 +133,14 @@ export default function HeroHills() {
     camera.lookAt(new THREE.Vector3(0, 28, 0));
 
     const clock = new THREE.Clock();
-    const uniforms = { time: { value: 0 } };
+    const uniforms = { time: { value: 0 }, uColor: { value: hillColor().clone() } };
+
+    // Re-tint when the user toggles light/dark.
+    const themeObserver = new MutationObserver(() => {
+      uniforms.uColor.value.copy(hillColor());
+      if (!running) renderer.render(scene, camera); // refresh even while paused
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     const material = new THREE.RawShaderMaterial({
       uniforms,
@@ -181,6 +194,7 @@ export default function HeroHills() {
     return () => {
       running = false;
       cancelAnimationFrame(rafId);
+      themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);
       mesh.geometry.dispose();

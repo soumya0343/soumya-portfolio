@@ -9,10 +9,12 @@ export default function Skills() {
           <h2 className="sec-head__title">Skills</h2>
           <span className="sec-head__sub">TOOLS &amp; TECHNOLOGIES</span>
         </div>
-        <div className="skills__grid" id="skillsGrid">
-          {SKILLS.map((g) => (
-            <div className="skills__col" key={g.cat}>
-              <div className="skills__cat">{g.cat}</div>
+        <div className="skills__list" id="skillsGrid">
+          {SKILLS.map((g, i) => (
+            <div className="skills__row rv" data-d={String(Math.min(i + 1, 4))} key={g.cat}>
+              <div className="skills__rowhead">
+                <span className="skills__cat">{g.cat}</span>
+              </div>
               <div className="skills__items">
                 {g.items.map((it) => (
                   <div className="skills__item" key={it}>

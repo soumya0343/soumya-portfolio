@@ -62,6 +62,13 @@ export interface Leadership {
 
 export const RESUME_URL = "/resume.pdf";
 
+export const CONTACT = {
+  email: "soumya0343@gmail.com",
+  linkedin: "https://www.linkedin.com/in/soumya-gupta-9bb270263",
+  github: "https://github.com/soumya0343",
+  x: "https://x.com/soumyaa0343",
+};
+
 /** Projects the AI agent should know about but that aren't shown as cards on the page. */
 export interface OtherProject {
   title: string;
@@ -454,7 +461,7 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["React", "TypeScript", "Vite", "WebGL"],
     link: "https://github.com/soumya0343/soumya-portfolio",
-    image: "/assets/projects/portfolio-preview.jpg",
+    image: "/assets/projects/portfolio-preview.png",
     deepdive: {
       role: "Solo — design & build",
       type: "Creative portfolio",

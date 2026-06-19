@@ -30,9 +30,10 @@ export default function Contact() {
   const timers = useRef<number[]>([]);
   const year = new Date().getFullYear();
 
+  const [sending, setSending] = useState(false);
   const reset = (delay: number) => timers.current.push(window.setTimeout(() => setLabel("›_ ./execute_send"), delay));
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -41,12 +42,30 @@ export default function Contact() {
       reset(2400);
       return;
     }
-    setLabel("›_ [ opening mail client... ]");
-    const subject = encodeURIComponent(`Portfolio message from ${name.trim()}`);
-    const body = encodeURIComponent(`${msg.trim()}\n\n— ${name.trim()} (${email.trim()})`);
-    window.location.href = `mailto:soumya0343@gmail.com?subject=${subject}&body=${body}`;
-    timers.current.push(window.setTimeout(() => setLabel("›_ [ message ready ✓ ]"), 600));
-    reset(3600);
+    if (sending) return;
+    setSending(true);
+    setLabel("›_ [ sending... ]");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: msg.trim() }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error || `HTTP ${res.status}`);
+      }
+      setName("");
+      setEmail("");
+      setMsg("");
+      setLabel("›_ [ message sent ✓ ]");
+      reset(4000);
+    } catch (err) {
+      setLabel(`›_ [ ${err instanceof Error ? err.message : "send failed"} ]`);
+      reset(4000);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -114,7 +133,7 @@ export default function Contact() {
                   <label htmlFor="cMsg">--MESSAGE</label>
                   <textarea id="cMsg" rows={5} placeholder="Let's build something..." required value={msg} onChange={(e) => setMsg(e.target.value)} />
                 </div>
-                <button type="submit" className="term__submit" id="cSubmit">
+                <button type="submit" className="term__submit" id="cSubmit" disabled={sending}>
                   {label}
                 </button>
               </form>

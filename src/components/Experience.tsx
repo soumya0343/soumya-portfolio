@@ -3,35 +3,62 @@ import { EXPERIENCE } from "../data/portfolio";
 
 export default function Experience() {
   const fillRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const spineRef = useRef<HTMLDivElement>(null);
+  const roadmapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
+    const roadmap = roadmapRef.current;
+    const spine = spineRef.current;
     const fill = fillRef.current;
-    if (!section || !fill) return;
+    if (!roadmap || !spine || !fill) return;
+
+    // Span the spine exactly from the first dot's center to the last dot's,
+    // so the line never overshoots the circles top or bottom.
+    const layout = () => {
+      const dots = roadmap.querySelectorAll<HTMLElement>(".rm-dot");
+      if (!dots.length) return;
+      const rTop = roadmap.getBoundingClientRect().top;
+      const first = dots[0].getBoundingClientRect();
+      const last = dots[dots.length - 1].getBoundingClientRect();
+      const top = first.top - rTop + first.height / 2;
+      const bottom = last.top - rTop + last.height / 2;
+      spine.style.top = `${top}px`;
+      spine.style.bottom = "auto";
+      spine.style.height = `${Math.max(0, bottom - top)}px`;
+    };
+    layout();
+    const t = window.setTimeout(layout, 300);
+
+    let filled = false;
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          fill.style.height = "100%";
-          io.disconnect();
+        if (entries[0].isIntersecting && !filled) {
+          filled = true;
+          // double rAF: ensure the 0% height paints before transitioning to 100%
+          requestAnimationFrame(() => requestAnimationFrame(() => (fill.style.height = "100%")));
         }
       },
       { threshold: 0.1 },
     );
-    io.observe(section);
-    return () => io.disconnect();
+    io.observe(roadmap);
+    window.addEventListener("resize", layout);
+    return () => {
+      io.disconnect();
+      window.removeEventListener("resize", layout);
+      clearTimeout(t);
+    };
   }, []);
 
   return (
-    <section id="experience" className="exp" ref={sectionRef}>
+    <section id="experience" className="exp">
       <div className="wrap">
         <div className="sec-head rv">
           <span className="sec-head__num">03</span>
           <h2 className="sec-head__title">Experience</h2>
           <span className="sec-head__sub">FOUR ROLES · PRODUCTION SYSTEMS</span>
         </div>
-        <div className="roadmap" id="expList">
-          <div className="rm-spine">
+        <div className="roadmap" id="expList" ref={roadmapRef}>
+          <div className="rm-spine" ref={spineRef}>
             <div className="rm-spine__fill" ref={fillRef} />
           </div>
           {EXPERIENCE.map((x, i) => {

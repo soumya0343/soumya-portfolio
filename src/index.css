@@ -189,6 +189,20 @@ img { display: block; max-width: 100%; }
 }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
 
+/* hairline divider between sections (inset to content width) */
+.main > section + section::before {
+  content: "";
+  display: block;
+  height: 1px;
+  width: min(calc(100% - var(--pad) * 2), var(--maxw));
+  margin: 0 auto clamp(48px, 7vh, 80px);
+  background: var(--line-2);
+}
+
+/* no hairline directly before or after the Proof band */
+.main > .proof::before,
+.main > .proof + section::before { content: none; }
+
 section { position: relative; scroll-margin-top: 28px; }
 
 /* section header shared */
@@ -481,19 +495,62 @@ section { position: relative; scroll-margin-top: 28px; }
 /* =========================================================================
    SKILLS
    ========================================================================= */
-.skills { padding: clamp(70px, 11vh, 120px) 0; }
-.skills__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-.skills__col { background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; transition: border-color .25s var(--ease), transform .25s var(--ease); }
-.skills__col:hover { border-color: var(--line-2); transform: translateY(-2px); }
-.skills__cat { display: flex; align-items: center; gap: 9px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; }
-.skills__cat::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: currentColor; box-shadow: 0 0 10px 0 currentColor; flex: none; }
-.skills__items { display: flex; flex-wrap: wrap; gap: 8px; }
-.skills__item {
-  font-family: var(--f-mono); font-size: 12px; color: var(--text-2);
-  background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 11px;
-  transition: color .2s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
+.skills { padding: clamp(44px, 7vh, 80px) 0; }
+.skills__list {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  background: var(--bg-2); box-shadow: var(--shadow);
 }
-.skills__item:hover { color: var(--text); border-color: var(--line-2); background: var(--bg-3); }
+.skills__row {
+  display: grid; grid-template-columns: 150px 1fr; gap: clamp(16px, 2vw, 28px); align-items: start;
+  padding: clamp(16px, 1.8vw, 22px) clamp(18px, 2.2vw, 26px);
+  border-top: 1px solid var(--line);
+  transition: background-color .25s var(--ease);
+}
+/* top of each column has no top rule; right column gets a divider */
+.skills__row:nth-child(1), .skills__row:nth-child(2) { border-top: none; }
+.skills__row:nth-child(even) { border-left: 1px solid var(--line); }
+.skills__row:hover { background: color-mix(in oklab, var(--accent) 5%, transparent); }
+
+.skills__rowhead { display: flex; flex-direction: column; gap: 5px; padding-top: 3px; }
+.skills__cat {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--f-display); font-weight: 600; font-size: clamp(14px, 1.3vw, 16px);
+  letter-spacing: -0.01em; color: var(--text); line-height: 1.2;
+}
+.skills__cat::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 12px 0 var(--accent); flex: none; }
+.skills__count { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-left: 16px; }
+
+.skills__items { display: flex; flex-wrap: wrap; gap: 7px; }
+.skills__item {
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--text-2);
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 11px;
+  opacity: 0; transform: translateY(9px);
+  transition: color .18s var(--ease), border-color .18s var(--ease), background-color .18s var(--ease), opacity .4s var(--ease), transform .4s var(--ease);
+}
+/* chips cascade in once the row reveals */
+.skills__row.in .skills__item { opacity: 1; transform: none; }
+.skills__row.in .skills__item:nth-child(1) { transition-delay: .04s; }
+.skills__row.in .skills__item:nth-child(2) { transition-delay: .09s; }
+.skills__row.in .skills__item:nth-child(3) { transition-delay: .14s; }
+.skills__row.in .skills__item:nth-child(4) { transition-delay: .19s; }
+.skills__row.in .skills__item:nth-child(5) { transition-delay: .24s; }
+.skills__row.in .skills__item:nth-child(6) { transition-delay: .29s; }
+.skills__row.in .skills__item:nth-child(7) { transition-delay: .34s; }
+.skills__row.in .skills__item:nth-child(n+8) { transition-delay: .39s; }
+.skills__item:hover { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); transform: translateY(-2px); transition-delay: 0s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .skills__item { opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 760px) {
+  .skills__list { grid-template-columns: 1fr; }
+  .skills__row { grid-template-columns: 130px 1fr; }
+  .skills__row:nth-child(2) { border-top: 1px solid var(--line); }
+  .skills__row:nth-child(even) { border-left: none; }
+}
 
 /* =========================================================================
    BACKGROUND (education + leadership)
@@ -633,6 +690,7 @@ section { position: relative; scroll-margin-top: 28px; }
   .hero__cta { width: 100%; }
   .btn { flex: 1; justify-content: center; }
   .agent { height: 420px; }
+  .ask .agent { height: 460px; }
 }
 
 
@@ -984,12 +1042,12 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .proof__cell:nth-child(3) .proof__num .u { color: var(--c5); }
 .proof__cell:nth-child(4) .proof__num .u { color: var(--c6); }
 
-.skills__col:nth-child(1) .skills__cat { color: var(--c1); }
-.skills__col:nth-child(2) .skills__cat { color: var(--c3); }
-.skills__col:nth-child(3) .skills__cat { color: var(--c6); }
-.skills__col:nth-child(4) .skills__cat { color: var(--c1); }
-.skills__col:nth-child(5) .skills__cat { color: var(--c3); }
-.skills__col:nth-child(6) .skills__cat { color: var(--c6); }
+.skills__row:nth-child(3n+1) .skills__cat::before { background: var(--c1); box-shadow: 0 0 12px 0 var(--c1); }
+.skills__row:nth-child(3n+2) .skills__cat::before { background: var(--c3); box-shadow: 0 0 12px 0 var(--c3); }
+.skills__row:nth-child(3n)   .skills__cat::before { background: var(--c6); box-shadow: 0 0 12px 0 var(--c6); }
+.skills__row:nth-child(3n+1) .skills__item:hover { background: var(--c1); border-color: var(--c1); }
+.skills__row:nth-child(3n+2) .skills__item:hover { background: var(--c3); border-color: var(--c3); }
+.skills__row:nth-child(3n)   .skills__item:hover { background: var(--c6); border-color: var(--c6); }
 
 /* about chips get a quiet rainbow */
 .about__chips .chip:nth-child(1) { border-color: color-mix(in oklab, var(--c1) 45%, var(--line)); color: color-mix(in oklab, var(--c1) 60%, var(--text)); }
@@ -1258,7 +1316,42 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .ask__feat { list-style: none; margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
 .ask__feat li { position: relative; padding-left: 22px; font-family: var(--f-mono); font-size: 12.5px; color: var(--text-2); letter-spacing: 0.01em; }
 .ask__feat li::before { content: "▸"; position: absolute; left: 0; color: var(--c2); }
-.ask .agent { height: 480px; }
+.ask .agent { height: 600px; }
+
+/* ---- Ask section · color injection ---- */
+.ask__copy b { color: var(--accent); }
+.ask__feat li::before { color: var(--accent); }
+
+/* panel: subtle accent-tinted gradient */
+.ask .agent {
+  background: linear-gradient(165deg, color-mix(in oklab, var(--accent) 6%, var(--bg-2)), var(--bg-2) 55%);
+  border-color: color-mix(in oklab, var(--accent) 18%, var(--line));
+  box-shadow: var(--shadow);
+}
+.ask .agent__bar { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.ask .agent__avatar { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 18px -4px var(--accent); }
+
+/* bot bubble: neutral grey (clearly distinct from the red user bubble) */
+.ask .ag-msg--bot .ag-bubble {
+  background: var(--bg-3);
+  border-color: var(--line);
+}
+/* user bubble: red, so the two speakers never share a color */
+.ask .ag-msg--user .ag-bubble {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  color: var(--text);
+}
+.ask .ag-ava { box-shadow: 0 0 14px -2px var(--accent); }
+
+/* suggestion chips light up on hover */
+.ask .ag-chip { border-color: color-mix(in oklab, var(--accent) 22%, var(--line)); }
+.ask .ag-chip:hover { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+
+/* input row tint + accent focus */
+.ask .agent__input { background: color-mix(in oklab, var(--accent) 7%, var(--bg)); }
+.ask .agent__input input:focus { outline: none; }
+.ask .agent__caret { color: var(--accent); }
 
 /* =========================================================================
    RESPONSIVE

@@ -26,3 +26,4 @@ dist-ssr
 *.sw?
 /soumya-portfolio
 .gstack/
+.vercel
