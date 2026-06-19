@@ -1,12 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PROJECTS } from "../data/portfolio";
 
 const FEATURED = 4;
 
 export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
   const [showAll, setShowAll] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const beforeTop = useRef<number | null>(null);
   const visible = showAll ? PROJECTS : PROJECTS.slice(0, FEATURED);
   const hidden = PROJECTS.length - FEATURED;
+
+  // Record the button's viewport position at click time.
+  const toggle = () => {
+    beforeTop.current = moreRef.current?.getBoundingClientRect().top ?? null;
+    setShowAll((v) => !v);
+  };
+
+  // Only when COLLAPSING: the grid shrinks above the button, so pin the button
+  // in place (before paint) instead of letting the page fly up to Experience.
+  // On expand we do nothing — cards just grow downward, nothing above shifts.
+  useLayoutEffect(() => {
+    const before = beforeTop.current;
+    beforeTop.current = null;
+    if (showAll || before == null) return;
+    const after = moreRef.current?.getBoundingClientRect().top ?? 0;
+    const delta = after - before;
+    if (delta) window.scrollBy({ top: delta, behavior: "instant" as ScrollBehavior });
+  }, [showAll]);
 
   // Cards revealed by "Show more" aren't seen by the scroll-reveal observer
   // (it only binds on route change) — reveal them immediately on expand.
@@ -91,8 +111,8 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
         </div>
 
         {hidden > 0 && (
-          <div className="work__more rv">
-            <button type="button" className="work__more-btn" onClick={() => setShowAll((v) => !v)}>
+          <div className="work__more rv" ref={moreRef}>
+            <button type="button" className="work__more-btn" onClick={toggle}>
               {showAll ? "Show less" : `Show all ${PROJECTS.length} projects`}
               <span className="work__more-ico" aria-hidden="true">
                 {showAll ? "↑" : "↓"}

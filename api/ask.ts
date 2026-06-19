@@ -13,7 +13,7 @@
  * Streams plain UTF-8 text chunks back to the client.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT } from "../src/data/portfolio";
+import { PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT, RESUME_URL } from "../src/data/portfolio";
 
 const BASE_URL = (process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1").replace(/\/$/, "");
 const MODEL = process.env.LLM_MODEL || "llama-3.3-70b-versatile";
@@ -37,7 +37,7 @@ function buildProfile(): string {
   const skills = SKILLS.map((s) => `${s.cat}: ${s.items.join(", ")}`).join("\n");
   const education = EDUCATION.map((e) => `- ${e.degree}, ${e.org} (${e.period})`).join("\n");
   const leadership = LEADERSHIP.map((l) => `- ${l.role}, ${l.org} (${l.period})`).join("\n");
-  const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}`;
+  const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}\nResume (PDF, downloadable): ${RESUME_URL}`;
   return [
     `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total — this is the complete list):\n` + projects,
     "MORE PROJECTS:\n" + otherProjects,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AGENT_KB, AGENT_FALLBACK } from "../data/portfolio";
 
 interface Msg {
@@ -10,6 +10,33 @@ interface Msg {
 
 const GREETING = "Hi — I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
 const SUGGESTIONS = AGENT_KB.map((k) => k.q);
+
+/* Turn URLs, /resume.pdf, and emails inside an answer into clickable links. */
+const LINK_RE = /(https?:\/\/[^\s)]+|\/resume\.pdf|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
+function linkify(text: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let k = 0;
+  for (let m = LINK_RE.exec(text); m; m = LINK_RE.exec(text)) {
+    let tok = m[0];
+    let trail = "";
+    while (/[.,;:!?)]$/.test(tok)) {
+      trail = tok.slice(-1) + trail;
+      tok = tok.slice(0, -1);
+    }
+    if (m.index > last) out.push(text.slice(last, m.index));
+    const href = tok.includes("@") && !tok.startsWith("http") ? `mailto:${tok}` : tok;
+    out.push(
+      <a key={k++} href={href} target="_blank" rel="noopener noreferrer">
+        {tok}
+      </a>,
+    );
+    if (trail) out.push(trail);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
 
 /** Scripted fallback used when the live model is unreachable / over quota / not configured. */
 function fallbackAnswer(text: string): string {
@@ -150,7 +177,7 @@ export default function Ask() {
                               <i />
                             </span>
                           ) : (
-                            m.text
+                            linkify(m.text)
                           )}
                         </div>
                       </div>

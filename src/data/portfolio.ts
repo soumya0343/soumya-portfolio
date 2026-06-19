@@ -492,7 +492,7 @@ export const PROJECTS: Project[] = [
 export const EXPERIENCE: Experience[] = [
   {
     year: "DEC 2025 — FEB 2026",
-    role: "Backend Developer Intern",
+    role: "Full Stack Developer Intern",
     company: "Chakra Tech",
     loc: "Remote",
     metrics: [
