@@ -11,6 +11,7 @@ const LINKS: NavLinkDef[] = [
   { sec: "work", label: "Work" },
   { sec: "experience", label: "Experience" },
   { sec: "skills", label: "Skills" },
+  { sec: "blog", label: "Blog" },
   { sec: "ask", label: "Ask AI" },
   { sec: "contact", label: "Contact" },
 ];
@@ -21,8 +22,9 @@ const SHEET_LINKS: { href: string; num: string; label: string }[] = [
   { href: "#experience", num: "02", label: "Experience" },
   { href: "#skills", num: "03", label: "Skills" },
   { href: "#background", num: "04", label: "Background" },
-  { href: "#ask", num: "05", label: "Ask my AI" },
-  { href: "#contact", num: "06", label: "Contact" },
+  { href: "#blog", num: "05", label: "Blog" },
+  { href: "#ask", num: "06", label: "Ask my AI" },
+  { href: "#contact", num: "07", label: "Contact" },
 ];
 
 const SunIcon = () => (

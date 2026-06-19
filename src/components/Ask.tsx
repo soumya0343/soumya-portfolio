@@ -120,7 +120,7 @@ export default function Ask() {
     <section id="ask" className="ask">
       <div className="wrap">
         <div className="sec-head rv">
-          <span className="sec-head__num">06</span>
+          <span className="sec-head__num">07</span>
           <h2 className="sec-head__title">Ask my AI</h2>
           <span className="sec-head__sub">A SECOND OPINION ON MY WORK</span>
         </div>

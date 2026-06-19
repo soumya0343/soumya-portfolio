@@ -72,7 +72,7 @@ export default function Contact() {
     <section id="contact" className="contact">
       <div className="wrap">
         <div className="sec-head rv">
-          <span className="sec-head__num">07</span>
+          <span className="sec-head__num">08</span>
           <h2 className="sec-head__title">Contact</h2>
           <span className="sec-head__sub">REPLIES WITHIN 24H</span>
         </div>

@@ -189,13 +189,16 @@ img { display: block; max-width: 100%; }
 }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
 
-/* hairline divider between sections (inset to content width) */
+/* hairline divider between sections (inset to content width).
+   Negative top cancels the next section's top padding so the line sits in the
+   existing gap instead of adding a third block of vertical space; a small
+   bottom margin keeps it off the heading. */
 .main > section + section::before {
   content: "";
   display: block;
   height: 1px;
   width: min(calc(100% - var(--pad) * 2), var(--maxw));
-  margin: 0 auto clamp(48px, 7vh, 80px);
+  margin: calc(-1 * clamp(70px, 11vh, 120px)) auto clamp(28px, 4vh, 44px);
   background: var(--line-2);
 }
 
@@ -203,7 +206,7 @@ img { display: block; max-width: 100%; }
 .main > .proof::before,
 .main > .proof + section::before { content: none; }
 
-section { position: relative; scroll-margin-top: 28px; }
+section { position: relative; scroll-margin-top: 88px; }
 
 /* section header shared */
 .sec-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 40px; flex-wrap: wrap; }
@@ -571,8 +574,9 @@ section { position: relative; scroll-margin-top: 28px; }
 .bg__desc li { position: relative; padding-left: 18px; color: var(--text-2); font-size: 13.5px; }
 .bg__desc li::before { content: "·"; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
 
-/* writing note */
-.writing { margin-top: 50px; border: 1px dashed var(--line-2); border-radius: 12px; padding: 22px 24px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+/* blog / writing section */
+.blog { padding: clamp(70px, 11vh, 120px) 0; }
+.writing__card { border: 1px dashed var(--line-2); border-radius: 12px; padding: 22px 24px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
 .writing__txt { flex: 1; min-width: 240px; }
 .writing__txt b { font-family: var(--f-display); font-weight: 600; }
 .writing__txt p { color: var(--text-2); font-size: 14px; margin-top: 4px; max-width: 60ch; }
