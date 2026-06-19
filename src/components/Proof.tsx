@@ -21,8 +21,10 @@ export default function Proof() {
           <div className="proof__cap">Clients served by automated reporting</div>
         </div>
         <div className="proof__cell rv" data-d="3">
-          <div className="proof__num">6</div>
-          <div className="proof__cap">Products shipped, idea to production</div>
+          <div className="proof__num">
+            10<span className="u">+</span>
+          </div>
+          <div className="proof__cap">Projects shipped across AI, backend &amp; full-stack</div>
         </div>
       </div>
     </section>

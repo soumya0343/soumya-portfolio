@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import { PROJECTS } from "../data/portfolio";
 
+const FEATURED = 4;
+
 export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? PROJECTS : PROJECTS.slice(0, FEATURED);
+  const hidden = PROJECTS.length - FEATURED;
+
+  // Cards revealed by "Show more" aren't seen by the scroll-reveal observer
+  // (it only binds on route change) — reveal them immediately on expand.
+  useEffect(() => {
+    if (showAll) {
+      document.querySelectorAll<HTMLElement>("#projGrid .rv:not(.in)").forEach((n) => n.classList.add("in"));
+    }
+  }, [showAll]);
+
   return (
     <section id="work" className="work">
       <div className="wrap">
@@ -10,7 +25,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
           <span className="sec-head__sub">CURATED PROJECTS · 2022—2026</span>
         </div>
         <div className="proj-grid" id="projGrid">
-          {PROJECTS.map((p, i) => {
+          {visible.map((p, i) => {
             const extra = p.tech.length - 4;
             return (
               <div
@@ -63,6 +78,17 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
             );
           })}
         </div>
+
+        {hidden > 0 && (
+          <div className="work__more rv">
+            <button type="button" className="work__more-btn" onClick={() => setShowAll((v) => !v)}>
+              {showAll ? "Show less" : `Show all ${PROJECTS.length} projects`}
+              <span className="work__more-ico" aria-hidden="true">
+                {showAll ? "↑" : "↓"}
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

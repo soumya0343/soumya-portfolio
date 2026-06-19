@@ -482,12 +482,18 @@ section { position: relative; scroll-margin-top: 28px; }
    SKILLS
    ========================================================================= */
 .skills { padding: clamp(70px, 11vh, 120px) 0; }
-.skills__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.skills__col { background: var(--bg); padding: 26px 22px; }
-.skills__cat { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-bottom: 18px; }
-.skills__items { display: flex; flex-direction: column; gap: 11px; }
-.skills__item { display: flex; align-items: center; gap: 9px; font-size: 14.5px; color: var(--text-2); }
-.skills__item::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: none; opacity: .6; }
+.skills__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.skills__col { background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; transition: border-color .25s var(--ease), transform .25s var(--ease); }
+.skills__col:hover { border-color: var(--line-2); transform: translateY(-2px); }
+.skills__cat { display: flex; align-items: center; gap: 9px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; }
+.skills__cat::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: currentColor; box-shadow: 0 0 10px 0 currentColor; flex: none; }
+.skills__items { display: flex; flex-wrap: wrap; gap: 8px; }
+.skills__item {
+  font-family: var(--f-mono); font-size: 12px; color: var(--text-2);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 11px;
+  transition: color .2s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
+}
+.skills__item:hover { color: var(--text); border-color: var(--line-2); background: var(--bg-3); }
 
 /* =========================================================================
    BACKGROUND (education + leadership)
@@ -977,13 +983,11 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .proof__cell:nth-child(4) .proof__num .u { color: var(--c6); }
 
 .skills__col:nth-child(1) .skills__cat { color: var(--c1); }
-.skills__col:nth-child(2) .skills__cat { color: var(--c2); }
-.skills__col:nth-child(3) .skills__cat { color: var(--c3); }
-.skills__col:nth-child(4) .skills__cat { color: var(--c5); }
-.skills__col:nth-child(1) .skills__item::before { background: var(--c1); opacity: .8; }
-.skills__col:nth-child(2) .skills__item::before { background: var(--c2); opacity: .8; }
-.skills__col:nth-child(3) .skills__item::before { background: var(--c3); opacity: .8; }
-.skills__col:nth-child(4) .skills__item::before { background: var(--c5); opacity: .8; }
+.skills__col:nth-child(2) .skills__cat { color: var(--c3); }
+.skills__col:nth-child(3) .skills__cat { color: var(--c6); }
+.skills__col:nth-child(4) .skills__cat { color: var(--c1); }
+.skills__col:nth-child(5) .skills__cat { color: var(--c3); }
+.skills__col:nth-child(6) .skills__cat { color: var(--c6); }
 
 /* about chips get a quiet rainbow */
 .about__chips .chip:nth-child(1) { border-color: color-mix(in oklab, var(--c1) 45%, var(--line)); color: color-mix(in oklab, var(--c1) 60%, var(--text)); }
@@ -1365,3 +1369,17 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 [data-theme="light"] .pj-ibtn .icon-sun { display: none; }
 [data-theme="light"] .pj-ibtn .icon-moon { display: block; }
 
+
+
+/* ============================================================
+   Work — "show more" toggle
+   ============================================================ */
+.work__more { display: flex; justify-content: center; margin-top: 36px; }
+.work__more-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.04em; color: var(--text-2);
+  border: 1px solid var(--line-2); border-radius: 10px; padding: 12px 22px;
+  transition: color .25s var(--ease), border-color .25s var(--ease), background-color .25s var(--ease), transform .2s var(--ease);
+}
+.work__more-btn:hover { color: var(--text); border-color: var(--accent); background: var(--bg-2); transform: translateY(-2px); }
+.work__more-ico { color: var(--accent); font-size: 14px; }

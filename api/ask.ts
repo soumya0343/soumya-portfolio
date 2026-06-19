@@ -13,7 +13,7 @@
  * Streams plain UTF-8 text chunks back to the client.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP } from "../src/data/portfolio";
+import { PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP } from "../src/data/portfolio";
 
 const BASE_URL = (process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1").replace(/\/$/, "");
 const MODEL = process.env.LLM_MODEL || "llama-3.3-70b-versatile";
@@ -24,16 +24,22 @@ const MAX_HISTORY = 6;
 /* ---- grounding: build Soumya's profile from the same data the site renders ---- */
 function buildProfile(): string {
   const projects = PROJECTS.map(
-    (p) => `- ${p.title} (${p.cat}): ${p.one} [${p.tech.join(", ")}]`,
+    (p) =>
+      `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}\n` +
+      p.details.map((d) => `    · ${d}`).join("\n"),
+  ).join("\n");
+  const otherProjects = OTHER_PROJECTS.map(
+    (p) => `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`,
   ).join("\n");
   const experience = EXPERIENCE.map(
-    (x) => `- ${x.role} @ ${x.company} (${x.year}${x.loc ? `, ${x.loc}` : ""}): ${x.points.slice(0, 2).join(" ")}`,
+    (x) => `- ${x.role} @ ${x.company} (${x.year}${x.loc ? `, ${x.loc}` : ""}): ${x.points.join(" ")}`,
   ).join("\n");
   const skills = SKILLS.map((s) => `${s.cat}: ${s.items.join(", ")}`).join("\n");
   const education = EDUCATION.map((e) => `- ${e.degree}, ${e.org} (${e.period})`).join("\n");
   const leadership = LEADERSHIP.map((l) => `- ${l.role}, ${l.org} (${l.period})`).join("\n");
   return [
-    "PROJECTS:\n" + projects,
+    `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total — this is the complete list):\n` + projects,
+    "MORE PROJECTS:\n" + otherProjects,
     "EXPERIENCE:\n" + experience,
     "SKILLS:\n" + skills,
     "EDUCATION:\n" + education,
@@ -43,7 +49,7 @@ function buildProfile(): string {
 
 const SYSTEM_PROMPT = `You are the assistant on Soumya Gupta's portfolio website. Soumya is a woman — always use she/her pronouns.
 
-Answer questions about Soumya using ONLY the facts below. Be concise (2–4 sentences), warm, and concrete — cite real projects, numbers, and roles. If something isn't in the facts, say you don't have that detail rather than inventing it. Politely decline anything unrelated to Soumya or her work. Do not use markdown headings; plain sentences only.
+Answer questions about Soumya using ONLY the facts below. Be concise (2–4 sentences), warm, and concrete — cite real projects, numbers, and roles. The PROJECTS section lists ALL of her projects; when asked about her work (or a domain like AI, backend, or frontend), draw on the full set and mention the most relevant several by name, not just one. If something isn't in the facts, say you don't have that detail rather than inventing it. Politely decline anything unrelated to Soumya or her work. Do not use markdown headings; plain sentences only.
 
 === FACTS ABOUT SOUMYA ===
 ${buildProfile()}`;
