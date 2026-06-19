@@ -45,4 +45,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    // Allow tunneling the dev server (ngrok rotates subdomains, so allow the suffixes).
+    allowedHosts: ['.ngrok-free.dev', '.ngrok-free.app', '.ngrok.app', '.ngrok.io'],
+  },
 })

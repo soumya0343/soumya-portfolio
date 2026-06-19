@@ -1,5 +1,9 @@
 import GithubCal from "./GithubCal";
 
+function Label({ children }: { children: React.ReactNode }) {
+  return <span className="bento__label">{children}</span>;
+}
+
 export default function About() {
   return (
     <section id="about" className="about">
@@ -10,100 +14,101 @@ export default function About() {
           <span className="sec-head__sub">CLARITY &gt; COMPLEXITY</span>
         </div>
 
-        <blockquote className="about__quote rv">
-          <span className="about__qmark" aria-hidden="true">
-            "
-          </span>
-          <p>
-            Don't just build systems that work. Build systems that stay clear, correct, and reliable when the world
-            gets messy.
-          </p>
-        </blockquote>
-
-        <div className="about__strip rv" data-d="1">
-          <div className="about__strip-item">
-            <span className="about__strip-k">Studying</span>
-            <span className="about__strip-v">B.E. ECE · BITS Pilani, Goa</span>
-          </div>
-          <div className="about__strip-sep" aria-hidden="true" />
-          <div className="about__strip-item">
-            <span className="about__strip-k">Specialises in</span>
-            <span className="about__strip-v">Backend · AI · Full-Stack</span>
-          </div>
-          <div className="about__strip-sep" aria-hidden="true" />
-          <div className="about__strip-item">
-            <span className="about__strip-k">Status</span>
-            <span className="about__strip-v about__strip-ok">
-              <span className="hero__dot" />
-              Open to roles
-            </span>
-          </div>
-        </div>
-
-        <div className="about__lower rv" data-d="2">
-          <div className="about__bio">
+        <div className="about__bento rv">
+          {/* INTRO */}
+          <div className="bento-card bento-intro">
+            <h3 className="bento-intro__h">
+              About <span className="bento-intro__accent">me.</span>
+            </h3>
             <p>
-              I'm Soumya — a full-stack engineer building end-to-end. Go backends, data pipelines, REST APIs, AI
-              agents, responsive frontends — I've shipped across the stack in production. I care about clean
-              abstractions, real performance, and thoughtful design.
+              I'm Soumya — a full-stack engineer building end to end. Go and FastAPI backends, data pipelines, REST
+              APIs, AI agents, and responsive frontends; I've shipped across the stack in production.
             </p>
-            <p className="accent">
+            <p>
+              What pulls me most is the AI-systems layer — <span className="bento-hl">multi-agent systems, RAG, and
+              LLM infrastructure</span> — built on a backend that stays clear, correct, and reliable when the world
+              gets messy.
+            </p>
+            <p className="bento-intro__quiet">
               Good engineering, to me, is invisible. It just works — quietly, reliably, and looks effortless while
               doing it.
             </p>
-            <p>
-              Studying ECE at BITS Pilani trained me to think in systems, constraints, and signals. I carry that
-              structured thinking into software: reduce noise, optimise flow, build to last.
-            </p>
+          </div>
+
+          {/* THINKING ABOUT */}
+          <div className="bento-card bento-think">
+            <Label>Thinking about</Label>
+            <blockquote className="bento-think__q">
+              Don't just build systems that work — build systems that stay clear, correct, and reliable when the world
+              gets messy.
+            </blockquote>
+            <blockquote className="bento-think__q">
+              How far can agents be trusted to act on their own — and what has to be gated, grounded, or escalated
+              before they do?
+            </blockquote>
+          </div>
+
+          {/* CURRENTLY */}
+          <div className="bento-card bento-now">
+            <Label>Currently</Label>
+            <div className="bento-now__row bento-now__ok">
+              <span className="hero__dot" /> Open to backend &amp; AI roles
+            </div>
+            <div className="bento-now__row">B.E. ECE · BITS Pilani, Goa</div>
+            <div className="bento-now__row bento-now__dim">Graduating May 2026</div>
+          </div>
+
+          {/* FOCUS */}
+          <div className="bento-card bento-focus">
+            <Label>Focus</Label>
             <div className="about__chips">
               <span className="chip">Full-Stack Architecture</span>
               <span className="chip">Backend &amp; Distributed Systems</span>
               <span className="chip">AI-Powered Applications</span>
             </div>
           </div>
-          <div className="about__side">
-            <span className="about__side-lbl">// beyond engineering</span>
-            <div className="about__ints">
-              <div className="about__int">
-                <span className="about__int-name">Music</span>
-                <p className="about__int-desc">
-                  Guitar &amp; keyboard — exploring rhythm and structure in a different language.
-                </p>
+
+          {/* HOW I THINK */}
+          <div className="bento-card bento-howthink">
+            <Label>How I think</Label>
+            <p>
+              Studying ECE at BITS Pilani trained me to think in systems, constraints, and signals. I carry that
+              structured thinking into software: reduce noise, optimise flow, and build to last.
+            </p>
+          </div>
+
+          {/* BEYOND ENGINEERING */}
+          <div className="bento-card bento-interests">
+            <Label>Beyond engineering</Label>
+            <div className="bento-interests__grid">
+              <div className="bento-int">
+                <span className="bento-int__name">Music</span>
+                <p>Guitar &amp; keyboard — rhythm and structure in a different language.</p>
               </div>
-              <div className="about__int">
-                <span className="about__int-name">Visual Art</span>
-                <p className="about__int-desc">
-                  Mandala art, drawing, and painting — symmetry and balance on paper.
-                </p>
+              <div className="bento-int">
+                <span className="bento-int__name">Visual Art</span>
+                <p>Mandala art, drawing, painting — symmetry and balance on paper.</p>
               </div>
-              <div className="about__int">
-                <span className="about__int-name">People</span>
-                <p className="about__int-desc">
-                  Conversations, new connections, collaboration — growth is human.
-                </p>
+              <div className="bento-int">
+                <span className="bento-int__name">People</span>
+                <p>Conversations, new connections, collaboration — growth is human.</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="about__github rv" data-d="3">
-          <div className="about__github-bar">
-            <span className="about__github-dots">
-              <span />
-              <span />
-              <span />
-            </span>
-            <span className="about__github-url">github.com/soumya0343</span>
-            <a
-              className="about__github-ext"
-              href="https://github.com/soumya0343"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Profile ↗
-            </a>
-          </div>
-          <div className="about__github-body">
+          {/* GITHUB */}
+          <div className="bento-card bento-github">
+            <div className="bento-github__bar">
+              <Label>GitHub activity</Label>
+              <a
+                className="bento-github__ext"
+                href="https://github.com/soumya0343"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/soumya0343 ↗
+              </a>
+            </div>
             <div id="ghCal" className="gh-cal-wrap">
               <GithubCal />
             </div>

@@ -60,6 +60,17 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
                     {extra > 0 && <span className="chip proj-card__more">+{extra}</span>}
                   </div>
                   <div className="proj-card__links">
+                    {p.live && (
+                      <a
+                        className="proj-card__repo proj-card__live"
+                        href={p.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        live ↗
+                      </a>
+                    )}
                     {p.link && (
                       <a
                         className="proj-card__repo"

@@ -16,7 +16,7 @@
 /* ---- Tokens · DARK (default) ---- */
 :root {
   --bg:        #0b090a;
-  --bg-2:      #1a1315;                   /* warm red-grey card */
+  --bg-2:      #1E1E1E;                   /* neutral grey card */
   --bg-3:      #2a2123;                   /* warm red-grey raised */
   --line:      rgba(245,235,236,0.09);
   --line-2:    rgba(245,235,236,0.16);
@@ -689,10 +689,12 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .nav--shrink { top: 8px; padding-top: 6px; padding-bottom: 6px; background: color-mix(in oklab, var(--bg) 86%, transparent); }
 .nav__brand { display: flex; align-items: center; gap: 10px; flex: none; }
 .nav__mono {
-  width: 32px; height: 32px; flex: none; border: 1px solid var(--line-2);
+  width: 32px; height: 32px; flex: none; border: 1px solid color-mix(in oklab, #fff 18%, transparent);
   display: grid; place-items: center; border-radius: 9px;
-  font-family: var(--f-display); font-weight: 700; font-size: 13px; letter-spacing: -0.02em;
-  background: linear-gradient(135deg, color-mix(in oklab, var(--c3) 22%, transparent), color-mix(in oklab, var(--c1) 22%, transparent));
+  font-family: var(--f-display); font-weight: 700; font-size: 13px; letter-spacing: -0.04em;
+  color: #f5f3f4;
+  background: linear-gradient(135deg, #e5383b, #a4161a);
+  box-shadow: 0 4px 14px -4px color-mix(in oklab, var(--accent) 55%, transparent);
 }
 .nav__brand-txt { font-family: var(--f-display); font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; }
 .nav__brand-dim { color: var(--muted); font-weight: 500; }
@@ -1383,3 +1385,99 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 .work__more-btn:hover { color: var(--text); border-color: var(--accent); background: var(--bg-2); transform: translateY(-2px); }
 .work__more-ico { color: var(--accent); font-size: 14px; }
+
+
+/* ============================================================
+   About — bento grid
+   ============================================================ */
+.about__bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  grid-template-areas:
+    "intro intro think now"
+    "intro intro think focus"
+    "howthink howthink interests interests"
+    "github github github github";
+}
+.bento-card {
+  border: 1px solid var(--line); background: var(--bg-2); border-radius: 16px;
+  padding: 22px 24px; box-shadow: var(--shadow);
+  transition: border-color .25s var(--ease), transform .25s var(--ease);
+  min-width: 0;
+}
+.bento-card:hover { border-color: var(--line-2); }
+.bento-intro     { grid-area: intro; display: flex; flex-direction: column; }
+.bento-think     { grid-area: think; }
+.bento-now       { grid-area: now; }
+.bento-focus     { grid-area: focus; }
+.bento-howthink  { grid-area: howthink; }
+.bento-interests { grid-area: interests; }
+.bento-github    { grid-area: github; }
+
+.bento__label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.bento__label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* intro */
+.bento-intro__h { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 4vw, 46px); letter-spacing: -0.03em; line-height: 1; margin-bottom: 18px; }
+.bento-intro__accent { font-style: italic; color: var(--accent); }
+.bento-intro p { color: var(--text-2); font-size: 15.5px; line-height: 1.6; margin-bottom: 14px; max-width: 62ch; }
+.bento-hl { color: var(--text); font-weight: 500; }
+.bento-intro__quiet { color: var(--text) !important; font-weight: 500; margin-top: auto; }
+
+/* thinking about */
+.bento-think__q {
+  font-family: var(--f-display); font-weight: 500; font-size: 16px; line-height: 1.45; letter-spacing: -0.01em;
+  color: var(--text); padding-left: 16px; border-left: 2px solid var(--accent); margin-bottom: 18px; text-wrap: pretty;
+}
+.bento-think__q:last-child { margin-bottom: 0; }
+
+/* currently */
+.bento-now__row { font-family: var(--f-display); font-weight: 600; font-size: 15px; color: var(--text); display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+.bento-now__ok { color: var(--ok); }
+.bento-now__dim { color: var(--muted); font-weight: 500; font-family: var(--f-mono); font-size: 12px; margin-bottom: 0; }
+
+/* focus */
+.bento-focus .about__chips { margin: 0; }
+
+/* how I think */
+.bento-howthink p { color: var(--text-2); font-size: 15px; line-height: 1.6; max-width: 70ch; }
+
+/* beyond engineering */
+.bento-interests__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.bento-int__name { display: block; font-family: var(--f-display); font-weight: 600; font-size: 14.5px; color: var(--text); margin-bottom: 5px; }
+.bento-int p { color: var(--text-2); font-size: 12.5px; line-height: 1.5; }
+
+/* github tile */
+.bento-github__bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.bento-github__bar .bento__label { margin-bottom: 0; }
+.bento-github__ext { font-family: var(--f-mono); font-size: 11px; color: var(--accent); transition: opacity .2s; }
+.bento-github__ext:hover { opacity: 0.7; }
+
+@media (max-width: 980px) {
+  .about__bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "intro intro"
+      "think now"
+      "think focus"
+      "howthink howthink"
+      "interests interests"
+      "github github";
+  }
+}
+@media (max-width: 620px) {
+  .about__bento {
+    grid-template-columns: 1fr;
+    grid-template-areas: "intro" "think" "now" "focus" "howthink" "interests" "github";
+  }
+  .bento-interests__grid { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* project card "live" link accent */
+.proj-card__live { color: var(--accent) !important; border-color: color-mix(in oklab, var(--accent) 45%, var(--line)) !important; }
+.proj-card__live:hover { background: var(--accent-soft) !important; }

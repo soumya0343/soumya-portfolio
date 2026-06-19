@@ -119,8 +119,13 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
               {p.one}
             </p>
             <div className="pj-actions rv" data-d="3">
+              {p.live && (
+                <a className="btn btn--primary" href={p.live} target="_blank" rel="noopener noreferrer">
+                  Live Demo ↗
+                </a>
+              )}
               {p.link && (
-                <a className="btn btn--primary" href={p.link} target="_blank" rel="noopener noreferrer">
+                <a className={`btn ${p.live ? "btn--ghost" : "btn--primary"}`} href={p.link} target="_blank" rel="noopener noreferrer">
                   View Repo ↗
                 </a>
               )}

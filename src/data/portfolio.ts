@@ -24,6 +24,7 @@ export interface Project {
   details: string[];
   tech: string[];
   link: string | null;
+  live?: string;
   image: string | null;
   deepdive: DeepDive;
 }
@@ -124,7 +125,8 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["FastAPI", "ARQ", "Neo4j", "PostgreSQL", "React 19", "Azure"],
     link: "https://github.com/soumya0343/repolens",
-    image: null,
+    live: "https://repolenss.duckdns.org",
+    image: "/assets/projects/repolens-preview.png",
     deepdive: {
       role: "Solo — full-stack & data engineering",
       type: "SDLC analytics platform",
@@ -153,7 +155,8 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["FastAPI", "Next.js", "Redis Streams", "Presidio", "Kubernetes", "GitHub Actions"],
     link: "https://github.com/soumya0343/chatbot",
-    image: null,
+    live: "https://chatbot-frontend-7zw7.onrender.com",
+    image: "/assets/projects/inferlog-preview.png",
     deepdive: {
       role: "Solo — backend & LLM infrastructure",
       type: "LLM observability platform",
@@ -227,6 +230,7 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["React 19", "TypeScript", "Vite", "Node.js", "Express", "Firebase"],
     link: "https://github.com/soumya0343/zync",
+    live: "https://zync-steel.vercel.app",
     image: "/assets/projects/zync-preview.png",
     deepdive: {
       role: "Solo — design, frontend & backend",
@@ -361,6 +365,7 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["React.js", "Tailwind CSS", "Framer Motion", "Node.js", "MongoDB", "Express"],
     link: "https://github.com/soumya0343/stockwise",
+    live: "https://stockwise-mu.vercel.app",
     image: "/assets/projects/stockwise-preview.png",
     deepdive: {
       role: "Hackathon — full-stack",
