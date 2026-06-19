@@ -96,7 +96,7 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["Python", "LangGraph", "RAG", "Sarvam", "Anthropic", "Redis Streams", "FastAPI", "Next.js"],
     link: "https://github.com/soumya0343/saral",
-    image: null,
+    image: "/assets/projects/saral-preview.png",
     deepdive: {
       role: "Solo — AI systems engineering",
       type: "Multi-agent AI · RAG",
@@ -185,7 +185,7 @@ export const PROJECTS: Project[] = [
     ],
     tech: ["TypeScript", "VS Code API", "Gemini", "Node.js"],
     link: "https://github.com/soumya0343/CodeSentinel",
-    image: null,
+    image: "/assets/projects/codesentinel-preview.png",
     deepdive: {
       role: "Solo — AI engineering & tooling",
       type: "Developer tool · AI",
@@ -261,6 +261,7 @@ export const PROJECTS: Project[] = [
         "A working full-stack app where goals, tasks, subtasks, and journaling live together — fast to use, and architected so the data model holds up as boards grow.",
     },
   },
+  /* SplitSense — temporarily hidden
   {
     idx: "06",
     slug: "splitsense",
@@ -306,6 +307,7 @@ export const PROJECTS: Project[] = [
         "A concept strong enough to clear round 1 of 400 teams on the deck alone; the app is in active development toward a working build.",
     },
   },
+  */
   {
     idx: "07",
     slug: "infinite-canvas-rpg",

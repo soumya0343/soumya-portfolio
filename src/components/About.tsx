@@ -17,9 +17,7 @@ export default function About() {
         <div className="about__bento rv">
           {/* INTRO */}
           <div className="bento-card bento-intro">
-            <h3 className="bento-intro__h">
-              About <span className="bento-intro__accent">me.</span>
-            </h3>
+            <Label>Who I am</Label>
             <p>
               I'm Soumya — a full-stack engineer building end to end. Go and FastAPI backends, data pipelines, REST
               APIs, AI agents, and responsive frontends; I've shipped across the stack in production.
@@ -111,6 +109,30 @@ export default function About() {
             </div>
             <div id="ghCal" className="gh-cal-wrap">
               <GithubCal />
+            </div>
+          </div>
+
+          {/* CURRENTLY READING */}
+          <div className="bento-card bento-reading">
+            <Label>Currently reading</Label>
+            <div className="bento-reading__main">
+              <img
+                className="bento-reading__cover"
+                src="https://covers.openlibrary.org/b/isbn/9780786856862-L.jpg"
+                alt="The Sea of Monsters book cover"
+                loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+              />
+              <div className="bento-reading__meta">
+                <div className="bento-reading__title">The Sea of Monsters</div>
+                <div className="bento-reading__author">Rick Riordan</div>
+                <div className="bento-reading__series">Percy Jackson #2</div>
+                <p className="bento-reading__note">
+                  Off the clock — myth, monsters, and a good time.
+                </p>
+              </div>
             </div>
           </div>
         </div>
