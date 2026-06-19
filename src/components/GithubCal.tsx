@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 /* Custom GitHub contribution calendar — ported from github-cal.js. */
 
 const USERNAME = "soumya0343";
-const MONTHS = 3;
+const MONTHS = 6;
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -28,13 +28,12 @@ export default function GithubCal() {
 
   useEffect(() => {
     let alive = true;
-    fetch(`https://api.github.com/users/${USERNAME}/events?per_page=100`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((events: unknown) => {
+    fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`)
+      .then((r) => (r.ok ? r.json() : { contributions: [] }))
+      .then((data: { contributions?: { date: string; count: number }[] }) => {
         const map: Record<string, number> = {};
-        (Array.isArray(events) ? events : []).forEach((e: { created_at?: string }) => {
-          const k = (e.created_at || "").slice(0, 10);
-          if (k) map[k] = (map[k] || 0) + 1;
+        (data.contributions || []).forEach((c) => {
+          if (c.date) map[c.date] = c.count;
         });
         if (alive) setByDate(map);
       })

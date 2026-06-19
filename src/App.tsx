@@ -10,6 +10,7 @@ import Background from "./components/Background";
 import Ask from "./components/Ask";
 import Contact from "./components/Contact";
 import CaseStudy from "./components/CaseStudy";
+import Splash from "./components/Splash";
 import { useTheme } from "./hooks/useTheme";
 import { useScrollReveal } from "./hooks/useScrollReveal";
 
@@ -20,6 +21,9 @@ function readSlug(): string | null {
 export default function App() {
   const [, toggleTheme] = useTheme();
   const [slug, setSlug] = useState<string | null>(readSlug);
+  // Boot splash only on a fresh home load — skip it when deep-linking a case study.
+  const [booting, setBooting] = useState(() => readSlug() === null);
+  const finishBoot = useCallback(() => setBooting(false), []);
 
   useEffect(() => {
     const onPop = () => setSlug(readSlug());
@@ -46,6 +50,7 @@ export default function App() {
 
   return (
     <>
+      {booting && <Splash onDone={finishBoot} />}
       <Nav onToggleTheme={toggleTheme} />
       <main className="main">
         <Hero />

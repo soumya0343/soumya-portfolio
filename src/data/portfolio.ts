@@ -35,6 +35,8 @@ export interface Experience {
   company: string;
   loc: string;
   points: string[];
+  metrics?: { value: string; label: string }[];
+  stack?: string[];
 }
 
 export interface SkillGroup {
@@ -329,6 +331,12 @@ export const EXPERIENCE: Experience[] = [
     role: "Full Stack Developer Intern",
     company: "Chakra Tech",
     loc: "Remote",
+    metrics: [
+      { value: "15s→ms", label: "latency cut" },
+      { value: "~20", label: "MCP sub-APIs" },
+      { value: "10+", label: "REST APIs" },
+    ],
+    stack: ["Go", "Redis", "BullMQ", "MCP", "Polymarket"],
     points: [
       "Built full-stack modules for a blockchain esports prediction market (10+ REST APIs, order flow, market view, betslip, stats).",
       "Designed data pipelines integrating Polymarket with PandaScore; implemented BullMQ background jobs with Redis for reliable ingestion, retries, and syncing.",
@@ -341,6 +349,12 @@ export const EXPERIENCE: Experience[] = [
     role: "Engineering Intern",
     company: "Dezerv Investments",
     loc: "Bengaluru, India",
+    metrics: [
+      { value: "~83%", label: "less manual time" },
+      { value: "5,000+", label: "clients served" },
+      { value: "~70%", label: "more reports/cycle" },
+    ],
+    stack: ["Go", "React", "Flutter", "AWS S3"],
     points: [
       "Engineered a scalable Go backend to automate SEBI-compliant reporting for 5,000+ clients, replacing manual workflows and reducing manual reporting time by ~83% per cycle.",
       "Built a reusable React operations dashboard introducing direct-to-S3 bulk uploads, enabling ~70% more reports per cycle.",
@@ -353,6 +367,12 @@ export const EXPERIENCE: Experience[] = [
     role: "Tech Intern",
     company: "Jobslet",
     loc: "Remote",
+    metrics: [
+      { value: "~70%", label: "lower latency" },
+      { value: "35%", label: "faster shortlisting" },
+      { value: "~40%", label: "less manual work" },
+    ],
+    stack: ["React", "Node.js", "Elasticsearch", "LLMs"],
     points: [
       "Led development of analytics dashboards (React + Node.js) tracking stage-wise user progression and first-time vs repeat activity, reducing manual reporting effort by ~40%.",
       "Optimized backend data pipelines to reduce data latency by ~70%, enabling near real-time recruitment workflows.",
@@ -365,6 +385,12 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Developer Intern",
     company: "Multigraphics",
     loc: "Delhi, India",
+    metrics: [
+      { value: "50K+", label: "docs/year" },
+      { value: "50+", label: "concurrent users" },
+      { value: "~40%", label: "lower latency" },
+    ],
+    stack: ["Laravel", "PHP", "MySQL", "PDF"],
     points: [
       "Built a Laravel-based Employee Management System with CRUD APIs and authentication to centralize internal operations for 50+ concurrent users.",
       "Delivered a secure, responsive UI with advanced filtering, reducing data latency by ~40%.",
@@ -443,41 +469,41 @@ export interface KBItem {
 export const AGENT_KB: KBItem[] = [
   {
     key: ["ai", "agent", "llm", "gemini", "mcp", "voice", "model"],
-    q: "Show me his AI work",
+    q: "Show me her AI work",
     tools: ["search_projects", "filter(domain='AI')"],
-    a: "Soumya's deepest interest. He built an MCP agent server exposing ~20 micro-APIs that power a contextual AI assistant for match and market queries; CodeSentinel, an AI code-review tool using Gemini for semantic analysis; Gemini-powered branching dialogue in a roguelike; and LLM resume-parsing pipelines for candidate–job matching. His goal: become an AI engineer.",
+    a: "Soumya's deepest interest. She built an MCP agent server exposing ~20 micro-APIs that power a contextual AI assistant for match and market queries; CodeSentinel, an AI code-review tool using Gemini for semantic analysis; Gemini-powered branching dialogue in a roguelike; and LLM resume-parsing pipelines for candidate–job matching. Her goal: become an AI engineer.",
   },
   {
     key: ["impress", "best", "impact", "result", "proud", "biggest", "latency", "performance"],
-    q: "What's his most impressive result?",
+    q: "What's her most impressive result?",
     tools: ["search_projects", "rank_by_impact"],
-    a: "Cutting backend latency from ~15 seconds to milliseconds on a live blockchain prediction market — by removing N+1 queries, adding indexing, and a fuzzy-match fallback. He also automated SEBI-compliant reporting for 5,000+ clients, cutting manual reporting time ~83% per cycle.",
+    a: "Cutting backend latency from ~15 seconds to milliseconds on a live blockchain prediction market — by removing N+1 queries, adding indexing, and a fuzzy-match fallback. She also automated SEBI-compliant reporting for 5,000+ clients, cutting manual reporting time ~83% per cycle.",
   },
   {
     key: ["frontend", "front-end", "react", "ui", "design", "interface", "css"],
-    q: "Is he good at frontend?",
+    q: "Is she good at frontend?",
     tools: ["query_profile", "search_projects"],
-    a: "Yes — and he genuinely loves it. React + TypeScript dashboards, Framer-Motion interfaces, WebGL fluid art, real-time analytics views. This very panel — streaming tokens, tool-call traces, live state — is his frontend work. He cares how things feel, not just how they run.",
+    a: "Yes — and she genuinely loves it. React + TypeScript dashboards, Framer-Motion interfaces, WebGL fluid art, real-time analytics views. This very panel — streaming tokens, tool-call traces, live state — is her frontend work. She cares how things feel, not just how they run.",
   },
   {
     key: ["backend", "distributed", "go", "system", "scale", "infra", "database"],
-    q: "How strong is his backend?",
+    q: "How strong is her backend?",
     tools: ["get_experience", "summarize"],
-    a: "Strong and production-tested. Go services for SEBI-compliant reporting at 5,000+ clients, data pipelines integrating Polymarket + PandaScore, BullMQ + Redis background jobs for reliable ingestion, and Elasticsearch-backed search. His ECE background makes him think in systems and constraints.",
+    a: "Strong and production-tested. Go services for SEBI-compliant reporting at 5,000+ clients, data pipelines integrating Polymarket + PandaScore, BullMQ + Redis background jobs for reliable ingestion, and Elasticsearch-backed search. Her ECE background makes her think in systems and constraints.",
   },
   {
     key: ["hire", "why", "recruit", "good fit", "founder", "startup"],
-    q: "Why should we hire him?",
+    q: "Why should we hire her?",
     tools: ["get_experience", "rank_by_impact", "summarize"],
-    a: "He ships end-to-end and owns outcomes: 6 products from idea to production, real AI-agent infrastructure, measurable performance wins, and a systems-thinking mindset. He's early-career, hungry to grow as an AI engineer, and he learns fast. Founder-friendly: he'll take an idea and run it to production.",
+    a: "She ships end-to-end and owns outcomes: 6 products from idea to production, real AI-agent infrastructure, measurable performance wins, and a systems-thinking mindset. She's early-career, hungry to grow as an AI engineer, and she learns fast. Founder-friendly: she'll take an idea and run it to production.",
   },
   {
     key: ["who", "about", "kind of engineer", "introduce", "yourself", "background"],
     q: "What kind of engineer is Soumya?",
     tools: ["query_profile", "get_experience"],
-    a: "A full-stack engineer moving deep into AI engineering. He builds across the whole stack — Go backends and data pipelines, the LLM/agent layer on top, and polished real-time frontends. Currently studying ECE at BITS Pilani, Goa.",
+    a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack — Go backends and data pipelines, the LLM/agent layer on top, and polished real-time frontends. Currently studying ECE at BITS Pilani, Goa.",
   },
 ];
 
 export const AGENT_FALLBACK =
-  "I can walk you through Soumya's AI & agent work, his backend & distributed systems, his frontend craft, his biggest results, or why he'd be a strong hire — tap a suggestion below.";
+  "I can walk you through Soumya's AI & agent work, her backend & distributed systems, her frontend craft, her biggest results, or why she'd be a strong hire — tap a suggestion below.";

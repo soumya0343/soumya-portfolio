@@ -119,7 +119,7 @@ export default function Ask() {
       const id = addAgentShell();
       await sleep(reduce.current ? 60 : 500);
       if (cancelled) return;
-      await streamText(id, "Hi — I'm Soumya's agent. Ask me anything about his work, or tap a question below.");
+      await streamText(id, "Hi — I'm Soumya's agent. Ask me anything about her work, or tap a question below.");
       setShowSuggest(true);
       if (!reduce.current) {
         autoTimer.current = window.setTimeout(() => {

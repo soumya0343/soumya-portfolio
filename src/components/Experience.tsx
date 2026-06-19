@@ -50,11 +50,30 @@ export default function Experience() {
                 )}
                 <h3 className="rm-role">{x.role}</h3>
                 <div className="rm-co">{x.company}</div>
+                {x.metrics && (
+                  <div className="rm-metrics">
+                    {x.metrics.map((m, mi) => (
+                      <div className="rm-metric" key={mi}>
+                        <span className="rm-metric__val">{m.value}</span>
+                        <span className="rm-metric__lbl">{m.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <ul className="rm-points">
                   {x.points.map((p, pi) => (
                     <li key={pi}>{p}</li>
                   ))}
                 </ul>
+                {x.stack && (
+                  <div className="rm-stack">
+                    {x.stack.map((t) => (
+                      <span className="rm-tag" key={t}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             );
             const node = (
