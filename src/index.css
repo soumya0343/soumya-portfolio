@@ -29,7 +29,7 @@
   --ok:        oklch(0.68 0.12 148);      /* green — available only */
   --grid-dot:  rgba(229,56,59,0.04);
 
-  --maxw: 1180px;
+  --maxw: 1440px;
   --rail: 248px;
   --pad: clamp(20px, 4.5vw, 64px);
 
@@ -667,7 +667,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
    ========================================================================= */
 .nav {
   position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
-  z-index: 90; width: min(1080px, calc(100% - 28px));
+  z-index: 90; width: min(1440px, calc(100% - 28px));
   display: flex; align-items: center; gap: 14px;
   padding: 9px 9px 9px 16px;
   border: 1px solid var(--line);

@@ -111,7 +111,13 @@ export default function HeroHills() {
     const SPEED = 0.5;
     const CAMERA_Z = 125;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    } catch {
+      // No WebGL (some browsers / headless sandboxes) — skip the background, keep the page alive.
+      return;
+    }
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
