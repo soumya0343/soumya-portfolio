@@ -1,20 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soumya Gupta - Portfolio</title>
+    <title>Soumya Gupta — Backend &amp; AI Systems Engineer</title>
     <meta
       name="description"
-      content="Portfolio of Soumya Gupta - crafting immersive digital experiences."
+      content="Soumya Gupta — backend & AI systems engineer. I build production systems, AI-agent infrastructure, and full-stack products end to end."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <script>
+      /* no-flash theme */
+      (function () {
+        try {
+          document.documentElement.setAttribute("data-theme", localStorage.getItem("sg-theme") || "dark");
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

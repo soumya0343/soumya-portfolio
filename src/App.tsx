@@ -1,64 +1,63 @@
-import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import FluidCanvas from "./components/FluidCanvas";
-import PhilosophySection from "./components/PhilosophySection";
-import ExperienceSection from "./components/ExperienceSection";
-import EducationSection from "./components/EducationSection";
-import CoCurricularSection from "./components/CoCurricularSection";
-import ProjectsSection from "./components/ProjectsSection";
-import SkillsSection from "./components/SkillsSection";
-import BlogSection from "./components/BlogSection";
-import ContactSection from "./components/ContactSection";
+import { useCallback, useEffect, useState } from "react";
+import Nav from "./components/Nav";
+import Hero from "./components/Hero";
+import Proof from "./components/Proof";
+import About from "./components/About";
+import Work from "./components/Work";
+import Experience from "./components/Experience";
+import Skills from "./components/Skills";
+import Background from "./components/Background";
+import Ask from "./components/Ask";
+import Contact from "./components/Contact";
+import CaseStudy from "./components/CaseStudy";
+import { useTheme } from "./hooks/useTheme";
+import { useScrollReveal } from "./hooks/useScrollReveal";
 
-import useScrollReveal from "./hooks/useScrollReveal";
-import { useState } from "react";
-import "./App.css";
-
-function App() {
-  useScrollReveal();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  return (
-    <div className="app">
-      {!isModalOpen && <Navbar />}
-
-      {/* Page 1: Hero */}
-      <section className="app__section" id="home">
-        <div className="app__layout">
-          <div className="app__left">
-            <HeroSection />
-          </div>
-          <div className="app__right">
-            <FluidCanvas />
-          </div>
-        </div>
-      </section>
-
-      {/* Page 2: Philosophy */}
-      <PhilosophySection />
-
-      {/* Page 3: Experience */}
-      <ExperienceSection />
-
-      {/* Page 4: Projects */}
-      <ProjectsSection onModalToggle={setIsModalOpen} />
-
-      {/* Page 5: Skills */}
-      <SkillsSection />
-
-      {/* Page 6: Education */}
-      <EducationSection />
-
-      {/* Page 7: Co-Curricular */}
-      <CoCurricularSection />
-
-      {/* Page 8: Blogs */}
-      <BlogSection />
-
-      {/* Page 9: Contact */}
-      <ContactSection />
-    </div>
-  );
+function readSlug(): string | null {
+  return new URLSearchParams(window.location.search).get("id");
 }
 
-export default App;
+export default function App() {
+  const [, toggleTheme] = useTheme();
+  const [slug, setSlug] = useState<string | null>(readSlug);
+
+  useEffect(() => {
+    const onPop = () => setSlug(readSlug());
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const openCase = useCallback((s: string) => {
+    window.history.pushState({}, "", `?id=${encodeURIComponent(s)}`);
+    setSlug(s);
+  }, []);
+
+  const back = useCallback(() => {
+    window.history.pushState({}, "", window.location.pathname);
+    setSlug(null);
+  }, []);
+
+  // Reveal-on-scroll re-binds whenever the route changes.
+  useScrollReveal([slug]);
+
+  if (slug !== null) {
+    return <CaseStudy slug={slug} onBack={back} onNavigate={openCase} onToggleTheme={toggleTheme} />;
+  }
+
+  return (
+    <>
+      <Nav onToggleTheme={toggleTheme} />
+      <main className="main">
+        <Hero />
+        <Proof />
+        <About />
+        <Work onOpen={openCase} />
+        <Experience />
+        <Skills />
+        <Background />
+        <Ask />
+        <Contact />
+      </main>
+    </>
+  );
+}
