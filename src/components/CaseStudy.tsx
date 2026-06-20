@@ -25,7 +25,9 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
 
   useScrollReveal([slug]);
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // jump to top instantly — `scroll-behavior: smooth` would otherwise animate
+    // the whole way up from wherever the project card was clicked.
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     const t = setTimeout(() => {
       document.querySelectorAll<HTMLElement>(".pj-hero .rv, .pj-shot").forEach((n) => n.classList.add("in"));
     }, 80);

@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 /* Custom GitHub contribution calendar — ported from github-cal.js. */
 
 const USERNAME = "soumya0343";
-const MONTHS = 6;
+const DESKTOP_MONTHS = 6;
+const MOBILE_MONTHS = 4; // fewer columns on phones so month labels don't collide
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -23,8 +24,22 @@ function level(day: Day): string {
   return "4";
 }
 
+function useMonths(): number {
+  const [months, setMonths] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches ? MOBILE_MONTHS : DESKTOP_MONTHS,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 600px)");
+    const sync = () => setMonths(mq.matches ? MOBILE_MONTHS : DESKTOP_MONTHS);
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return months;
+}
+
 export default function GithubCal() {
   const [byDate, setByDate] = useState<Record<string, number> | null>(null);
+  const months = useMonths();
 
   useEffect(() => {
     let alive = true;
@@ -50,7 +65,7 @@ export default function GithubCal() {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
     const start = new Date(today);
-    start.setMonth(start.getMonth() - MONTHS);
+    start.setMonth(start.getMonth() - months);
     start.setDate(1);
     start.setDate(start.getDate() - start.getDay()); // rewind to Sunday
     start.setHours(0, 0, 0, 0);
@@ -84,7 +99,7 @@ export default function GithubCal() {
     });
 
     return { weeks, total, monthLabels };
-  }, [byDate]);
+  }, [byDate, months]);
 
   if (!model) {
     return <div className="gh-loading">Loading contributions…</div>;
@@ -94,7 +109,7 @@ export default function GithubCal() {
     <>
       <div className="gh-header">
         <span className="gh-total">
-          {model.total} contributions in the last {MONTHS} months
+          {model.total} contributions in the last {months} months
         </span>
       </div>
       <div className="gh-grid-wrap">

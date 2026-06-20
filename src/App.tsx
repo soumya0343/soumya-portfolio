@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Proof from "./components/Proof";
@@ -26,6 +26,11 @@ export default function App() {
   const [booting, setBooting] = useState(() => readSlug() === null);
   const finishBoot = useCallback(() => setBooting(false), []);
 
+  // Remember where the home page was scrolled so "All Projects" returns there
+  // instead of dumping you at the top.
+  const homeScroll = useRef(0);
+  const pendingRestore = useRef(false);
+
   useEffect(() => {
     const onPop = () => setSlug(readSlug());
     window.addEventListener("popstate", onPop);
@@ -33,14 +38,24 @@ export default function App() {
   }, []);
 
   const openCase = useCallback((s: string) => {
+    homeScroll.current = window.scrollY;
     window.history.pushState({}, "", `?id=${encodeURIComponent(s)}`);
     setSlug(s);
   }, []);
 
   const back = useCallback(() => {
+    pendingRestore.current = true;
     window.history.pushState({}, "", window.location.pathname);
     setSlug(null);
   }, []);
+
+  // Restore the saved home scroll position once home re-renders (before paint).
+  useLayoutEffect(() => {
+    if (slug === null && pendingRestore.current) {
+      pendingRestore.current = false;
+      window.scrollTo({ top: homeScroll.current, behavior: "instant" as ScrollBehavior });
+    }
+  }, [slug]);
 
   // Reveal-on-scroll re-binds whenever the route changes.
   useScrollReveal([slug]);

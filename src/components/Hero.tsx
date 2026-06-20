@@ -11,6 +11,13 @@ export default function Hero() {
           <div className="hero__avail rv">
             <span className="hero__dot" /> OPEN TO BACKEND &amp; AI ROLES
           </div>
+          <div className="hero__loc rv" aria-label="Location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Bengaluru, India
+          </div>
           <h1 className="hero__name rv" data-d="1">
             Soumya Gupta
           </h1>

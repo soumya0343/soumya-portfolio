@@ -60,7 +60,7 @@
 
 /* ---- Reset ---- */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   /* Honor reduced motion without killing the site: keep gentle opacity fades,
@@ -552,7 +552,8 @@ section { position: relative; scroll-margin-top: 88px; }
 
 @media (max-width: 760px) {
   .skills__list { grid-template-columns: 1fr; }
-  .skills__row { grid-template-columns: 130px 1fr; }
+  /* stack the label above the chips so the chips get the full row width */
+  .skills__row { grid-template-columns: 1fr; gap: 14px; }
   .skills__row:nth-child(2) { border-top: 1px solid var(--line); }
   .skills__row:nth-child(even) { border-left: none; }
 }
@@ -853,6 +854,13 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
   color: var(--text-2); border: 1px solid var(--line);
   padding: 7px 13px; border-radius: 100px; margin-bottom: 22px;
 }
+.hero__loc {
+  display: flex; align-items: center; gap: 7px; width: fit-content; margin: -10px auto 24px;
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 100px; padding: 6px 13px;
+}
+.hero__loc svg { width: 13px; height: 13px; color: var(--accent); flex: none; }
+@media (max-width: 640px) { .hero__loc { font-size: 10px; padding: 5px 11px; gap: 6px; } }
 .hero__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: pulse 2.4s var(--ease) infinite; }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok) 55%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 .hero__name {
@@ -1138,11 +1146,20 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 
 @media (max-width: 780px) {
-  .rm-spine { left: 18px; }
+  .rm-spine { left: 20px; }
   .rm-stop { grid-template-columns: 40px 1fr; }
-  .rm-stop--left .rm-card, .rm-stop--right .rm-card { grid-column: 2; padding-left: 20px; padding-right: 0; }
-  .rm-node { grid-column: 1; }
+  /* pin both to row 1 so DOM order (card-first on left stops) can't push the
+     node/dot into a second row, leaving it disconnected from the line */
+  .rm-stop--left .rm-card, .rm-stop--right .rm-card { grid-column: 2; grid-row: 1; padding: 22px 22px; }
+  .rm-node { grid-column: 1; grid-row: 1; }
   .rm-stop--left .rm-spacer, .rm-stop--right .rm-spacer { display: none; }
+  /* full-width cards: reveal vertically only — a sideways slide overflows the viewport */
+  .rm-stop--left.rv, .rm-stop--right.rv { transform: translateY(24px); }
+  .rm-stop.rv.in { transform: none; }
+  /* metrics: shrink + wrap so they never spill past the card edge */
+  .rm-metrics { gap: 8px; }
+  .rm-metric { flex: 1 1 auto; min-width: 0; }
+  .rm-metric__val { font-size: clamp(14px, 4.4vw, 18px); }
 }
 
 /* =========================================================================
@@ -1238,18 +1255,27 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 #eduList .bg__item {
   padding: 18px 20px; background: var(--bg-2);
   border: 1px solid var(--line); border-radius: 10px;
-  border-bottom: 1px solid var(--line);
 }
-#eduList .bg__item:last-child { border-bottom: 1px solid var(--line); }
 
-/* Leadership: 2-column grid so 4 items sit evenly */
-#leadList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 clamp(28px, 5vw, 56px); }
-#leadList .bg__item { border-bottom: none; padding-top: 22px; padding-bottom: 22px; }
-#leadList .bg__item:last-child { border-bottom: none; }
+/* Leadership: 2-column grid, divided by hairlines between rows + one centered
+   vertical divider that spans the full block (so it can't look misplaced). */
+#leadList { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0 clamp(32px, 5vw, 60px); }
+#leadList::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--line); transform: translateX(-50%); }
+#leadList .bg__item {
+  background: none; border: none; border-radius: 0;
+  padding: 22px 0; border-bottom: 1px solid var(--line);
+}
+#leadList .bg__item:nth-last-child(-n + 2) { border-bottom: none; }
 
 @media (max-width: 720px) {
   #eduList { grid-template-columns: 1fr; }
   #leadList { grid-template-columns: 1fr; }
+  #leadList::before { display: none; }
+  #leadList .bg__item:nth-last-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  #leadList .bg__item:last-child { border-bottom: none; }
+  /* stack the period above the title so the title isn't squeezed into wrapping */
+  .bg__row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .bg__period { order: -1; }
 }
 
 /* =========================================================================

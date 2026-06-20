@@ -12,16 +12,24 @@ export default function Experience() {
     const fill = fillRef.current;
     if (!roadmap || !spine || !fill) return;
 
+    // Center of a dot relative to the roadmap, via the offset chain so the
+    // reveal's translateY transform doesn't skew the measurement (getBounding
+    // ClientRect includes transforms; offsetTop is the settled layout position).
+    const dotCenter = (dot: HTMLElement): number => {
+      let y = dot.offsetHeight / 2;
+      for (let el: HTMLElement | null = dot; el && el !== roadmap; el = el.offsetParent as HTMLElement | null) {
+        y += el.offsetTop;
+      }
+      return y;
+    };
+
     // Span the spine exactly from the first dot's center to the last dot's,
     // so the line never overshoots the circles top or bottom.
     const layout = () => {
       const dots = roadmap.querySelectorAll<HTMLElement>(".rm-dot");
       if (!dots.length) return;
-      const rTop = roadmap.getBoundingClientRect().top;
-      const first = dots[0].getBoundingClientRect();
-      const last = dots[dots.length - 1].getBoundingClientRect();
-      const top = first.top - rTop + first.height / 2;
-      const bottom = last.top - rTop + last.height / 2;
+      const top = dotCenter(dots[0]);
+      const bottom = dotCenter(dots[dots.length - 1]);
       spine.style.top = `${top}px`;
       spine.style.bottom = "auto";
       spine.style.height = `${Math.max(0, bottom - top)}px`;
