@@ -37,7 +37,7 @@ function buildProfile(): string {
   const skills = SKILLS.map((s) => `${s.cat}: ${s.items.join(", ")}`).join("\n");
   const education = EDUCATION.map((e) => `- ${e.degree}, ${e.org} (${e.period})`).join("\n");
   const leadership = LEADERSHIP.map((l) => `- ${l.role}, ${l.org} (${l.period})`).join("\n");
-  const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}\nResume (PDF, downloadable): ${RESUME_URL}`;
+  const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}\nSubstack: ${CONTACT.substack}\nMedium: ${CONTACT.medium}\nResume (PDF, downloadable): ${RESUME_URL}`;
   return [
     `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total — this is the complete list):\n` + projects,
     "MORE PROJECTS:\n" + otherProjects,

@@ -1520,6 +1520,25 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .pj-foot__card--next { text-align: right; }
 .pj-foot__card[aria-disabled="true"] { opacity: .4; pointer-events: none; }
 
+/* ---- case study hover interactions ---- */
+.pj-shot { transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
+.pj-shot:hover { transform: translateY(-4px); border-color: var(--line-2); box-shadow: 0 24px 60px -30px oklch(0 0 0 / 0.8); }
+.pj-shot__img img { transition: transform .5s var(--ease); }
+.pj-shot:hover .pj-shot__img img { transform: scale(1.03); }
+
+.pj-stack .chip { transition: color .2s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease), transform .2s var(--ease); }
+.pj-stack .chip:hover { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+
+.pj-step { border-radius: 10px; transition: padding-left .25s var(--ease); }
+.pj-step__h { transition: color .25s var(--ease); }
+.pj-step:hover { padding-left: 10px; }
+.pj-step:hover .pj-step__h { color: var(--accent); }
+
+.pj-foot__card { transition: border-color .25s var(--ease), background-color .25s var(--ease), transform .25s var(--ease); }
+.pj-foot__card:not([aria-disabled="true"]):hover { transform: translateY(-3px); }
+.pj-foot__name { transition: color .25s var(--ease); }
+.pj-foot__card:not([aria-disabled="true"]):hover .pj-foot__name { color: var(--accent); }
+
 .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
 .rv.in { opacity: 1; transform: none; }
 

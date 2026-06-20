@@ -21,6 +21,16 @@ const XIcon = () => (
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
+const SubstackIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+  </svg>
+);
+const MediumIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+  </svg>
+);
 
 export default function Contact() {
   const [name, setName] = useState("");
@@ -102,6 +112,14 @@ export default function Contact() {
                 <XIcon />
                 x.com/soumyaa0343 <span className="arr">↗</span>
               </a>
+              <a href="https://substack.com/@soumya343" target="_blank" rel="noopener noreferrer">
+                <SubstackIcon />
+                substack.com/@soumya343 <span className="arr">↗</span>
+              </a>
+              <a href="https://medium.com/@soumya0343" target="_blank" rel="noopener noreferrer">
+                <MediumIcon />
+                medium.com/@soumya0343 <span className="arr">↗</span>
+              </a>
             </div>
           </div>
 
@@ -152,6 +170,12 @@ export default function Contact() {
             </a>
             <a href="https://x.com/soumyaa0343" target="_blank" rel="noopener noreferrer" aria-label="X">
               <XIcon />
+            </a>
+            <a href="https://substack.com/@soumya343" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+              <SubstackIcon />
+            </a>
+            <a href="https://medium.com/@soumya0343" target="_blank" rel="noopener noreferrer" aria-label="Medium">
+              <MediumIcon />
             </a>
             <a href="mailto:soumya0343@gmail.com" aria-label="Email">
               <MailIcon />

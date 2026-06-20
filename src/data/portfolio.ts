@@ -67,6 +67,8 @@ export const CONTACT = {
   linkedin: "https://www.linkedin.com/in/soumya-gupta-9bb270263",
   github: "https://github.com/soumya0343",
   x: "https://x.com/soumyaa0343",
+  substack: "https://substack.com/@soumya343",
+  medium: "https://medium.com/@soumya0343",
 };
 
 /** Projects the AI agent should know about but that aren't shown as cards on the page. */
