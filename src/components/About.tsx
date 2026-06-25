@@ -19,17 +19,18 @@ export default function About() {
           <div className="bento-card bento-intro">
             <Label>Who I am</Label>
             <p>
-              I'm Soumya — a full-stack engineer building end to end. Go and FastAPI backends, data pipelines, REST
-              APIs, AI agents, and responsive frontends; I've shipped across the stack in production.
+              I'm Soumya, a full-stack engineer who builds end to end. Go and FastAPI backends, data pipelines, REST
+              APIs, AI agents, and frontends that don't feel like an afterthought; I've shipped across the stack in
+              production.
             </p>
             <p>
-              What pulls me most is the AI-systems layer — <span className="bento-hl">multi-agent systems, RAG, and
-              LLM infrastructure</span> — built on a backend that stays clear, correct, and reliable when the world
-              gets messy.
+              What pulls me most right now is the AI-systems layer: <span className="bento-hl">multi-agent systems,
+              RAG, LLM infrastructure</span> — the parts that decide whether a model is actually useful or just a good
+              demo.
             </p>
             <p className="bento-intro__quiet">
-              Good engineering, to me, is invisible. It just works — quietly, reliably, and looks effortless while
-              doing it.
+              To me, good engineering isn't about getting it right on paper — it's about building fast, breaking things
+              in the open, and fixing them before anyone notices.
             </p>
           </div>
 
@@ -37,11 +38,11 @@ export default function About() {
           <div className="bento-card bento-think">
             <Label>Thinking about</Label>
             <blockquote className="bento-think__q">
-              Don't just build systems that work — build systems that stay clear, correct, and reliable when the world
+              Don't just build systems that work; build systems that stay clear, correct, and reliable when the world
               gets messy.
             </blockquote>
             <blockquote className="bento-think__q">
-              How far can agents be trusted to act on their own — and what has to be gated, grounded, or escalated
+              How far can agents be trusted to act on their own, and what has to be gated, grounded, or escalated
               before they do?
             </blockquote>
           </div>
@@ -50,10 +51,11 @@ export default function About() {
           <div className="bento-card bento-now">
             <Label>Currently</Label>
             <div className="bento-now__row bento-now__ok">
-              <span className="hero__dot" /> Open to backend &amp; AI roles
+              <span className="hero__dot" /> Incoming SDE @ Dezerv Investments
             </div>
+            <div className="bento-now__row">Open to AI projects, learning conversations &amp; collabs</div>
             <div className="bento-now__row">B.E. ECE · BITS Pilani, Goa</div>
-            <div className="bento-now__row bento-now__dim">Graduating May 2026</div>
+            <div className="bento-now__row bento-now__dim">Graduated May 2026</div>
           </div>
 
           {/* FOCUS */}
@@ -62,7 +64,7 @@ export default function About() {
             <div className="about__chips">
               <span className="chip">Full-Stack Architecture</span>
               <span className="chip">Backend &amp; Distributed Systems</span>
-              <span className="chip">AI-Powered Applications</span>
+              <span className="chip">LLM Eval &amp; Agentic Systems</span>
             </div>
           </div>
 
@@ -70,8 +72,12 @@ export default function About() {
           <div className="bento-card bento-howthink">
             <Label>How I think</Label>
             <p>
-              Studying ECE at BITS Pilani trained me to think in systems, constraints, and signals. I carry that
-              structured thinking into software: reduce noise, optimise flow, and build to last.
+              I default to asking what system produced a problem, not just how to solve it. I want the mechanism, not
+              the rule: why something exists, what it assumes, where it breaks.
+            </p>
+            <p>
+              But I don't sit on that thinking for long. Once I have a rough shape of the problem, I start building —
+              and I'd rather fix things as they break in a real version than try to pre-solve every edge case on paper.
             </p>
           </div>
 
@@ -86,6 +92,14 @@ export default function About() {
               <div className="bento-int">
                 <span className="bento-int__name">Visual Art</span>
                 <p>Mandala art, drawing, painting — symmetry and balance on paper.</p>
+              </div>
+              {/* <div className="bento-int">
+                <span className="bento-int__name">Reading</span>
+                <p>Building the habit, one book at a time — more about the discipline than the count.</p>
+              </div> */}
+              <div className="bento-int">
+                <span className="bento-int__name">Travel</span>
+                <p>Haven't seen much of the world yet, but it's high on the list. Always up for a recommendation.</p>
               </div>
               <div className="bento-int">
                 <span className="bento-int__name">People</span>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 /* Custom GitHub contribution calendar — ported from github-cal.js. */
 
@@ -101,6 +101,23 @@ export default function GithubCal() {
     return { weeks, total, monthLabels };
   }, [byDate, months]);
 
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [tip, setTip] = useState<{ text: string; left: number; top: number } | null>(null);
+
+  // GitHub-style tooltip: position a styled label above the hovered cell (event
+  // delegation so we don't attach handlers to ~150 cells).
+  const onCellOver = (e: ReactMouseEvent) => {
+    const cell = e.target as HTMLElement;
+    const text = cell.dataset?.tip;
+    if (!text || !wrapRef.current) return;
+    const wrap = wrapRef.current.getBoundingClientRect();
+    const c = cell.getBoundingClientRect();
+    setTip({ text, left: c.left - wrap.left + c.width / 2, top: c.top - wrap.top });
+  };
+  const onCellOut = (e: ReactMouseEvent) => {
+    if ((e.target as HTMLElement).dataset?.tip) setTip(null);
+  };
+
   if (!model) {
     return <div className="gh-loading">Loading contributions…</div>;
   }
@@ -112,7 +129,13 @@ export default function GithubCal() {
           {model.total} contributions in the last {months} months
         </span>
       </div>
-      <div className="gh-grid-wrap">
+      <div
+        className="gh-grid-wrap"
+        ref={wrapRef}
+        onMouseOver={onCellOver}
+        onMouseOut={onCellOut}
+        onMouseLeave={() => setTip(null)}
+      >
         <div className="gh-days">
           {DAY_LABELS.map((l, i) => (
             <span key={l}>{i % 2 === 1 ? l : ""}</span>
@@ -129,14 +152,19 @@ export default function GithubCal() {
               <div className="gh-week" key={wi}>
                 {week.map((day) => {
                   const tip = day.future
-                    ? ""
+                    ? undefined
                     : `${day.count || "No"} contribution${day.count !== 1 ? "s" : ""} · ${day.date.toDateString()}`;
-                  return <div className={`gh-cell l${level(day)}`} title={tip} key={day.key} />;
+                  return <div className={`gh-cell l${level(day)}`} data-tip={tip} key={day.key} />;
                 })}
               </div>
             ))}
           </div>
         </div>
+        {tip && (
+          <div className="gh-tip" style={{ left: tip.left, top: tip.top }} role="tooltip">
+            {tip.text}
+          </div>
+        )}
       </div>
     </>
   );

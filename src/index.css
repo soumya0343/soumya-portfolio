@@ -1214,7 +1214,17 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .gh-loading { font-family: var(--f-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; padding: 20px 0; }
 .gh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .gh-total { font-family: var(--f-mono); font-size: 11px; color: var(--text-2); letter-spacing: 0.04em; }
-.gh-grid-wrap { display: flex; gap: 8px; align-items: stretch; padding-bottom: 4px; }
+.gh-grid-wrap { position: relative; display: flex; gap: 8px; align-items: stretch; padding-bottom: 4px; }
+.gh-tip {
+  position: absolute; z-index: 20; transform: translate(-50%, calc(-100% - 9px));
+  font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.02em; white-space: nowrap; color: var(--text);
+  background: var(--bg-3); border: 1px solid var(--line-2); border-radius: 7px; padding: 6px 9px;
+  box-shadow: var(--shadow); pointer-events: none;
+}
+.gh-tip::after {
+  content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: var(--bg-3);
+}
 .gh-days { display: flex; flex-direction: column; gap: 4px; padding-top: 21px; flex: none; }
 .gh-days span { flex: 1; display: flex; align-items: center; justify-content: flex-end; font-family: var(--f-mono); font-size: 9px; color: var(--muted); white-space: nowrap; min-width: 24px; }
 .gh-cols-wrap { flex: 1; min-width: 0; }
@@ -1578,13 +1588,13 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
    ============================================================ */
 .about__bento {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 14px;
   grid-template-areas:
-    "intro intro think now"
-    "intro intro think focus"
-    "howthink howthink interests interests"
-    "github github github reading";
+    "intro intro intro intro intro intro think think think now now now"
+    "intro intro intro intro intro intro think think think now now now"
+    "howthink howthink howthink howthink interests interests interests interests interests focus focus focus"
+    "github github github github github github github github github reading reading reading";
 }
 .bento-card {
   position: relative;
@@ -1634,7 +1644,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .bento-intro__accent { font-style: italic; color: var(--accent); }
 .bento-intro p { color: var(--text-2); font-size: 15.5px; line-height: 1.6; margin-bottom: 14px; max-width: 62ch; }
 .bento-hl { color: var(--text); font-weight: 500; }
-.bento-intro__quiet { color: var(--text) !important; font-weight: 500; margin-top: auto; }
+.bento-intro__quiet { color: var(--text) !important; font-weight: 500; }
 
 /* thinking about */
 .bento-think__q {
@@ -1655,7 +1665,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .bento-howthink p { color: var(--text-2); font-size: 15px; line-height: 1.6; max-width: 70ch; }
 
 /* beyond engineering */
-.bento-interests__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.bento-interests__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 18px; }
 .bento-int__name { display: block; font-family: var(--f-display); font-weight: 600; font-size: 14.5px; color: var(--text); margin-bottom: 5px; }
 .bento-int p { color: var(--text-2); font-size: 12.5px; line-height: 1.5; }
 
