@@ -76,7 +76,8 @@ export default async function handler(_req: IncomingMessage, res: ServerResponse
 
   res.statusCode = 200;
   res.setHeader("content-type", "application/json");
-  // Cache at the edge for 10 min; today's count refreshes promptly without hammering GitHub.
-  res.setHeader("cache-control", "public, max-age=0, s-maxage=600, stale-while-revalidate=600");
+  // Cache at the edge for 60s, serving stale while it revalidates, so today's count
+  // refreshes within ~a minute without hammering GitHub on every page view.
+  res.setHeader("cache-control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
   res.end(JSON.stringify({ contributions }));
 }
