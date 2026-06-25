@@ -9,7 +9,7 @@ interface Msg {
 }
 
 const GREETING = "Hi, I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
-const SUGGESTIONS = AGENT_KB.map((k) => k.q);
+const SUGGESTIONS = AGENT_KB.slice(0, 4).map((k) => k.q);
 
 /* Turn URLs, /resume.pdf, and emails inside an answer into clickable links. */
 const LINK_RE = /(https?:\/\/[^\s)]+|\/resume\.pdf|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
@@ -186,7 +186,10 @@ export default function Ask() {
                 )}
               </div>
 
-              <div className="agent__suggest" id="agentSuggest">
+              <div
+                className={`agent__suggest${messages.length > 1 ? " agent__suggest--started" : ""}`}
+                id="agentSuggest"
+              >
                 {SUGGESTIONS.map((q) => (
                   <button type="button" className="ag-chip" key={q} onClick={() => ask(q)}>
                     {q}
@@ -208,7 +211,7 @@ export default function Ask() {
                 <input
                   id="agentField"
                   type="text"
-                  placeholder="Ask the agent about Soumya…"
+                  placeholder="Ask about Soumya…"
                   autoComplete="off"
                   aria-label="Ask the agent about Soumya"
                   value={field}

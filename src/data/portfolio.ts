@@ -81,14 +81,11 @@ export const PROFILE = {
     "The shortest path to understanding a system is to build one.",
   ],
   focus: [
-    "Full-Stack Architecture",
-    "Backend & Distributed Systems",
-    "LLM Eval & Agentic Systems",
-    "AI Agents",
-    "Voice Agents",
+    "Engineering: Full-Stack Products, Backend Systems, Distributed Systems",
+    "AI: RAG, LLM Evals, Multi-Agent Systems",
   ],
   beyondEngineering:
-    "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's also building a reading habit, currently reading The Sea of Monsters by Rick Riordan, with One of Us Is Lying by Karen M. McManus up next.",
+    "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's currently reading AI Engineering by Chip Huyen.",
   status:
     "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joins Dezerv Investments as a Software Development Engineer (SDE) in July 2026.",
   experience:

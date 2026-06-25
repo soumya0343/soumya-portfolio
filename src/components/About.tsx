@@ -55,22 +55,35 @@ export default function About() {
           <div className="bento-card bento-now">
             <Label>Currently</Label>
             <div className="bento-now__row bento-now__ok">
-              <span className="hero__dot" /> Incoming SDE @ Dezerv Investments
+              <span className="hero__dot" /> Incoming Software Engineer @ Dezerv
             </div>
-            <div className="bento-now__row">Open to building, learning &amp; collaborating</div>
-            <div className="bento-now__row">B.E. ECE · BITS Pilani, Goa</div>
-            <div className="bento-now__row bento-now__dim">Graduated May 2026</div>
+            <p className="bento-now__desc">
+              Building production software and exploring how reliable AI systems are engineered.
+            </p>
+            <div className="bento-now__row">B.E. Electronics &amp; Communication Engineering</div>
+            <div className="bento-now__row bento-now__dim">BITS Pilani, Goa (Graduated May 2026)</div>
           </div>
 
           {/* FOCUS */}
           <div className="bento-card bento-focus">
-            <Label>Focus</Label>
-            <div className="about__chips">
-              <span className="chip">Full-Stack Architecture</span>
-              <span className="chip">Backend &amp; Distributed Systems</span>
-              <span className="chip">LLM Eval &amp; Agentic Systems</span>
-              <span className="chip">AI Agents</span>
-              <span className="chip">Voice Agents</span>
+            <Label>Where I'm heading</Label>
+            <div className="focus-groups">
+              <div className="focus-group">
+                <span className="focus-group__name">Engineering</span>
+                <ul className="focus-group__list">
+                  <li>Full-Stack Products</li>
+                  <li>Backend Systems</li>
+                  <li>Distributed Systems</li>
+                </ul>
+              </div>
+              <div className="focus-group">
+                <span className="focus-group__name">AI</span>
+                <ul className="focus-group__list">
+                  <li>RAG</li>
+                  <li>LLM Evals</li>
+                  <li>Multi-Agent Systems</li>
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -138,27 +151,22 @@ export default function About() {
             <div className="bento-reading__main">
               <img
                 className="bento-reading__cover"
-                src="https://covers.openlibrary.org/b/isbn/9780786856862-L.jpg"
-                alt="The Sea of Monsters book cover"
+                src="https://covers.openlibrary.org/b/isbn/9781098166304-L.jpg"
+                alt="AI Engineering book cover"
                 loading="lazy"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
               <div className="bento-reading__meta">
-                <div className="bento-reading__title">The Sea of Monsters</div>
-                <div className="bento-reading__author">Rick Riordan</div>
-                <div className="bento-reading__series">Percy Jackson #2</div>
-                <p className="bento-reading__note">
-                  Off the clock, myth, monsters, and a good time.
-                </p>
+                <div className="bento-reading__title">AI Engineering</div>
+                <div className="bento-reading__author">Chip Huyen</div>
+                <div className="bento-reading__series">Building Applications with Foundation Models</div>
               </div>
             </div>
-            <div className="bento-reading__next">
-              <span className="bento-reading__nextlabel">Up next</span>
-              <span className="bento-reading__nexttitle">One of Us Is Lying</span>
-              <span className="bento-reading__nextauthor">Karen M. McManus</span>
-            </div>
+            <p className="bento-reading__note">
+              Sharpening how I think about shipping reliable AI systems.
+            </p>
           </div>
         </div>
       </div>
