@@ -63,6 +63,37 @@ export interface Leadership {
 
 export const RESUME_URL = "/resume.pdf";
 
+/** Personal profile / "about" facts for the AI agent — mirrors what the page shows
+ *  beyond the resume (bio, what drives her, focus, interests, status). */
+export const PROFILE = {
+  tagline: "She builds the whole stack, top to bottom — a backend & AI systems engineer.",
+  location: "Bengaluru, India",
+  // Age is computed server-side from her date of birth in api/ask.ts (DOB is never
+  // shipped to the browser or revealed by the agent). Leave this empty.
+  age: "",
+  whoIAm:
+    "Soumya is a full-stack engineer who enjoys building production systems end to end: Go and FastAPI backends, data pipelines, REST APIs, AI agents, and frontends that don't feel like an afterthought, shipping features from architecture to deployment. What pulls her most right now is the AI systems layer: multi-agent systems, RAG, evaluation frameworks, memory architectures, and the infrastructure that makes LLM applications reliable, observable, and production-ready. To her, good engineering isn't about getting it right on paper, it's about shortening the feedback loop between an idea and a reliable system by building, learning from real-world usage, and iterating relentlessly.",
+  howIThink:
+    "She defaults to asking what system produced a problem, not just how to solve it, she wants the mechanism, not the rule: why something exists, what it assumes, where it breaks. But she doesn't sit on that thinking for long; once she has a rough shape of the problem she starts building, and would rather fix things as they break in a real version than try to pre-solve every edge case on paper.",
+  thinkingAbout: [
+    "Don't just build systems that work; build systems that stay clear, correct, and reliable when the world gets messy.",
+    "How far can agents be trusted to act on their own, and what has to be gated, grounded, or escalated before they do?",
+  ],
+  focus: [
+    "Full-Stack Architecture",
+    "Backend & Distributed Systems",
+    "LLM Eval & Agentic Systems",
+    "AI Agents",
+    "Voice Agents",
+  ],
+  beyondEngineering:
+    "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's also building a reading habit, currently reading The Sea of Monsters by Rick Riordan, with One of Us Is Lying by Karen M. McManus up next.",
+  status:
+    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joins Dezerv Investments as a Software Development Engineer (SDE) in July 2026.",
+  availability:
+    "She is not currently employed, so there is no notice period. She is available immediately and is open to building, learning, and collaborating, including AI projects and freelance/contract work, until her Dezerv start date in July 2026.",
+};
+
 export const CONTACT = {
   email: "soumya0343@gmail.com",
   linkedin: "https://www.linkedin.com/in/soumya-gupta-9bb270263",
@@ -497,7 +528,7 @@ export const PROJECTS: Project[] = [
 
 export const EXPERIENCE: Experience[] = [
   {
-    year: "DEC 2025, FEB 2026",
+    year: "DEC 2025 - FEB 2026",
     role: "Full Stack Developer Intern",
     company: "Chakra Tech",
     loc: "Remote",
@@ -515,7 +546,7 @@ export const EXPERIENCE: Experience[] = [
     ],
   },
   {
-    year: "JUL 2025, DEC 2025",
+    year: "JUL 2025 - DEC 2025",
     role: "Engineering Intern",
     company: "Dezerv Investments",
     loc: "Bengaluru, India",
@@ -533,7 +564,7 @@ export const EXPERIENCE: Experience[] = [
     ],
   },
   {
-    year: "MAY 2025, JUN 2025",
+    year: "MAY 2025 - JUN 2025",
     role: "Tech Intern",
     company: "Jobslet",
     loc: "Remote",
@@ -551,7 +582,7 @@ export const EXPERIENCE: Experience[] = [
     ],
   },
   {
-    year: "MAY 2024, JUL 2024",
+    year: "MAY 2024 - JUL 2024",
     role: "Software Developer Intern",
     company: "Multigraphics Group",
     loc: "Delhi, India",
@@ -580,9 +611,9 @@ export const SKILLS: SkillGroup[] = [
 ];
 
 export const EDUCATION: Education[] = [
-  { degree: "B.E. in Electronics & Communication Engineering", org: "Birla Institute of Technology and Science, Pilani, K. K. Birla Goa Campus", loc: "Goa, India", period: "OCT 2022, MAY 2026" },
-  { degree: "Class XII (CBSE), 93.4%", org: "The Millennium School", loc: "Lucknow, India", period: "2022" },
-  { degree: "Class X (CBSE), 98.8%", org: "The Millennium School", loc: "Lucknow, India", period: "2020" },
+  { degree: "B.E. in Electronics & Communication Engineering", org: "Birla Institute of Technology and Science, Pilani, K. K. Birla Goa Campus", loc: "Goa, India", period: "OCT 2022 - MAY 2026" },
+  { degree: "Class XII (CBSE), 93.4%", org: "The Millennium School", loc: "Lucknow, India", period: "2021 - 2022" },
+  { degree: "Class X (CBSE), 98.8%", org: "The Millennium School", loc: "Lucknow, India", period: "2019 - 2020" },
 ];
 
 export const LEADERSHIP: Leadership[] = [
@@ -590,7 +621,7 @@ export const LEADERSHIP: Leadership[] = [
     role: "Exhibitions, Guest Lectures & Foreign Relations Head",
     org: "Quark Controls, BITS Goa",
     loc: "Goa, India",
-    period: "JUL 2024, AUG 2025",
+    period: "JUL 2024 - AUG 2025",
     desc: [
       "Led a 150+ member team managing Exhibitions and Guest Lectures for Quark, BITS Goa's annual tech fest (20,000+ attendees).",
       "Executed the 3D Light Show, Robo Wars, and Auto Expo, driving a 44% YoY increase in fest footfall.",
@@ -602,7 +633,7 @@ export const LEADERSHIP: Leadership[] = [
     role: "Volunteer Teacher",
     org: "Nirmaan Organization, BITS Goa Chapter",
     loc: "Goa, India",
-    period: "DEC 2022, SEP 2023",
+    period: "DEC 2022 - SEP 2023",
     desc: [
       "Volunteered during JoGW'23, a campus-wide initiative focused on compassion and social outreach.",
       "Visited a school for special-needs students, contributing to an inclusive, joyful environment through activities.",
@@ -612,7 +643,7 @@ export const LEADERSHIP: Leadership[] = [
     role: "Core Member",
     org: "Department of Arts and Decoration",
     loc: "",
-    period: "DEC 2022, DEC 2023",
+    period: "DEC 2022 - DEC 2023",
     desc: [
       "Collaborated on campus-wide art installations and decorations for major college festivals.",
       "Owned the design process end to end, from ideation to physical construction and installation.",
@@ -622,7 +653,7 @@ export const LEADERSHIP: Leadership[] = [
     role: "Core Member",
     org: "Center for Technical Education, BITS Goa",
     loc: "",
-    period: "FEB 2023, MAY 2024",
+    period: "FEB 2023 - MAY 2024",
     desc: [
       "Coordinated 'Tech Weekend', a marquee technical event and exhibition at BITS Goa.",
       "Led outreach to 20+ schools and managed end-to-end logistics for seamless execution.",

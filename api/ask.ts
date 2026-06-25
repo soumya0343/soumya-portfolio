@@ -13,7 +13,12 @@
  * Streams plain UTF-8 text chunks back to the client.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT, RESUME_URL } from "../src/data/portfolio";
+import { PROFILE, PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT, RESUME_URL } from "../src/data/portfolio";
+
+// Birth year only, server-side (never bundled to the browser). Age is computed at
+// runtime; the agent reveals the age number but never the birth year / date.
+const BIRTH_YEAR = 2004;
+const AGE = new Date().getFullYear() - BIRTH_YEAR;
 
 const BASE_URL = (process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1").replace(/\/$/, "");
 const MODEL = process.env.LLM_MODEL || "llama-3.3-70b-versatile";
@@ -38,7 +43,19 @@ function buildProfile(): string {
   const education = EDUCATION.map((e) => `- ${e.degree}, ${e.org} (${e.period})`).join("\n");
   const leadership = LEADERSHIP.map((l) => `- ${l.role}, ${l.org} (${l.period})`).join("\n");
   const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}\nSubstack: ${CONTACT.substack}\nMedium: ${CONTACT.medium}\nResume (PDF, downloadable): ${RESUME_URL}`;
+  const profile = [
+    `Age: ${AGE} (ONLY state her age if the user explicitly asks how old she is; never mention it otherwise, and never reveal her birth year or date of birth).`,
+    `Location: ${PROFILE.location}.`,
+    `Current status: ${PROFILE.status}`,
+    `Availability / notice period: ${PROFILE.availability}`,
+    `Who she is: ${PROFILE.whoIAm}`,
+    `How she thinks: ${PROFILE.howIThink}`,
+    `What she's thinking about: ${PROFILE.thinkingAbout.join(" | ")}`,
+    `Current focus areas: ${PROFILE.focus.join(", ")}.`,
+    `Beyond engineering: ${PROFILE.beyondEngineering}`,
+  ].join("\n");
   return [
+    "ABOUT & STATUS:\n" + profile,
     `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total, this is the complete list):\n` + projects,
     "MORE PROJECTS:\n" + otherProjects,
     "EXPERIENCE:\n" + experience,
@@ -51,7 +68,9 @@ function buildProfile(): string {
 
 const SYSTEM_PROMPT = `You are the assistant on Soumya Gupta's portfolio website. Soumya is a woman, so always use she/her pronouns.
 
-Answer questions about Soumya using ONLY the facts below. Be concise (2 to 4 sentences), warm, and concrete, citing real projects, numbers, and roles. The PROJECTS section lists ALL of her projects; when asked about her work (or a domain like AI, backend, or frontend), draw on the full set and mention the most relevant several by name, not just one. If something isn't in the facts, say you don't have that detail rather than inventing it. Politely decline anything unrelated to Soumya or her work.
+Answer questions about Soumya using ONLY the facts below. Be concise (2 to 4 sentences), warm, and concrete, citing real projects, numbers, and roles. The PROJECTS section lists ALL of her projects; when asked about her work (or a domain like AI, backend, or frontend), draw on the full set and mention the most relevant several by name, not just one. Politely decline anything unrelated to Soumya or her work.
+
+If a question is about Soumya but the answer isn't in the facts below, never invent it. Say you don't have that detail, then point them to reach out to her directly, for example at ${CONTACT.email} or on LinkedIn (${CONTACT.linkedin}), and offer to help with what you do know.
 
 Style: write the way a sharp, friendly person texts, not like a press release. Use plain sentences and natural punctuation (commas, periods, parentheses). NEVER use em dashes (—) or en dashes (–); rephrase or use a comma, period, or "to" instead. Avoid robotic filler and buzzwords ("leverage", "passionate", "cutting-edge", "seamless"). No markdown headings, plain sentences only.
 

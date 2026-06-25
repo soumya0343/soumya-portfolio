@@ -1062,6 +1062,9 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .skills__row:nth-child(3n+1) .skills__item:hover { background: var(--c1); border-color: var(--c1); }
 .skills__row:nth-child(3n+2) .skills__item:hover { background: var(--c3); border-color: var(--c3); }
 .skills__row:nth-child(3n)   .skills__item:hover { background: var(--c6); border-color: var(--c6); }
+/* Tools & Platforms (row 5): match Languages' hover + dot color */
+.skills__row:nth-child(5) .skills__item:hover { background: var(--c1); border-color: var(--c1); }
+.skills__row:nth-child(5) .skills__cat::before { background: var(--c1); box-shadow: 0 0 12px 0 var(--c1); }
 
 /* about chips get a quiet rainbow */
 .about__chips .chip:nth-child(1) { border-color: color-mix(in oklab, var(--c1) 45%, var(--line)); color: color-mix(in oklab, var(--c1) 60%, var(--text)); }
@@ -1123,7 +1126,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .rm-metric__lbl { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 .rm-points { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 .rm-points li { position: relative; padding-left: 18px; color: var(--text-2); font-size: 14px; line-height: 1.55; }
-.rm-points li::before { content: "\2014"; position: absolute; left: 0; color: var(--accent); font-family: var(--f-mono); }
+.rm-points li::before { content: "\2022"; position: absolute; left: 0; color: var(--accent); font-family: var(--f-mono); }
 .rm-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
 .rm-tag { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.02em; color: var(--text-2); border: 1px solid var(--line); border-radius: 100px; padding: 3px 10px; transition: color .25s var(--ease), border-color .25s var(--ease); }
 .rm-tag:hover { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 40%, transparent); }

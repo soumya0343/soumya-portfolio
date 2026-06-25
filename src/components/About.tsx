@@ -19,18 +19,19 @@ export default function About() {
           <div className="bento-card bento-intro">
             <Label>Who I am</Label>
             <p>
-              I'm Soumya, a full-stack engineer who builds end to end. Go and FastAPI backends, data pipelines, REST
-              APIs, AI agents, and frontends that don't feel like an afterthought; I've shipped across the stack in
-              production.
+              I'm Soumya, a full-stack engineer who enjoys building production systems end to end. I work across Go and
+              FastAPI backends, data pipelines, REST APIs, AI agents, and frontends that don't feel like an
+              afterthought, shipping features from architecture to deployment.
             </p>
             <p>
-              What pulls me most right now is the AI-systems layer: <span className="bento-hl">multi-agent systems,
-              RAG, LLM infrastructure</span>, the parts that decide whether a model is actually useful or just a good
-              demo.
+              What pulls me most right now is the AI systems layer: <span className="bento-hl">multi-agent systems, RAG,
+              evaluation frameworks, memory architectures</span>, and the infrastructure that makes LLM applications
+              reliable, observable, and production-ready.
             </p>
             <p className="bento-intro__quiet">
-              To me, good engineering isn't about getting it right on paper, it's about building fast, breaking things
-              in the open, and fixing them before anyone notices.
+              To me, good engineering isn't about getting it right on paper, it's about shortening the feedback loop
+              between an idea and a reliable system by building, learning from real-world usage, and iterating
+              relentlessly.
             </p>
           </div>
 
@@ -53,7 +54,7 @@ export default function About() {
             <div className="bento-now__row bento-now__ok">
               <span className="hero__dot" /> Incoming SDE @ Dezerv Investments
             </div>
-            <div className="bento-now__row">Open to AI projects, learning conversations &amp; collabs</div>
+            <div className="bento-now__row">Open to building, learning &amp; collaborating</div>
             <div className="bento-now__row">B.E. ECE · BITS Pilani, Goa</div>
             <div className="bento-now__row bento-now__dim">Graduated May 2026</div>
           </div>

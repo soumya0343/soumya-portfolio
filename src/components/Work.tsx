@@ -42,7 +42,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
         <div className="sec-head rv">
           <span className="sec-head__num">02</span>
           <h2 className="sec-head__title">Selected Work</h2>
-          <span className="sec-head__sub">CURATED PROJECTS · 2022-2026</span>
+          <span className="sec-head__sub">CURATED PROJECTS</span>
         </div>
         <div className="proj-grid" id="projGrid">
           {visible.map((p, i) => {
