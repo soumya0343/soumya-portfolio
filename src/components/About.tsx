@@ -46,6 +46,9 @@ export default function About() {
               How far can agents be trusted to act on their own, and what has to be gated, grounded, or escalated
               before they do?
             </blockquote>
+            <blockquote className="bento-think__q">
+              The shortest path to understanding a system is to build one.
+            </blockquote>
           </div>
 
           {/* CURRENTLY */}

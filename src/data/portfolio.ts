@@ -78,6 +78,7 @@ export const PROFILE = {
   thinkingAbout: [
     "Don't just build systems that work; build systems that stay clear, correct, and reliable when the world gets messy.",
     "How far can agents be trusted to act on their own, and what has to be gated, grounded, or escalated before they do?",
+    "The shortest path to understanding a system is to build one.",
   ],
   focus: [
     "Full-Stack Architecture",
@@ -90,6 +91,8 @@ export const PROFILE = {
     "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's also building a reading habit, currently reading The Sea of Monsters by Rick Riordan, with One of Us Is Lying by Karen M. McManus up next.",
   status:
     "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joins Dezerv Investments as a Software Development Engineer (SDE) in July 2026.",
+  experience:
+    "She is a 2026 graduate just starting her full-time career. When asked about years of experience (YOE), do NOT state a number and never say it is 'zero', '0', 'none', 'effectively zero', or similar, that sounds dismissive. Instead, lead with the positive: she is early-career with about a year of cumulative hands-on internship experience across four engineering roles, plus a deep portfolio of self-built production projects in backend and AI systems. Briefly name her most recent internships, Chakra Tech (Full Stack Developer Intern) and Dezerv Investments (Engineering Intern). Keep the tone confident and warm, not apologetic.",
   availability:
     "She is not currently employed, so there is no notice period. She is available immediately and is open to building, learning, and collaborating, including AI projects and freelance/contract work, until her Dezerv start date in July 2026.",
 };
@@ -401,7 +404,7 @@ export const PROJECTS: Project[] = [
     slug: "stockwise",
     cat: "Fintech Platform",
     title: "StockWise",
-    one: "A gamified investment-learning platform for college students with a custom Node.js engine for XP, achievements, and milestones, production-ready MVP shipped in 24 hours.",
+    one: "A gamified investment-learning platform for college students with a custom Node.js engine for XP, achievements, and milestones, a production-ready MVP shipped in 24 hours.",
     details: [
       "Interactive Learning Modules: comprehensive content on stock markets, mutual funds, and technical analysis.",
       "Gamification System: earn XP, unlock achievements, and maintain daily learning streaks.",
@@ -409,7 +412,7 @@ export const PROJECTS: Project[] = [
       "Real-time Rewards: instant notifications for achievements and personal milestones.",
       "User Authentication: secure registration and login using bcrypt and JWT.",
     ],
-    tech: ["React.js", "Tailwind CSS", "Framer Motion", "Node.js", "MongoDB", "Express"],
+    tech: ["React.js", "Tailwind CSS", "Framer Motion", "Recharts", "Node.js", "Express", "MongoDB", "Mongoose", "JWT"],
     link: "https://github.com/soumya0343/stockwise",
     live: "https://stockwise-mu.vercel.app",
     image: "/assets/projects/stockwise-preview.png",
@@ -417,26 +420,33 @@ export const PROJECTS: Project[] = [
       role: "Hackathon, full-stack",
       type: "Fintech / edtech",
       overview:
-        "A gamified platform that teaches college students investing, stocks, mutual funds, technical analysis, through XP, streaks, and achievements. Built as a 24-hour hackathon MVP.",
+        "A gamified platform that teaches college students investing, stocks, mutual funds, technical analysis, options and futures, through XP, streaks, and achievements. Built as a 24-hour hackathon MVP, with one Express app serving both as a traditional Node server and as Vercel serverless functions from the same entry point.",
       challenge:
-        "Financial education is dry, and first-time investors drop off fast. The bet: game mechanics, progress, rewards, streaks, would keep people learning long enough to build real understanding.",
+        "Financial education is dry, and first-time investors drop off fast. The bet: game mechanics, progress, rewards, streaks, would keep people learning long enough to build real understanding, all shippable as a working product in a single day rather than a slide deck.",
       approach: [
         {
-          h: "A custom gamification engine",
-          p: "A Node.js engine tracks XP, unlocks achievements, and maintains daily learning streaks, with quiz-based validation gating progress through modules.",
+          h: "A custom gamification engine, synced not just stored",
+          p: "A GamificationProvider (depending on AuthProvider in the same provider tree) tracks XP, streak, and level client-side and syncs it to a /api/progress endpoint backed by Mongoose, with quiz-based validation gating progress through modules like Index Investing, Mutual Funds, and Stocks.",
         },
         {
           h: "Real-time rewards loop",
-          p: "Instant notifications fire on achievements and personal milestones to reinforce the habit.",
+          p: "Instant notifications fire on achievements and personal milestones, reinforcing the habit loop the gamification system is built around.",
         },
-        { h: "Secure accounts", p: "Registration and login secured with bcrypt and JWT." },
+        {
+          h: "Secure accounts, built right",
+          p: "Passwords are bcrypt-hashed with select: false on the schema field, so a password hash is never accidentally returned from a query, and JWT auth middleware loads the authenticated user onto every protected request.",
+        },
+        {
+          h: "One codebase, two deployment modes",
+          p: "The same server/index.js runs as a traditional Node server locally (app.listen) and as a Vercel serverless function in production; a thin wrapper strips the /api prefix before handing the request to the same Express app, so there's no separate serverless-specific backend to maintain.",
+        },
         {
           h: "Scoped to ship in 24 hours",
-          p: "Cut to a production-ready MVP, interactive modules, progress tracking, and the full reward loop, delivered in a single hackathon.",
+          p: "Cut to a production-ready MVP, interactive modules, progress tracking, onboarding flow, and the full reward loop, delivered end-to-end in a single hackathon.",
         },
       ],
       outcome:
-        "A polished, motivating learning experience that turns dry financial concepts into a game, built and shipped end-to-end in a day.",
+        "A polished, motivating learning experience that turns dry financial concepts into a game, deployed live on Vercel, built and shipped end-to-end in a day, with a deployment architecture (one Express app, two runtime modes) that's more deliberate than most hackathon projects bother with.",
     },
   },
   {
@@ -444,7 +454,7 @@ export const PROJECTS: Project[] = [
     slug: "mandala",
     cat: "Interactive Art",
     title: "Mandala Studio",
-    one: "An interactive, web-based zen experience for creating, customizing, and meditating with generative mathematical mandala art.",
+    one: "An interactive, web-based zen experience for creating, customizing, and meditating with generative mathematical mandala art, with every visual and every sound generated procedurally at runtime, nothing fetched, nothing pre-rendered.",
     details: [
       "Generative Mandalas: create beautiful, mathematically precise mandalas.",
       "Customization: adjust size, complexity (rings), rotation speed, glow effects, and custom color palettes.",
@@ -452,36 +462,36 @@ export const PROJECTS: Project[] = [
       "Ambient Audio: Web Audio API soundscapes (Singing Bowl, Gentle Rain, Ocean Waves) for relaxation.",
       "Export Module: save customized artwork instantly as a high-resolution PNG.",
     ],
-    tech: ["React", "Vite", "Framer Motion", "Web Audio API", "html2canvas"],
+    tech: ["React 19", "Vite 7", "Framer Motion", "Web Audio API", "html2canvas", "ESLint 9"],
     link: "https://github.com/soumya0343/mandala-zen",
     image: "/assets/projects/mandala-preview.png",
     deepdive: {
       role: "Solo, design & build",
       type: "Interactive art",
       overview:
-        "An interactive zen studio for creating and meditating with generative mathematical mandala art, part creative tool, part calm space.",
+        "An interactive zen studio for creating and meditating with generative mathematical mandala art, part creative tool, part calm space. There's no backend, no router, no state library, just component-local React state driving inline SVG and a synthesized audio engine.",
       challenge:
-        "Make generative art that's both mathematically precise and genuinely relaxing, with visuals, sound, and pacing all working together rather than fighting for attention.",
+        "Make generative art that's both mathematically precise and genuinely relaxing, with geometry, sound, and pacing all working together rather than fighting for attention, and keep it smooth enough at 16 rings of detail to feel meditative rather than janky.",
       approach: [
         {
-          h: "Generative geometry",
-          p: "Mandalas are generated from adjustable parameters, size, complexity (rings), rotation speed, glow, and custom palettes, so every piece is unique yet precise.",
+          h: "Geometry built from polar math, not presets",
+          p: "Each ring's petal count scales with its position (6 + ring×2, so outer rings carry more detail), and every petal is a two-segment quadratic Bézier path computed from cos/sin of the petal angle. The outermost three rings render stroke-only for a lace-like edge. The full SVG path array is memoized on rings, size, and color, so dragging the rotation-speed or glow slider never triggers a geometry rebuild.",
         },
         {
-          h: "Synthesized soundscapes",
-          p: "Ambient audio (singing bowl, gentle rain, ocean waves) built with the Web Audio API for relaxation.",
+          h: "Animation that never touches JavaScript per frame",
+          p: "Rotation is pure CSS keyframes applied to the SVG element with willChange: transform, so it's GPU-composited rather than recalculated every tick. Breathing mode layers a Framer Motion scale animation on top, a 19-second loop matched to a 4s inhale / 7s hold / 8s exhale box-breathing rhythm, also compositor-only, so the two animations stay smooth together even with the densest mandalas.",
         },
         {
-          h: "Guided breathing mode",
-          p: "A zen mode syncs a breathing animation to Inhale / Hold / Exhale prompts.",
+          h: "Four soundscapes, synthesized live, zero audio files",
+          p: "A singing bowl is four stacked sine partials with slow per-partial vibrato; rain is brown noise shaped through a highpass/lowpass pair; ocean waves layer a noise rumble with a bandpass 'foam' swelled by a slow LFO; an ambient drone detunes a sine/triangle stack and drifts it over time. One AudioContext and master gain node are created lazily on first play; switching tracks runs the previous track's own cleanup function before starting the next.",
         },
         {
-          h: "High-res export",
-          p: "html2canvas exports finished artwork as a high-resolution PNG in a single click.",
+          h: "Export that frames what the screen doesn't",
+          p: "The live (transparent) SVG is cloned into an off-screen wrapper with the app's dark background and padding, rendered through html2canvas at 2x scale for a retina-quality PNG, then downloaded via a synthetic link click, so the exported image looks intentional rather than like a screenshot of a transparent canvas.",
         },
       ],
       outcome:
-        "A calming, shareable creative tool where the math is invisible and the experience is what you feel.",
+        "A calming, shareable creative tool where the math and audio synthesis stay invisible and the experience is what you feel, built entirely client-side with no network dependency at runtime.",
     },
   },
   {
@@ -489,39 +499,45 @@ export const PROJECTS: Project[] = [
     slug: "portfolio",
     cat: "Creative Portfolio",
     title: "Digital Portfolio",
-    one: "An immersive personal portfolio blending WebGL-powered fluid art with brutalist typography, dynamic theming, and interactive scroll animations.",
+    one: "A precision-editorial personal site with dual Console/Spec themes, scroll-driven reveals, a live GitHub contribution graph, deep-dive case study pages, and an LLM agent that answers questions about my work, grounded in the same data that renders the page, so they can never drift apart.",
     details: [
-      "Designed and launched an immersive, cinematic portfolio blending WebGL fluid art with rigorous brutalist typography.",
-      "Engineered a high-performance React app using Vite and TypeScript for optimal bundle sizing and rapid hydration.",
-      "Implemented interactive scroll animations using the Intersection Observer API and custom React hooks to manage viewport state.",
-      "Built a dynamic theming engine supporting dark and light modes via native CSS variables and iframe color filtering.",
+      "Built a single-page React 19 + TypeScript app, statically built by Vite and served on Vercel with two serverless functions.",
+      "Grounded an 'Ask my AI' agent on the same typed data module the page renders from, so the UI and the agent can never contradict each other.",
+      "Made the agent provider-agnostic over any OpenAI-compatible API with SSE streaming, and a scripted fallback so it never fully goes down.",
+      "Implemented dual Console/Spec themes via a single data-theme attribute and CSS custom properties, plus scroll-driven reveals and a live GitHub contribution graph.",
     ],
-    tech: ["React", "TypeScript", "Vite", "WebGL"],
+    tech: ["React 19", "TypeScript", "Vite 7", "Three.js", "Vercel Serverless Functions", "Resend", "Vercel Analytics"],
     link: "https://github.com/soumya0343/soumya-portfolio",
+    live: "https://soumya-portfolio-nine.vercel.app",
+    liveLabel: "Live Site",
     image: "/assets/projects/portfolio-preview.png",
     deepdive: {
       role: "Solo, design & build",
       type: "Creative portfolio",
       overview:
-        "A craft exercise in atmosphere: blend WebGL fluid art with rigorous brutalist typography into something cinematic, without sacrificing performance.",
+        "This site itself: a single-page React app statically built by Vite and served on Vercel, with two thin serverless functions for the things a static site can't do, calling an LLM and sending email. Every fact the site states about me, projects, experience, skills, lives in one typed data module that both the UI and the AI agent render from.",
       challenge:
-        "Immersive visuals usually mean heavy bundles and jank. The goal was WebGL-grade atmosphere that still hydrates quickly and stays smooth on mid-range hardware.",
+        "A portfolio that talks about itself with an 'Ask my AI' feature risks the AI contradicting the page, or going down the moment a model key expires. The goal was a single source of truth that both surfaces share, with the AI feature never fully failing even with no key configured.",
       approach: [
         {
-          h: "WebGL fluid art, on a budget",
-          p: "Rendered animated fluid backgrounds on canvas while keeping the React app lean with Vite + TypeScript for tight bundle sizing and fast hydration.",
+          h: "One data module, two consumers, zero drift",
+          p: "portfolio.ts exports typed project, experience, and skills data; the case-study pages render directly from it, and the /api/ask endpoint imports the exact same exports to build its grounding prompt. Editing a project's copy updates the rendered page and what the AI agent knows in the same commit, they're structurally incapable of disagreeing.",
         },
         {
-          h: "A real theming engine",
-          p: "Dark and light modes driven by native CSS variables, with iframe color filtering for embedded media, designed intentionally, not a hard-coded inversion.",
+          h: "A streaming, provider-agnostic agent that never goes fully down",
+          p: "The serverless /api/ask function talks to any OpenAI-compatible chat completions API (Groq by default, Gemini or Cerebras swappable via env var) and streams SSE token-by-token to the client. If the key is missing or the provider errors, the client falls back to a scripted keyword bot built from the same data module, so the feature degrades gracefully instead of breaking.",
         },
         {
-          h: "Scroll-driven motion",
-          p: "Interactive reveals built on the Intersection Observer API and custom React hooks that track viewport state.",
+          h: "Two views, zero router",
+          p: "There's no router library. A single ?id=<slug> query param, managed by history.pushState and a popstate listener, switches between the home page and a case-study deep-dive, with scroll position saved and restored via useLayoutEffect so returning from a case study lands you exactly where you left off.",
+        },
+        {
+          h: "Theming through tokens, not branches",
+          p: "Dark 'Console' and light 'Spec' themes swap by toggling a single data-theme attribute on <html>, persisted to localStorage. All styling lives in one CSS file driven by custom properties, so no component carries its own theme logic.",
         },
       ],
       outcome:
-        "A distinctive, fast portfolio that proves visual ambition and engineering discipline can coexist, and the direct predecessor to this redesign.",
+        "A live, self-describing portfolio where the page and its own AI agent are guaranteed to agree, deep-linkable case studies, a real contact pipeline through Resend, and an 'Ask my AI' feature that's never actually down, just deployed and live on Vercel.",
     },
   },
 ];
