@@ -25,11 +25,11 @@ export default function About() {
             </p>
             <p>
               What pulls me most right now is the AI-systems layer: <span className="bento-hl">multi-agent systems,
-              RAG, LLM infrastructure</span> — the parts that decide whether a model is actually useful or just a good
+              RAG, LLM infrastructure</span>, the parts that decide whether a model is actually useful or just a good
               demo.
             </p>
             <p className="bento-intro__quiet">
-              To me, good engineering isn't about getting it right on paper — it's about building fast, breaking things
+              To me, good engineering isn't about getting it right on paper, it's about building fast, breaking things
               in the open, and fixing them before anyone notices.
             </p>
           </div>
@@ -65,6 +65,8 @@ export default function About() {
               <span className="chip">Full-Stack Architecture</span>
               <span className="chip">Backend &amp; Distributed Systems</span>
               <span className="chip">LLM Eval &amp; Agentic Systems</span>
+              <span className="chip">AI Agents</span>
+              <span className="chip">Voice Agents</span>
             </div>
           </div>
 
@@ -76,7 +78,7 @@ export default function About() {
               the rule: why something exists, what it assumes, where it breaks.
             </p>
             <p>
-              But I don't sit on that thinking for long. Once I have a rough shape of the problem, I start building —
+              But I don't sit on that thinking for long. Once I have a rough shape of the problem, I start building,
               and I'd rather fix things as they break in a real version than try to pre-solve every edge case on paper.
             </p>
           </div>
@@ -87,15 +89,15 @@ export default function About() {
             <div className="bento-interests__grid">
               <div className="bento-int">
                 <span className="bento-int__name">Music</span>
-                <p>Guitar &amp; keyboard — rhythm and structure in a different language.</p>
+                <p>Guitar &amp; keyboard, rhythm and structure in a different language.</p>
               </div>
               <div className="bento-int">
                 <span className="bento-int__name">Visual Art</span>
-                <p>Mandala art, drawing, painting — symmetry and balance on paper.</p>
+                <p>Mandala art, drawing, painting, symmetry and balance on paper.</p>
               </div>
               {/* <div className="bento-int">
                 <span className="bento-int__name">Reading</span>
-                <p>Building the habit, one book at a time — more about the discipline than the count.</p>
+                <p>Building the habit, one book at a time, more about the discipline than the count.</p>
               </div> */}
               <div className="bento-int">
                 <span className="bento-int__name">Travel</span>
@@ -103,7 +105,7 @@ export default function About() {
               </div>
               <div className="bento-int">
                 <span className="bento-int__name">People</span>
-                <p>Conversations, new connections, collaboration — growth is human.</p>
+                <p>Conversations, new connections, collaboration, growth is human.</p>
               </div>
             </div>
           </div>
@@ -144,9 +146,14 @@ export default function About() {
                 <div className="bento-reading__author">Rick Riordan</div>
                 <div className="bento-reading__series">Percy Jackson #2</div>
                 <p className="bento-reading__note">
-                  Off the clock — myth, monsters, and a good time.
+                  Off the clock, myth, monsters, and a good time.
                 </p>
               </div>
+            </div>
+            <div className="bento-reading__next">
+              <span className="bento-reading__nextlabel">Up next</span>
+              <span className="bento-reading__nexttitle">One of Us Is Lying</span>
+              <span className="bento-reading__nextauthor">Karen M. McManus</span>
             </div>
           </div>
         </div>

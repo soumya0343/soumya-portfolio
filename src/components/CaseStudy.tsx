@@ -25,7 +25,7 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
 
   useScrollReveal([slug]);
   useEffect(() => {
-    // jump to top instantly — `scroll-behavior: smooth` would otherwise animate
+    // jump to top instantly, `scroll-behavior: smooth` would otherwise animate
     // the whole way up from wherever the project card was clicked.
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     const t = setTimeout(() => {
@@ -36,7 +36,7 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
 
   useEffect(() => {
     document.title =
-      idx === -1 ? "Project not found — Soumya Gupta" : `${PROJECTS[idx].title} — Case Study — Soumya Gupta`;
+      idx === -1 ? "Project not found, Soumya Gupta" : `${PROJECTS[idx].title}, Case Study, Soumya Gupta`;
   }, [idx]);
 
   const TopBar = (
@@ -104,7 +104,7 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
   const d = p.deepdive;
   const prev = idx > 0 ? PROJECTS[idx - 1] : null;
   const next = idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
-  const stack = p.tech.slice(0, 5).join(", ") + (p.tech.length > 5 ? "…" : "");
+  const stack = p.tech.join(", ");
 
   return (
     <div className="pj">
@@ -123,7 +123,7 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
             <div className="pj-actions rv" data-d="3">
               {p.live && (
                 <a className="btn btn--primary" href={p.live} target="_blank" rel="noopener noreferrer">
-                  Live Demo ↗
+                  {p.liveLabel || "Live Demo"} ↗
                 </a>
               )}
               {p.link && (

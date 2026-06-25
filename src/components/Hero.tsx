@@ -22,11 +22,11 @@ export default function Hero() {
             Soumya Gupta
           </h1>
           <p className="hero__tag rv" data-d="2">
-            I build the <span className="grad">whole stack</span>
-            <br />— top to bottom.
+            I build the <span className="grad">whole stack</span>,
+            <br />top to bottom.
           </p>
           <p className="hero__claim rv" data-d="2">
-            Backend &amp; AI systems engineer. From the interface down through APIs, agents, services, and data — I
+            Backend &amp; AI systems engineer. From the interface down through APIs, agents, services, and data, I
             architect and ship production systems end to end.
           </p>
           <div className="hero__cta rv" data-d="3">

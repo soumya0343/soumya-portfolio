@@ -5,7 +5,7 @@ import { track } from "@vercel/analytics";
  * Tracks how long a visitor actively spends on a route and reports it to
  * Vercel Analytics as a custom `page_time` event when they leave or hide the tab.
  *
- * "Active" time only accumulates while the tab is visible — backgrounded tabs
+ * "Active" time only accumulates while the tab is visible, backgrounded tabs
  * are paused so an idle tab left open overnight doesn't inflate the number.
  *
  * @param route a stable label for the current view (e.g. "home" or "case:foo")
@@ -28,7 +28,7 @@ export function usePageTime(route: string) {
         since = Date.now();
       } else {
         accumulate();
-        report(); // tab hidden may precede unload on mobile — report now
+        report(); // tab hidden may precede unload on mobile, report now
       }
     };
 

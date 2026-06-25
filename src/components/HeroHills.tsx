@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-/* GLSL animated hills hero background — ported from hills.js. */
+/* GLSL animated hills hero background, ported from hills.js. */
 
 const VERTEX = `
   #define GLSLIFY 1
@@ -99,7 +99,7 @@ const FRAGMENT = `
   }
 `;
 
-// Hill red per theme — darker, deeper red in light mode for contrast against the pale page.
+// Hill red per theme, darker, deeper red in light mode for contrast against the pale page.
 const COLOR_DARK = new THREE.Vector3(0.9, 0.22, 0.23);
 const COLOR_LIGHT = new THREE.Vector3(0.62, 0.1, 0.12);
 const hillColor = () =>
@@ -121,7 +121,7 @@ export default function HeroHills() {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
     } catch {
-      // No WebGL (some browsers / headless sandboxes) — skip the background, keep the page alive.
+      // No WebGL (some browsers / headless sandboxes), skip the background, keep the page alive.
       return;
     }
     renderer.setClearColor(0x000000, 0);

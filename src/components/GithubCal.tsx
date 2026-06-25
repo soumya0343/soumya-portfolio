@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
-/* Custom GitHub contribution calendar — ported from github-cal.js. */
+/* Custom GitHub contribution calendar, ported from github-cal.js. */
 
 const USERNAME = "soumya0343";
 const DESKTOP_MONTHS = 6;

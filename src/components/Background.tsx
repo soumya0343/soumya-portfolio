@@ -65,9 +65,9 @@ export default function Background() {
         <div className="writing rv">
           <div className="writing__card">
             <div className="writing__txt">
-              <b>Writing — in progress.</b>
+              <b>Writing, in progress.</b>
               <p>
-                Drafting deep dives on backend architecture, frontend optimization, and AI integration — notes from the
+                Drafting deep dives on backend architecture, frontend optimization, and AI integration, notes from the
                 engineering process. Coming soon.
               </p>
             </div>

@@ -160,7 +160,7 @@ export default function Contact() {
         </div>
 
         <footer className="foot">
-          <span>© {year} Soumya Gupta — All rights reserved. · Last updated June 20, 2026</span>
+          <span>© {year} Soumya Gupta, All rights reserved. · Last updated June 20, 2026</span>
           <div className="foot__socials">
             <a href="https://www.linkedin.com/in/soumya-gupta-9bb270263" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <LinkedInIcon />

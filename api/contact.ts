@@ -1,9 +1,9 @@
-/* Serverless contact endpoint — sends the form message to Soumya's inbox via Resend.
+/* Serverless contact endpoint, sends the form message to Soumya's inbox via Resend.
  *
  * Env vars (set in Vercel project settings, NOT prefixed with VITE_):
- *   RESEND_API_KEY  — required, your Resend API key (never shipped to the browser)
- *   CONTACT_TO      — destination inbox, default soumya0343@gmail.com
- *   CONTACT_FROM    — verified sender. Default onboarding@resend.dev only delivers
+ *   RESEND_API_KEY , required, your Resend API key (never shipped to the browser)
+ *   CONTACT_TO     , destination inbox, default soumya0343@gmail.com
+ *   CONTACT_FROM   , verified sender. Default onboarding@resend.dev only delivers
  *                     to the Resend account owner; to send anywhere, verify a domain
  *                     in Resend and set e.g. "Portfolio <hello@yourdomain.com>".
  *
@@ -61,7 +61,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   if (!process.env.RESEND_API_KEY) return fail(res, 500, "Contact form is not configured on the server.");
 
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "local";
-  if (rateLimited(ip)) return fail(res, 429, "Too many messages — give it a few minutes.");
+  if (rateLimited(ip)) return fail(res, 429, "Too many messages, give it a few minutes.");
 
   let body: { name?: unknown; email?: unknown; message?: unknown };
   try {

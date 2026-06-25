@@ -25,6 +25,7 @@ export interface Project {
   tech: string[];
   link: string | null;
   live?: string;
+  liveLabel?: string;
   image: string | null;
   deepdive: DeepDive;
 }
@@ -84,7 +85,7 @@ export const OTHER_PROJECTS: OtherProject[] = [
   {
     title: "Mandate",
     cat: "AI Agent Security · Multi-Agent",
-    one: "An authorization gateway for AI-agent workflows — every consequential action a worker agent wants to execute is intercepted and routed through a five-agent security panel (Warden, Verity, Ledger, Codex, Arbiter) that investigates in parallel, issues a verdict, and escalates the highest-stakes actions to a human operator.",
+    one: "An authorization gateway for AI-agent workflows, every consequential action a worker agent wants to execute is intercepted and routed through a five-agent security panel (Warden, Verity, Ledger, Codex, Arbiter) that investigates in parallel, issues a verdict, and escalates the highest-stakes actions to a human operator.",
     tech: ["Python", "LangGraph", "FastAPI", "SSE", "Multi-Agent"],
     link: "https://github.com/soumya0343/mandate",
   },
@@ -96,28 +97,28 @@ export const PROJECTS: Project[] = [
     slug: "saral",
     cat: "Multi-Agent AI · RAG",
     title: "Saral",
-    one: "A supervisor-orchestrated multi-agent support system for regulated enterprises — multilingual (English / Hindi / Hinglish), grounded in each customer's own policy documents, with compliance and PII gates on every turn and an LLM-judge evaluation suite.",
+    one: "A supervisor-orchestrated multi-agent support system for regulated enterprises (insurance, lending), multilingual (English / Hindi / Hinglish), grounded in each customer's own policy documents, with compliance and PII gates on every turn and an LLM-judge evaluation suite scored against human labels.",
     details: [
-      "Authored a LangGraph supervisor-orchestrated multi-agent graph from scratch (triage, RAG, action, synthesis) with parallel mixed-intent fan-out, tool calling, and suspend/resume conversation memory — resolving EN/Hindi/Hinglish insurance and lending queries.",
+      "Authored a LangGraph supervisor-orchestrated multi-agent graph from scratch (triage, RAG, action, synthesis) with parallel mixed-intent fan-out, tool calling, and suspend/resume conversation memory, resolving EN/Hindi/Hinglish insurance and lending queries.",
       "Built per-customer RAG citing the user's own policy clause, over a Sarvam / Anthropic provider abstraction.",
-      "Designed an eval pipeline — 190 labeled scenarios with a per-language LLM judge scoring groundedness, cross-lingual consistency, impersonation, and injection resistance, surfaced on a Next.js dashboard.",
+      "Designed an eval pipeline, ~95 labeled scenarios with a per-language LLM judge scoring groundedness, cross-lingual consistency, impersonation, and injection resistance, with Cohen's κ against human labels computed per language, surfaced on a Next.js dashboard.",
       "Architected an event-driven Redis Streams runtime (FastAPI enqueue → worker consume) with checkpoint/resume, exactly-once idempotent writes, token-derived identity, step-up OTP, and Indian-PII redaction.",
     ],
-    tech: ["Python", "LangGraph", "RAG", "Sarvam", "Anthropic", "Redis Streams", "FastAPI", "Next.js"],
+    tech: ["Python", "FastAPI", "LangGraph", "PostgreSQL", "Redis Streams", "Next.js", "multilingual-e5", "Gemini", "Groq", "Cerebras", "Sarvam"],
     link: "https://github.com/soumya0343/saral",
     image: "/assets/projects/saral-preview.png",
     deepdive: {
-      role: "Solo — AI systems engineering",
+      role: "Solo, AI systems engineering",
       type: "Multi-agent AI · RAG",
-      overview: "Saral (सरल — \"simple\") resolves customer-support queries for regulated insurance and lending enterprises: it understands English, Hindi, and Hinglish, retrieves grounded answers from a policy corpus, takes authorized account actions, and enforces compliance on every turn.",
-      challenge: "Support automation in regulated domains can't hallucinate a clause or fire an unauthorized account change. The hard part is an LLM agent that is multilingual, grounded in each customer's own documents, and provably safe — not just plausible.",
+      overview: "Saral (सरल, \"simple\") resolves customer-support queries for regulated insurance and lending enterprises. It understands English, Hindi, and Hinglish, retrieves grounded answers from each customer's own policy corpus, takes authorized account actions, and enforces compliance on every turn.",
+      challenge: "Support automation in a regulated domain can't hallucinate a clause or fire an unauthorized account change. The hard part isn't sounding helpful, it's building an agent that's multilingual, grounded in the right customer's documents, and provably safe before it ever responds or acts.",
       approach: [
-        { h: "Grounding that's enforced, not hoped", p: "Retrieval is hard-filtered by verified user_id and an intent→domain purpose map over a local multilingual-e5 index. A score floor escalates low-confidence retrieval; a grounding check rejects any phrasing whose numbers or clause-ids don't trace to a passage, falling back to a deterministic draft." },
-        { h: "Identity and authorization as a gate", p: "A mock IdP mints short-TTL session tokens; reads need a session, state-changing actions require OTP step-up and a read-back confirmation. Injection detection, id-ownership, and authorization all run before any action executes." },
-        { h: "Real agent orchestration", p: "A LangGraph supervisor routes to specialist agents and fans out parallel branches for mixed intents, with per-role model routing — Gemini for Hindi synthesis, Groq/Cerebras for fast triage, Sarvam for language detection." },
-        { h: "Exactly-once, suspend/resume writes", p: "A write suspends for step-up and resumes in a fresh run that re-validates identity; a conversation-anchored idempotency key prevents double-writes across crash-resume, and an orphan reaper abandons expired pending writes." },
+        { h: "Identity is token-derived, never trusted from the message", p: "A mock IdP mints short-TTL session tokens. Reads need a valid session; state-changing actions require OTP step-up plus an explicit read-back confirmation before they fire." },
+        { h: "Per-customer grounding, the real differentiator", p: "Answers cite this customer's own policy clause, in Hindi or English, not a generic template. Retrieval is hard-filtered by the verified user ID over a local multilingual-e5 index, so Hindi/Hinglish queries correctly match Hindi-language documents." },
+        { h: "Groundedness enforced, not hoped", p: "Retrieval below a relevance score floor escalates instead of answering. A grounding check rejects any LLM phrasing whose numbers or clause-ids don't trace back to a retrieved passage, falling back to a deterministic draft. The factual core stays deterministic; the LLM only handles tone." },
+        { h: "Exactly-once writes across suspend/resume", p: "A write suspends for step-up and resumes in a fresh run that re-validates identity. A conversation-anchored idempotency key prevents double-writes across crash-resume, and a pending write past its TTL is abandoned, never auto-fired." },
       ],
-      outcome: "A measured system — 190 labeled scenarios scored by a per-language LLM judge for groundedness, cross-lingual consistency, impersonation, and injection resistance — where the factual core stays deterministic and the LLM only rephrases tone.",
+      outcome: "Roughly 95 labeled scenarios covering groundedness, impersonation, multilingual consistency, and injection resistance, scored by a per-language LLM judge whose Cohen's κ against human labels is computed per language; a language below the κ floor is flagged for human review rather than silently trusted.",
     },
   },
   {
@@ -125,29 +126,30 @@ export const PROJECTS: Project[] = [
     slug: "repolens",
     cat: "Developer Intelligence Platform",
     title: "RepoLens",
-    one: "A GitHub-native SDLC intelligence platform that turns raw repository data into developer insights — file coupling, architecture violations, bus factor, CI flakiness, team collaboration, and DORA metrics — via a React dashboard and a PR-commenting bot.",
+    one: "A GitHub-native SDLC intelligence platform that turns raw repository data into developer insights: file coupling, architecture violations, bus factor, CI flakiness, team collaboration, and DORA metrics, via a React dashboard, a live WebSocket feed, and a PR-commenting GitHub bot.",
     details: [
       "Deployed a live LLM assistant exposing 6 tool-use tools over repo analytics, with multi-provider inference (Groq / Gemini), Redis caching, and structured-output fallback on failure.",
-      "Architected an event-driven backend — FastAPI plus 5 specialized ARQ/Redis workers — over async PostgreSQL/TimescaleDB and a Neo4j collaboration graph.",
+      "Architected an event-driven backend, FastAPI plus 5 specialized ARQ/Redis workers, over async PostgreSQL/TimescaleDB and a Neo4j collaboration graph.",
       "Built 6 analysis engines into a UnifiedRiskScorer: FP-Growth coupling, Tree-sitter AST violations, bus-factor, and a Neo4j reviewer graph.",
       "Shipped to production on Azure (Docker, Caddy auto-TLS, GitHub Actions CI) with OAuth/JWT.",
     ],
-    tech: ["FastAPI", "ARQ", "Neo4j", "PostgreSQL", "React 19", "Azure"],
+    tech: ["FastAPI", "ARQ", "Neo4j", "PostgreSQL", "TimescaleDB", "Redis", "React 19", "D3", "Tree-sitter", "NetworkX", "Drain3", "Gemini", "Azure", "Caddy"],
     link: "https://github.com/soumya0343/repolens",
     live: "https://repolenss.duckdns.org",
     image: "/assets/projects/repolens-preview.png",
     deepdive: {
-      role: "Solo — full-stack & data engineering",
+      role: "Solo, full-stack & data engineering",
       type: "SDLC analytics platform",
-      overview: "RepoLens (live at repolenss.duckdns.org) transforms a repository's commit, PR, and CI history into actionable engineering signals — coupling, architecture drift, bus factor, flakiness, and DORA metrics — surfaced through a React dashboard and a GitHub PR bot.",
-      challenge: "Engineering health lives in scattered git, PR, and CI data. Turning that into trustworthy, real-time metrics means a polyglot persistence layer and a fan-out of independent analysis workers that stay correct under continuous ingestion.",
+      overview: "RepoLens connects to a GitHub repo, backfills its full commit/PR/CI history, and runs eight independent analysis engines over that data to surface coupling, architecture drift, bus factor, flakiness, and DORA metrics. Results show up in a React dashboard, stream live over WebSockets during backfill, and get posted directly as PR comments by a GitHub App bot.",
+      challenge: "Engineering health signals are scattered across git history, PR metadata, and CI logs, and each signal needs a different kind of analysis: graph algorithms for collaboration, AST parsing for architecture, time-series aggregation for DORA metrics. Computing all of it without one slow engine blocking the others, while keeping a live dashboard responsive during a multi-thousand-commit backfill, is the actual engineering problem.",
       approach: [
-        { h: "Polyglot persistence", p: "Time-series metrics in PostgreSQL + TimescaleDB, the collaboration graph in Neo4j, and Redis for the queue and cache — each store chosen for the shape of the query it serves." },
-        { h: "Fan-out analysis workers", p: "Independent ARQ workers (architecture, CI, classification) parse code with Tree-sitter and run NetworkX graph algorithms, so each engine scales and fails in isolation." },
-        { h: "Insight engines", p: "CoChangeOracle runs FP-Growth over commit history with time-decay to score file coupling; ArchSentinel flags architecture violations against declared boundaries." },
-        { h: "GitHub-native delivery", p: "GitHub OAuth for auth, a bot that comments findings on PRs, and a D3-powered React 19 dashboard — deployed on an Azure VM with Caddy handling automatic TLS." },
+        { h: "Persistence chosen per query shape, not by default", p: "PostgreSQL with the TimescaleDB extension holds time-series metrics for fast range queries; Neo4j holds the collaboration graph (ChronosGraph: a multi-layer graph across commits, reviews, and authors) for traversal queries like reviewer suggestions; Redis backs the ARQ task queue and caching layer. Three different access patterns, three different stores." },
+        { h: "Eight engines, isolated and independently scaled", p: "CoChangeOracle runs FP-Growth with time-decay over commit history to score file coupling. ArchSentinel parses ASTs with Tree-sitter and evaluates OPA policy to flag architectural violations. ChurnBusFactorAnalyzer applies a Herfindahl-Hirschman Index to contributor activity for bus-factor risk. ChronosGraph powers reviewer suggestions and team-collaboration scoring off the Neo4j graph. TestPulse clusters CI logs with Drain3 and a Bayesian model to detect flaky tests. ReleaseHealthTracker computes DORA metrics straight from CI run data. Each engine runs in its own ARQ worker (arch-worker, ci-worker, classifier-worker), so a slow or failing engine never blocks the others or the ingestion pipeline." },
+        { h: "A risk score built from real signals, not a black box", p: "UnifiedRiskScorer combines four weighted signals into a 0–100 file-level score: churn/change-frequency (35 points, from the commit_files table), bus factor (35 points, from the per-file HHI), architectural violations (30 points), and a coupling bonus (10 points) from CoChangeOracle. LLMExplainer (Gemini 1.5 Flash, with Redis caching) turns that breakdown into a plain-language root-cause explanation on demand, and can also generate an architecture policy from a repo's existing structure." },
+        { h: "GitHub-native at every layer, not a bolted-on integration", p: "Auth runs through GitHub OAuth with JWT sessions. The bot, a separate GitHub App, listens for pull_request webhooks, opens a pending Check Run, posts a structured PR comment with the risk breakdown plus inline diff annotations on violating lines, then resolves the Check Run to pass or fail against a configurable threshold. A DEV_MODE flag bypasses OAuth with a mock user for local development, and the API refuses to boot with default/weak secrets unless that flag is set, so a misconfigured prod deploy fails loud instead of silently running insecure." },
+        { h: "Live feedback during long-running backfills", p: "A WebSocket stream (/ws/progress/{repo_id}) reports backfill progress as it happens rather than leaving the dashboard blank during a multi-thousand-commit initial sync, and a second stream (/ws/repos/{repo_id}/live) pushes live PR risk scores as new pull requests come in." },
       ],
-      outcome: "A live, multi-service platform that makes repository health legible — and a deep exercise in distributed ingestion, graph modeling, and production deployment.",
+      outcome: "A live, 8-service platform (API, ingestor, 3 isolated workers, GitHub bot, frontend, plus the data layer) deployed on an Azure VM behind Caddy with automatic TLS, complete with a real GitHub App integration that comments on live pull requests, not just a local demo.",
     },
   },
   {
@@ -155,29 +157,29 @@ export const PROJECTS: Project[] = [
     slug: "inferlog",
     cat: "LLM Infrastructure · Observability",
     title: "InferLog",
-    one: "A production-grade multi-provider LLM chatbot with full inference observability — true SSE streaming with TTFT, event-based log ingestion over Redis Streams, two-stage PII redaction, and real-time latency/throughput dashboards.",
+    one: "A production-grade multi-provider LLM chatbot with full inference observability: true SSE streaming with TTFT measurement, event-based log ingestion over Redis Streams consumer groups, two-stage PII redaction, and real-time latency/throughput dashboards.",
     details: [
       "Deployed a multi-provider LLM serving layer (Groq / Gemini / OpenAI / Anthropic / Sarvam) via a pluggable BaseProvider SDK with SSE streaming and TTFT tracking.",
       "Decoupled logging from the hot path with Redis Streams consumer groups and XAUTOCLAIM crash recovery.",
       "Two-stage Presidio PII redaction with p50/p95/p99 analytics via a concurrently-refreshed materialized view.",
       "Containerized with 19 Kubernetes manifests (HPA, consumer-group scaling) and GitHub Actions CI publishing images to GHCR.",
     ],
-    tech: ["FastAPI", "Next.js", "Redis Streams", "Presidio", "Kubernetes", "GitHub Actions"],
+    tech: ["FastAPI", "Next.js", "Redis Streams", "Presidio", "PostgreSQL", "Docker", "Kubernetes", "GitHub Actions"],
     link: "https://github.com/soumya0343/chatbot",
     live: "https://chatbot-frontend-7zw7.onrender.com",
     image: "/assets/projects/inferlog-preview.png",
     deepdive: {
-      role: "Solo — backend & LLM infrastructure",
+      role: "Solo, backend & LLM infrastructure",
       type: "LLM observability platform",
-      overview: "InferLog is a production-grade chatbot built around observability: every inference is streamed, measured, PII-scrubbed, and logged through an event pipeline that feeds real-time analytics dashboards.",
-      challenge: "Logging LLM inference inline blocks the response and leaks PII. The goal was full observability — latency percentiles, token usage, error rates — without slowing the user's stream or storing sensitive data.",
+      overview: "InferLog is a production-grade chatbot built around observability: every inference is streamed, measured, PII-scrubbed, and logged through an event pipeline that feeds real-time analytics dashboards, without any of that logging touching the user-facing response path.",
+      challenge: "Logging LLM inference inline blocks the response and risks leaking PII into storage. The goal was full observability, latency percentiles, token usage, error rates, without adding latency to the user's stream or letting raw PII reach the database, even under consumer crashes or restarts.",
       approach: [
-        { h: "Decoupled the hot path", p: "The API fires a fire-and-forget InferenceEvent onto a Redis Stream; a separate ingestion service consumes batches via a consumer group, so logging never blocks streaming and scales independently." },
-        { h: "Streaming with real metrics", p: "True SSE streaming measures time-to-first-token and supports mid-stream cancel; a TrackedClient wraps every provider behind one interface." },
-        { h: "Two-stage PII redaction", p: "Presidio redacts user messages inline before the DB write (~30ms) and re-scrubs previews asynchronously during ingestion, so raw PII never lands in storage." },
-        { h: "Analytics + scale", p: "A materialized view refreshed after each batch powers p50/p95/p99 latency and throughput charts; the stack ships with 19 Kubernetes manifests and HPA on the API." },
+        { h: "Decoupled the hot path via Redis Streams", p: "The API fires a fire-and-forget InferenceEvent onto a Redis Stream (XADD) and never waits on it. A separate ingestion service reads in batches of 50 via XREADGROUP, and XAUTOCLAIM reclaims any message still pending after 60 seconds from a crashed consumer, giving exactly-once write semantics on restart without a separate dead-letter queue." },
+        { h: "Streaming with real metrics, not estimates", p: "True SSE streaming with mid-stream cancel via AbortController. A StreamingTracker measures time-to-first-token at the SDK level, and a TrackedClient wraps every provider (Groq, Gemini, OpenAI, Anthropic, Sarvam) behind one interface so metrics collection is provider-agnostic." },
+        { h: "Two-stage PII redaction matched to urgency", p: "Presidio redacts user message content inline before the Postgres write (~30ms, synchronous), since that data needs to be clean immediately for compliance. Output and log previews are redacted asynchronously in the ingestion service, where a few hundred milliseconds of delay costs nothing. The SDK itself only truncates to 500 characters before publishing, since the hot path can't afford a Presidio round-trip per token." },
+        { h: "Analytics that scale with the data", p: "A materialized view pre-aggregates p50/p95/p99 latency, throughput, and error rate per (hour_bucket, provider, model), refreshed with REFRESH CONCURRENTLY after every ingestion batch; a unique index on that same tuple is what makes the concurrent refresh possible without locking the table. The stack ships with 19 Kubernetes manifests, HPA on the API (1→5 replicas at 70% CPU), and ingestion scaling horizontally through the consumer group rather than the HPA." },
       ],
-      outcome: "A live, observable LLM platform (demo on Render) that proves inference logging can be production-grade — non-blocking, PII-safe, and horizontally scalable.",
+      outcome: "A live, observable LLM platform (demo on Render) where inference logging is non-blocking, PII-safe by construction, and horizontally scalable on both the serving and ingestion sides independently.",
     },
   },
   {
@@ -185,43 +187,45 @@ export const PROJECTS: Project[] = [
     slug: "codesentinel",
     cat: "Developer Tooling · AI",
     title: "CodeSentinel",
-    one: "A cross-editor extension for AI-powered code review — Gemini semantic analysis plus deterministic static analysis to catch SOLID violations, security risks, and architectural issues, even offline.",
+    one: "A VS Code / Cursor extension for AI-powered code review: Gemini semantic analysis layered over a deterministic local rule engine, so review stays available, fast, and reproducible even offline.",
     details: [
-      "AI-powered review: Gemini delivers context-aware feedback — summary, critical issues, best practices.",
+      "AI-powered review: Gemini delivers context-aware feedback, summary, critical issues, best practices.",
       "Offline rule-based review: runs without internet across clean code, architecture, security, performance, and maintainability.",
       "Two-tier behavior: AI review runs first for best results, followed by lightning-fast local rule-based analysis.",
       "Multi-language support: broad compatibility across frontend (React, Angular), backend (Node, Java, C++), and database layers.",
     ],
-    tech: ["TypeScript", "VS Code API", "Gemini", "Node.js"],
+    tech: ["TypeScript", "VS Code Extension API", "Gemini", "OpenAI (fallback)", "Node.js"],
     link: "https://github.com/soumya0343/CodeSentinel",
+    live: "https://marketplace.visualstudio.com/items?itemName=SoumyaGupta.codesentinel",
+    liveLabel: "Marketplace",
     image: "/assets/projects/codesentinel-preview.png",
     deepdive: {
-      role: "Solo — AI engineering & tooling",
+      role: "Solo, AI engineering & tooling",
       type: "Developer tool · AI",
       overview:
-        "A cross-editor extension that reviews code like a senior engineer — combining LLM reasoning with deterministic static analysis so it stays useful even with no network.",
+        "CodeSentinel reviews code the way a senior engineer would: AI reasoning for context and intent, backed by a deterministic rule engine that catches SOLID violations, security risks, and architectural smells whether or not a model is even reachable. It's published and installable from the VS Code Marketplace.",
       challenge:
-        "LLM review alone is non-deterministic and fails offline; pure static analysis misses intent. The answer was a layered system that leans on both, in the right order.",
+        "LLM-only review is non-deterministic, costs money per call, and breaks the moment there's no network or no API key. Static analysis alone is fast and reproducible but has no sense of intent, it can flag a pattern but can't reason about why it matters in context. The fix isn't picking one, it's layering both in the right order so neither failure mode takes the tool down.",
       approach: [
         {
-          h: "Two-tier review pipeline",
-          p: "Gemini runs first for context-aware feedback — a summary, critical issues, and best-practice notes. A fast local rule engine runs next (or alone, when offline), so you always get a review.",
+          h: "Two-tier pipeline, AI first when available, rules always",
+          p: "When a Gemini (or OpenAI fallback) key is set, AI review runs first and renders at the top: a summary, critical issues by severity, improvements, best-practice notes, and suggested refactors, all as structured Markdown. The offline rule engine always runs underneath it, so a missing key or a failed API call degrades to a still-complete review instead of an error.",
         },
         {
-          h: "Deterministic rule engine",
-          p: "Rules detect SOLID violations, security risks, and architectural smells across clean-code, performance, and maintainability categories — instant and reproducible.",
+          h: "A real rule engine, not a handful of regexes",
+          p: "Each rule is a typed object (id, area, principle, severity, appliesTo, check, rationale) matched against scope and framework, so a React-specific SRP rule never fires on a Go file. Findings are tagged across five severity levels (BLOCKER → INFO) and mapped to named principles (SRP, DRY, SOLID, KISS, YAGNI), which makes the rule-engine output legible and triageable rather than just a wall of warnings.",
         },
         {
-          h: "Editor-native integration",
-          p: "Built on the VS Code extension API so review happens inline, in the flow of writing code rather than in a separate tool.",
+          h: "Editor-native, in the flow of writing code",
+          p: "Built directly on the VS Code extension API with two entry commands, review the current file or the whole workspace, plus a connection-test command for debugging Gemini key issues. Workspace review auto-discovers relevant source files by extension and skips large or ignored paths rather than asking the user to point at files manually.",
         },
         {
-          h: "Broad language coverage",
-          p: "Works across frontend (React, Angular), backend (Node, Java, C++), and database layers.",
+          h: "Broad language coverage by design, not by accretion",
+          p: "Rules span frontend (React, Flutter, Next.js, Angular), backend (Node/Express, NestJS, Spring Boot, Go, Java, C++), and data layers (REST, GraphQL, MongoDB, PostgreSQL), each with framework-specific checks rather than one generic rule set stretched across languages.",
         },
       ],
       outcome:
-        "An AI code reviewer that's genuinely dependable — context-aware when online, deterministic and instant when not.",
+        "A published, installable VS Code/Cursor extension with zero telemetry and an offline-first privacy model: code only ever leaves the machine if an AI key is configured, and even then only to the chosen provider. The two-tier design means it's never down, worst case it's just less context-aware.",
     },
   },
   {
@@ -229,7 +233,7 @@ export const PROJECTS: Project[] = [
     slug: "zync",
     cat: "Productivity Platform",
     title: "Zync",
-    one: "A full-stack task, goal, and journaling app with drag-and-drop Kanban, nested task trees, a scalable Firestore schema, and granular progress tracking.",
+    one: "A full-stack task, goal, and journaling app with drag-and-drop Kanban, nested subtasks, daily check-ins with mood and focus tracking, and offline-capable PWA support.",
     details: [
       "Kanban Board: visualize workflow with a fully interactive, drag-and-drop board.",
       "Task Management: create, update, and organize tasks; break complex work into subtasks for granularity.",
@@ -237,48 +241,48 @@ export const PROJECTS: Project[] = [
       "Responsive Design: customized sidebar and layout for a seamless experience across devices.",
       "Authentication: secure user authentication powered by Firebase.",
     ],
-    tech: ["React 19", "TypeScript", "Vite", "Node.js", "Express", "Firebase"],
+    tech: ["React 19", "TypeScript", "Vite", "React Router v7", "Express 5", "Firebase Auth", "Cloud Firestore", "Workbox"],
     link: "https://github.com/soumya0343/zync",
     live: "https://zync-steel.vercel.app",
     image: "/assets/projects/zync-preview.png",
     deepdive: {
-      role: "Solo — design, frontend & backend",
+      role: "Solo, design, frontend & backend",
       type: "Full-stack productivity app",
       overview:
-        "Zync is a personal productivity workspace that unifies high-level goals with the day-to-day tasks that move them — plus journaling — so you stop juggling three separate apps.",
+        "Zync unifies high-level goals, the day-to-day tasks that move them, and daily journaling into one workspace. A React SPA talks to an Express API over Firebase ID tokens, with Firestore as the shared data layer behind both.",
       challenge:
-        "The hard part wasn't the UI, it was the data model. Tasks nest into subtasks arbitrarily deep, goals link to many tasks, and everything has to stay in sync across devices in real time — without expensive reads on every render.",
+        "The hard part wasn't the UI, it was keeping every layer correctly scoped to the signed-in user while supporting arbitrary task nesting, goal-task links, and a journaling stream, all through a stateless REST API rather than letting the client talk to Firestore directly.",
       approach: [
         {
-          h: "A schema built for nesting & scale",
-          p: "Designed a Firestore schema that stores task trees with parent references plus denormalized progress counters, so rendering a board never requires walking the whole tree. Goal→task relationships are modeled as lightweight link documents.",
+          h: "Token-based auth on every request, not just login",
+          p: "The client signs in via the Firebase JS SDK (email/password, Google, or Apple), then an Axios interceptor waits for onAuthStateChanged to resolve before attaching the user's Firebase ID token as a Bearer header on every API call. The Express side verifies that token with firebase-admin on every protected route via a shared authenticateToken middleware.",
         },
         {
-          h: "Drag-and-drop that feels instant",
-          p: "The Kanban board updates local React state optimistically on drop, then reconciles with Firestore in the background — reordering never waits on the network.",
+          h: "Per-user data isolation enforced at the query layer",
+          p: "Every controller scopes its Firestore queries by the authenticated userId, across four collections: boards, tasks (subtasks via parentId, linked to goals via goalId), goals, and dailyCheckIns.",
         },
         {
-          h: "Secure, frictionless auth",
-          p: "Firebase Authentication handles sign-in, and security rules scope every read and write to the owning user.",
+          h: "Drag-and-drop Kanban backed by a real service layer",
+          p: "The board uses @hello-pangea/dnd for reordering, sitting on top of a per-domain Axios service layer (boards, tasks, goals, check-ins, dashboard), so UI components never touch HTTP logic directly.",
         },
         {
-          h: "Responsive by construction",
-          p: "A custom sidebar and layout system adapt the same board across phone, tablet, and desktop without separate code paths.",
+          h: "PWA support that's actually wired up",
+          p: "vite-plugin-pwa precaches the app shell with Workbox, and a dedicated update-prompt component asks the user before swapping in a new service-worker version.",
         },
       ],
       outcome:
-        "A working full-stack app where goals, tasks, subtasks, and journaling live together — fast to use, and architected so the data model holds up as boards grow.",
+        "A working full-stack app, deployed as a Vercel frontend and Render API, where goals, tasks, subtasks, and daily journaling (mood, focused hours, reflections, streak tracking) live together behind a properly authenticated, per-user-isolated API.",
     },
   },
-  /* SplitSense — temporarily hidden
+  /* SplitSense, temporarily hidden
   {
     idx: "06",
     slug: "splitsense",
     cat: "Fintech · Mobile · AI",
     title: "SplitSense",
-    one: "A Flutter bill-splitting app combining OCR receipt parsing, natural-language split instructions, Claude-powered conflict resolution, and graph-based debt minimization with one-tap UPI settlement — shortlisted in round 1 of 400 teams at Fin-O-Hack 2026 (Paytm × DTU).",
+    one: "A Flutter bill-splitting app combining OCR receipt parsing, natural-language split instructions, Claude-powered conflict resolution, and graph-based debt minimization with one-tap UPI settlement, shortlisted in round 1 of 400 teams at Fin-O-Hack 2026 (Paytm × DTU).",
     details: [
-      "Selected through round 1 (pitch deck) among 400 teams for the 'AI for Paytm Users' track — currently in active development.",
+      "Selected through round 1 (pitch deck) among 400 teams for the 'AI for Paytm Users' track, currently in active development.",
       "Snap & Scan: OCR-powered bill scanning with automatic item recognition.",
       "Natural-language splits: voice/text instructions like 'Sakshi pays for drinks, split food equally'.",
       "Claude-powered AI chat resolves split disputes; a graph algorithm minimizes the number of settlement transactions.",
@@ -288,12 +292,12 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/splitsense",
     image: null,
     deepdive: {
-      role: "Hackathon — Team Lib Gang Lite (with Sakshi Shahani)",
+      role: "Hackathon, Team Lib Gang Lite (with Sakshi Shahani)",
       type: "Fintech mobile · AI (in progress)",
       overview:
-        "SplitSense reimagines group bill-splitting by combining OCR bill parsing, natural-language split instructions, AI-driven conflict resolution, and graph-based debt minimization — all settled through UPI. Built for Fin-O-Hack 2026 (Paytm × DTU) and shortlisted in round 1 among 400 teams.",
+        "SplitSense reimagines group bill-splitting by combining OCR bill parsing, natural-language split instructions, AI-driven conflict resolution, and graph-based debt minimization, all settled through UPI. Built for Fin-O-Hack 2026 (Paytm × DTU) and shortlisted in round 1 among 400 teams.",
       challenge:
-        "Splitting a real-world bill is messy — itemized receipts, informal 'you covered drinks' arrangements, and disputes. The goal was to turn a photo and a sentence into a fair, minimal set of settlements.",
+        "Splitting a real-world bill is messy, itemized receipts, informal 'you covered drinks' arrangements, and disputes. The goal was to turn a photo and a sentence into a fair, minimal set of settlements.",
       approach: [
         {
           h: "Snap, then describe",
@@ -318,55 +322,55 @@ export const PROJECTS: Project[] = [
   },
   */
   {
-    idx: "07",
+    idx: "06",
     slug: "infinite-canvas-rpg",
     cat: "Game Development · AI",
     title: "Infinite Canvas RPG",
-    one: "An environmentally-themed roguelike combining accessibility-first design with procedural dungeons and AI-powered storytelling.",
+    one: "An environmentally-themed roguelike combining accessibility-first design with procedural dungeons and AI-powered storytelling, where clearing rooms restores damaged ecosystems instead of farming loot.",
     details: [
       "Gameplay: procedural dungeons with interconnected floors, a 6-tier stat-based combat system, and interactive biomes.",
       "Dialogue & Story: interactive NPCs with branching dialogue trees and dynamic Gemini-powered conversation generation.",
       "Accessibility: colorblind modes, high-contrast filters, full keyboard-only support, and adjustable game speeds.",
       "AI Integration: Vision Seed System using photo recognition for bespoke character archetypes via Gemini 2.0 Flash.",
     ],
-    tech: ["Next.js", "Phaser 3", "TypeScript", "Zustand", "Tailwind CSS", "Gemini API"],
+    tech: ["Next.js 16", "React 19", "Phaser 3.90", "TypeScript", "Zustand", "Tailwind CSS", "Gemini 2.0 Flash", "Turbopack"],
     link: "https://github.com/soumya0343/gemini-hackathon",
     image: "/assets/projects/gemini-preview.png",
     deepdive: {
-      role: "Hackathon — full-stack & AI",
+      role: "Hackathon, full-stack & AI",
       type: "Game · AI",
       overview:
-        "An environmentally-themed roguelike that pairs accessibility-first design with procedural dungeons and AI-driven storytelling.",
+        "Infinite Canvas RPG reframes a roguelike's usual grind as ecological restoration: the Void represents environmental destruction, enemies are manifestations of pollution and deforestation, and clearing a room restores a piece of Earth's ecosystems. Four elemental guardians (Ocean, Forest, Air, Earth) anchor the run, with AI standing in for hand-authored dialogue and narration throughout.",
       challenge:
-        "Roguelikes are notoriously inaccessible, and scripted dialogue gets stale fast. The goal: deep, replayable systems that almost anyone can play.",
+        "Two different rendering models had to share state cleanly: Phaser is imperative and lives outside React's tree, while the UI overlay is fully declarative. On top of that, every AI feature needed to degrade gracefully, a hackathon demo can't go down because Gemini rate-limited a single request mid-playthrough.",
       approach: [
         {
-          h: "Procedural worlds",
-          p: "Interconnected procedural dungeons, a six-tier stat-based combat system, and interactive biomes drive replayability.",
+          h: "One Zustand store as the seam between two engines",
+          p: "Phaser writes gameplay events (HP changes, XP gains, dialogue triggers) into a single shared store; React reads from it to render HUD, dialogue boxes, and narration, and writes UI intent (selected archetype, accessibility settings) that Phaser reads on scene start. The two engines never touch each other directly, only the store.",
         },
         {
-          h: "AI-generated story",
-          p: "NPCs use branching dialogue trees with dynamic, Gemini-powered conversation generation; a Vision Seed system uses photo recognition (Gemini 2.0 Flash) to create bespoke character archetypes.",
+          h: "A real damage formula, not flavor text",
+          p: "base = STR×0.6 + INT×0.4, defense = VIT×0.5, final = (base − defense) × crit_multiplier, all built on a 6-tier stat system (VOID 0.0x through VERY_HIGH 1.7x). Six weapons and BSP-generated dungeon floors sit on top of that math.",
         },
         {
-          h: "Accessibility-first",
-          p: "Colorblind modes, high-contrast filters, full keyboard-only support, and adjustable game speeds — built in from the start, not bolted on.",
+          h: "AI with a fallback at every layer, never load-bearing",
+          p: "Gemini 2.0 Flash (falling back to 1.5-flash and 1.5-flash-8b on quota) drives NPC dialogue, room narration, and Vision Seed photo-to-archetype classification, each behind its own Next.js API route with a defined JSON contract. A full-map story cache generates narration once per game session, keyed by theme/type/level, so revisiting a room costs zero extra API calls, and a missing key or failed call falls back to pre-written content in every single case. The core loop is fully playable offline.",
         },
         {
-          h: "Reactive architecture",
-          p: "Phaser 3 for the game layer, Zustand for predictable state, Next.js + Tailwind around it.",
+          h: "Accessibility built into the layout layer, not bolted on",
+          p: "Colorblind filters (protanopia, deuteranopia, tritanopia), high contrast, and game speed are applied as CSS at the root layout, covering both the Phaser canvas and the React overlays in one place. The Vision Seed Accessibility mode goes further: a captured photo maps through Gemini Vision to one of several guardian archetypes built around lived experience and resilience (Adaptive Guardian, Mind Warrior, Sensory Guardian, Community Champion), not just a cosmetic skin choice.",
         },
       ],
       outcome:
-        "A genuinely inclusive roguelike where AI makes every playthrough feel different — built under hackathon time pressure.",
+        "A fully playable, accessible roguelike built under hackathon time pressure, with a working photo-to-archetype Vision Seed feature, cached AI narration that costs near-zero quota on replay, and a core game loop that never breaks even with no Gemini key set at all.",
     },
   },
   {
-    idx: "08",
+    idx: "07",
     slug: "stockwise",
     cat: "Fintech Platform",
     title: "StockWise",
-    one: "A gamified investment-learning platform for college students with a custom Node.js engine for XP, achievements, and milestones — production-ready MVP shipped in 24 hours.",
+    one: "A gamified investment-learning platform for college students with a custom Node.js engine for XP, achievements, and milestones, production-ready MVP shipped in 24 hours.",
     details: [
       "Interactive Learning Modules: comprehensive content on stock markets, mutual funds, and technical analysis.",
       "Gamification System: earn XP, unlock achievements, and maintain daily learning streaks.",
@@ -379,12 +383,12 @@ export const PROJECTS: Project[] = [
     live: "https://stockwise-mu.vercel.app",
     image: "/assets/projects/stockwise-preview.png",
     deepdive: {
-      role: "Hackathon — full-stack",
+      role: "Hackathon, full-stack",
       type: "Fintech / edtech",
       overview:
-        "A gamified platform that teaches college students investing — stocks, mutual funds, technical analysis — through XP, streaks, and achievements. Built as a 24-hour hackathon MVP.",
+        "A gamified platform that teaches college students investing, stocks, mutual funds, technical analysis, through XP, streaks, and achievements. Built as a 24-hour hackathon MVP.",
       challenge:
-        "Financial education is dry, and first-time investors drop off fast. The bet: game mechanics — progress, rewards, streaks — would keep people learning long enough to build real understanding.",
+        "Financial education is dry, and first-time investors drop off fast. The bet: game mechanics, progress, rewards, streaks, would keep people learning long enough to build real understanding.",
       approach: [
         {
           h: "A custom gamification engine",
@@ -397,15 +401,15 @@ export const PROJECTS: Project[] = [
         { h: "Secure accounts", p: "Registration and login secured with bcrypt and JWT." },
         {
           h: "Scoped to ship in 24 hours",
-          p: "Cut to a production-ready MVP — interactive modules, progress tracking, and the full reward loop — delivered in a single hackathon.",
+          p: "Cut to a production-ready MVP, interactive modules, progress tracking, and the full reward loop, delivered in a single hackathon.",
         },
       ],
       outcome:
-        "A polished, motivating learning experience that turns dry financial concepts into a game — built and shipped end-to-end in a day.",
+        "A polished, motivating learning experience that turns dry financial concepts into a game, built and shipped end-to-end in a day.",
     },
   },
   {
-    idx: "09",
+    idx: "08",
     slug: "mandala",
     cat: "Interactive Art",
     title: "Mandala Studio",
@@ -421,16 +425,16 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/mandala-zen",
     image: "/assets/projects/mandala-preview.png",
     deepdive: {
-      role: "Solo — design & build",
+      role: "Solo, design & build",
       type: "Interactive art",
       overview:
-        "An interactive zen studio for creating and meditating with generative mathematical mandala art — part creative tool, part calm space.",
+        "An interactive zen studio for creating and meditating with generative mathematical mandala art, part creative tool, part calm space.",
       challenge:
         "Make generative art that's both mathematically precise and genuinely relaxing, with visuals, sound, and pacing all working together rather than fighting for attention.",
       approach: [
         {
           h: "Generative geometry",
-          p: "Mandalas are generated from adjustable parameters — size, complexity (rings), rotation speed, glow, and custom palettes — so every piece is unique yet precise.",
+          p: "Mandalas are generated from adjustable parameters, size, complexity (rings), rotation speed, glow, and custom palettes, so every piece is unique yet precise.",
         },
         {
           h: "Synthesized soundscapes",
@@ -450,7 +454,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "10",
+    idx: "09",
     slug: "portfolio",
     cat: "Creative Portfolio",
     title: "Digital Portfolio",
@@ -465,10 +469,10 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/soumya-portfolio",
     image: "/assets/projects/portfolio-preview.png",
     deepdive: {
-      role: "Solo — design & build",
+      role: "Solo, design & build",
       type: "Creative portfolio",
       overview:
-        "A craft exercise in atmosphere: blend WebGL fluid art with rigorous brutalist typography into something cinematic — without sacrificing performance.",
+        "A craft exercise in atmosphere: blend WebGL fluid art with rigorous brutalist typography into something cinematic, without sacrificing performance.",
       challenge:
         "Immersive visuals usually mean heavy bundles and jank. The goal was WebGL-grade atmosphere that still hydrates quickly and stays smooth on mid-range hardware.",
       approach: [
@@ -478,7 +482,7 @@ export const PROJECTS: Project[] = [
         },
         {
           h: "A real theming engine",
-          p: "Dark and light modes driven by native CSS variables, with iframe color filtering for embedded media — designed intentionally, not a hard-coded inversion.",
+          p: "Dark and light modes driven by native CSS variables, with iframe color filtering for embedded media, designed intentionally, not a hard-coded inversion.",
         },
         {
           h: "Scroll-driven motion",
@@ -486,14 +490,14 @@ export const PROJECTS: Project[] = [
         },
       ],
       outcome:
-        "A distinctive, fast portfolio that proves visual ambition and engineering discipline can coexist — and the direct predecessor to this redesign.",
+        "A distinctive, fast portfolio that proves visual ambition and engineering discipline can coexist, and the direct predecessor to this redesign.",
     },
   },
 ];
 
 export const EXPERIENCE: Experience[] = [
   {
-    year: "DEC 2025 — FEB 2026",
+    year: "DEC 2025, FEB 2026",
     role: "Full Stack Developer Intern",
     company: "Chakra Tech",
     loc: "Remote",
@@ -506,12 +510,12 @@ export const EXPERIENCE: Experience[] = [
     points: [
       "Developed an MCP server (~20 tools) powering an AI assistant for contextual market queries, designing the tool schemas and tool-calling surface over live market data.",
       "Built an event-driven ingestion pipeline consuming Polymarket WebSocket streams; used BullMQ on Redis for async job orchestration with retries, deduplication, and dead-letter handling.",
-      "Architected a hybrid storage layer — ClickHouse for high-volume trade event ingestion (10k-row batches, partitioned by month) and PostgreSQL for transactional metadata.",
+      "Architected a hybrid storage layer, ClickHouse for high-volume trade event ingestion (10k-row batches, partitioned by month) and PostgreSQL for transactional metadata.",
       "Resolved N+1 query bottlenecks via query-plan analysis and targeted indexing; reduced endpoint latency from ~15s to <100ms.",
     ],
   },
   {
-    year: "JUL 2025 — DEC 2025",
+    year: "JUL 2025, DEC 2025",
     role: "Engineering Intern",
     company: "Dezerv Investments",
     loc: "Bengaluru, India",
@@ -529,7 +533,7 @@ export const EXPERIENCE: Experience[] = [
     ],
   },
   {
-    year: "MAY 2025 — JUN 2025",
+    year: "MAY 2025, JUN 2025",
     role: "Tech Intern",
     company: "Jobslet",
     loc: "Remote",
@@ -547,7 +551,7 @@ export const EXPERIENCE: Experience[] = [
     ],
   },
   {
-    year: "MAY 2024 — JUL 2024",
+    year: "MAY 2024, JUL 2024",
     role: "Software Developer Intern",
     company: "Multigraphics Group",
     loc: "Delhi, India",
@@ -576,9 +580,9 @@ export const SKILLS: SkillGroup[] = [
 ];
 
 export const EDUCATION: Education[] = [
-  { degree: "B.E. in Electronics & Communication Engineering", org: "Birla Institute of Technology and Science, Pilani — K. K. Birla Goa Campus", loc: "Goa, India", period: "OCT 2022 — MAY 2026" },
-  { degree: "Class XII (CBSE) — 93.4%", org: "The Millennium School", loc: "Lucknow, India", period: "2022" },
-  { degree: "Class X (CBSE) — 98.8%", org: "The Millennium School", loc: "Lucknow, India", period: "2020" },
+  { degree: "B.E. in Electronics & Communication Engineering", org: "Birla Institute of Technology and Science, Pilani, K. K. Birla Goa Campus", loc: "Goa, India", period: "OCT 2022, MAY 2026" },
+  { degree: "Class XII (CBSE), 93.4%", org: "The Millennium School", loc: "Lucknow, India", period: "2022" },
+  { degree: "Class X (CBSE), 98.8%", org: "The Millennium School", loc: "Lucknow, India", period: "2020" },
 ];
 
 export const LEADERSHIP: Leadership[] = [
@@ -586,19 +590,19 @@ export const LEADERSHIP: Leadership[] = [
     role: "Exhibitions, Guest Lectures & Foreign Relations Head",
     org: "Quark Controls, BITS Goa",
     loc: "Goa, India",
-    period: "JUL 2024 — AUG 2025",
+    period: "JUL 2024, AUG 2025",
     desc: [
       "Led a 150+ member team managing Exhibitions and Guest Lectures for Quark, BITS Goa's annual tech fest (20,000+ attendees).",
       "Executed the 3D Light Show, Robo Wars, and Auto Expo, driving a 44% YoY increase in fest footfall.",
-      "Organised BITS Goa's first Technical Experience Zone — 38% YoY revenue growth, 50% more external exhibits.",
+      "Organised BITS Goa's first Technical Experience Zone, 38% YoY revenue growth, 50% more external exhibits.",
       "Hosted speakers including a former NASA astrophysicist and the VP of ASUS India.",
     ],
   },
   {
     role: "Volunteer Teacher",
-    org: "Nirmaan Organization — BITS Goa Chapter",
+    org: "Nirmaan Organization, BITS Goa Chapter",
     loc: "Goa, India",
-    period: "DEC 2022 — SEP 2023",
+    period: "DEC 2022, SEP 2023",
     desc: [
       "Volunteered during JoGW'23, a campus-wide initiative focused on compassion and social outreach.",
       "Visited a school for special-needs students, contributing to an inclusive, joyful environment through activities.",
@@ -608,17 +612,17 @@ export const LEADERSHIP: Leadership[] = [
     role: "Core Member",
     org: "Department of Arts and Decoration",
     loc: "",
-    period: "DEC 2022 — DEC 2023",
+    period: "DEC 2022, DEC 2023",
     desc: [
       "Collaborated on campus-wide art installations and decorations for major college festivals.",
-      "Owned the design process end to end — from ideation to physical construction and installation.",
+      "Owned the design process end to end, from ideation to physical construction and installation.",
     ],
   },
   {
     role: "Core Member",
     org: "Center for Technical Education, BITS Goa",
     loc: "",
-    period: "FEB 2023 — MAY 2024",
+    period: "FEB 2023, MAY 2024",
     desc: [
       "Coordinated 'Tech Weekend', a marquee technical event and exhibition at BITS Goa.",
       "Led outreach to 20+ schools and managed end-to-end logistics for seamless execution.",
@@ -639,19 +643,19 @@ export const AGENT_KB: KBItem[] = [
     key: ["ai", "agent", "llm", "gemini", "mcp", "rag", "langgraph", "multi-agent", "voice", "model"],
     q: "Show me her AI work",
     tools: ["search_projects", "filter(domain='AI')"],
-    a: "It's her deepest interest — she works across the whole AI-systems stack. Highlights: Saral, a supervisor-orchestrated multi-agent support system with per-customer RAG grounding, compliance gates, and an LLM-judge eval suite; InferLog, a multi-provider LLM platform with full inference observability; RepoLens, which applies LLMs to repository-insight engines; CodeSentinel, AI code review with Gemini; an MCP server (~20 micro-APIs) powering a contextual assistant at Chakra Tech; plus Gemini-powered game dialogue and LLM résumé-parsing pipelines. Her goal: become an AI engineer.",
+    a: "It's her deepest interest, she works across the whole AI-systems stack. Highlights: Saral, a supervisor-orchestrated multi-agent support system with per-customer RAG grounding, compliance gates, and an LLM-judge eval suite; InferLog, a multi-provider LLM platform with full inference observability; RepoLens, which applies LLMs to repository-insight engines; CodeSentinel, AI code review with Gemini; an MCP server (~20 micro-APIs) powering a contextual assistant at Chakra Tech; plus Gemini-powered game dialogue and LLM résumé-parsing pipelines. Her goal: become an AI engineer.",
   },
   {
     key: ["impress", "best", "impact", "result", "proud", "biggest", "latency", "performance"],
     q: "What's her most impressive result?",
     tools: ["search_projects", "rank_by_impact"],
-    a: "Cutting backend latency from ~15 seconds to milliseconds on a live blockchain prediction market — by removing N+1 queries, adding indexing, and a fuzzy-match fallback. She also automated SEBI-compliant reporting for 5,000+ clients, cutting manual reporting time ~83% per cycle.",
+    a: "Cutting backend latency from ~15 seconds to milliseconds on a live blockchain prediction market, by removing N+1 queries, adding indexing, and a fuzzy-match fallback. She also automated SEBI-compliant reporting for 5,000+ clients, cutting manual reporting time ~83% per cycle.",
   },
   {
     key: ["frontend", "front-end", "react", "ui", "design", "interface", "css"],
     q: "Is she good at frontend?",
     tools: ["query_profile", "search_projects"],
-    a: "Yes — and she genuinely loves it. React + TypeScript dashboards, Framer-Motion interfaces, WebGL fluid art, and real-time analytics views (RepoLens' D3 graph dashboard, InferLog's Next.js charts). This very panel — streaming tokens, live state — is her frontend work. She cares how things feel, not just how they run.",
+    a: "Yes, and she genuinely loves it. React + TypeScript dashboards, Framer-Motion interfaces, WebGL fluid art, and real-time analytics views (RepoLens' D3 graph dashboard, InferLog's Next.js charts). This very panel, streaming tokens, live state, is her frontend work. She cares how things feel, not just how they run.",
   },
   {
     key: ["backend", "distributed", "go", "system", "scale", "infra", "database", "fastapi", "neo4j"],
@@ -669,9 +673,9 @@ export const AGENT_KB: KBItem[] = [
     key: ["who", "about", "kind of engineer", "introduce", "yourself", "background"],
     q: "What kind of engineer is Soumya?",
     tools: ["query_profile", "get_experience"],
-    a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack — Go and FastAPI backends with data pipelines, the LLM/agent layer on top (multi-agent systems, RAG, LLM infrastructure), and polished real-time frontends. A 2026 ECE graduate from BITS Pilani, Goa.",
+    a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack, Go and FastAPI backends with data pipelines, the LLM/agent layer on top (multi-agent systems, RAG, LLM infrastructure), and polished real-time frontends. A 2026 ECE graduate from BITS Pilani, Goa.",
   },
 ];
 
 export const AGENT_FALLBACK =
-  "I can walk you through Soumya's AI & agent work, her backend & distributed systems, her frontend craft, her biggest results, or why she'd be a strong hire — tap a suggestion below.";
+  "I can walk you through Soumya's AI & agent work, her backend & distributed systems, her frontend craft, her biggest results, or why she'd be a strong hire, tap a suggestion below.";

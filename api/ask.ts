@@ -2,9 +2,9 @@
  *
  * Provider-agnostic: works with any OpenAI-compatible /chat/completions API.
  * Set these env vars (all have free tiers):
- *   LLM_API_KEY   — required, your provider key (never shipped to the browser)
- *   LLM_BASE_URL  — provider base, default Google Gemini's OpenAI-compatible endpoint
- *   LLM_MODEL     — model id, default gemini-2.0-flash
+ *   LLM_API_KEY  , required, your provider key (never shipped to the browser)
+ *   LLM_BASE_URL , provider base, default Google Gemini's OpenAI-compatible endpoint
+ *   LLM_MODEL    , model id, default gemini-2.0-flash
  *
  *   Gemini   : LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai  LLM_MODEL=gemini-2.0-flash
  *   Groq     : LLM_BASE_URL=https://api.groq.com/openai/v1                            LLM_MODEL=llama-3.3-70b-versatile
@@ -39,7 +39,7 @@ function buildProfile(): string {
   const leadership = LEADERSHIP.map((l) => `- ${l.role}, ${l.org} (${l.period})`).join("\n");
   const contact = `Email: ${CONTACT.email}\nLinkedIn: ${CONTACT.linkedin}\nGitHub: ${CONTACT.github}\nX (Twitter): ${CONTACT.x}\nSubstack: ${CONTACT.substack}\nMedium: ${CONTACT.medium}\nResume (PDF, downloadable): ${RESUME_URL}`;
   return [
-    `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total — this is the complete list):\n` + projects,
+    `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total, this is the complete list):\n` + projects,
     "MORE PROJECTS:\n" + otherProjects,
     "EXPERIENCE:\n" + experience,
     "SKILLS:\n" + skills,
@@ -97,7 +97,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "local";
   if (rateLimited(ip)) {
     res.statusCode = 429;
-    res.end("Too many requests — give it a minute.");
+    res.end("Too many requests, give it a minute.");
     return;
   }
 
@@ -189,7 +189,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       }
     }
   } catch {
-    /* client disconnected or stream broke — just end */
+    /* client disconnected or stream broke, just end */
   }
   res.end();
 }

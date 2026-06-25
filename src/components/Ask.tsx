@@ -8,7 +8,7 @@ interface Msg {
   typing: boolean;
 }
 
-const GREETING = "Hi — I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
+const GREETING = "Hi, I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
 const SUGGESTIONS = AGENT_KB.map((k) => k.q);
 
 /* Turn URLs, /resume.pdf, and emails inside an answer into clickable links. */
@@ -107,7 +107,7 @@ export default function Ask() {
         scrollDown();
       }
     } catch {
-      /* network / quota / not-configured — fall through to the scripted answer below */
+      /* network / quota / not-configured, fall through to the scripted answer below */
     }
 
     const answer = acc.trim() || fallbackAnswer(q);
@@ -128,7 +128,7 @@ export default function Ask() {
           <div className="ask__lead rv">
             <p className="ask__copy">
               Don't want to read the whole page? <b>Interrogate the agent.</b> It's an LLM that knows my projects,
-              experience, and results — ask it anything, or tap a question.
+              experience, and results, ask it anything, or tap a question.
             </p>
             <ul className="ask__feat">
               <li>Answers about AI, backend, frontend &amp; impact</li>

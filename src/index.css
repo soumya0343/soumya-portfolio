@@ -1,10 +1,10 @@
 /* ============================================================
-   Soumya Gupta — Portfolio v2  (ported from design handoff)
+   Soumya Gupta, Portfolio v2  (ported from design handoff)
    styles.css (base system) + v2.css (color edition / hero)
    ============================================================ */
 
 /* =========================================================================
-   SIGNAL — Soumya Gupta portfolio redesign
+   SIGNAL, Soumya Gupta portfolio redesign
    Precision-editorial system. Two intentional themes:
    · dark  = "Console"  (warm near-black, dot grid, accent glow)
    · light = "Spec"     (warm paper, hairline rules, ink)
@@ -26,7 +26,7 @@
   --accent:    #e5383b;                   /* bright red */
   --accent-ink:#f5f3f4;                   /* off-white on red */
   --accent-soft: rgba(229,56,59,0.15);
-  --ok:        oklch(0.68 0.12 148);      /* green — available only */
+  --ok:        oklch(0.68 0.12 148);      /* green, available only */
   --grid-dot:  rgba(229,56,59,0.04);
 
   --maxw: 1440px;
@@ -109,7 +109,7 @@ img { display: block; max-width: 100%; }
 .kicker .tick { color: var(--accent); }
 
 /* =========================================================================
-   SPINE — left index rail (the narrative through-line)
+   SPINE, left index rail (the narrative through-line)
    ========================================================================= */
 .spine {
   position: fixed; top: 0; left: 0; bottom: 0;
@@ -175,7 +175,7 @@ img { display: block; max-width: 100%; }
 .spine__btn svg { width: 15px; height: 15px; }
 
 /* =========================================================================
-   TOPBAR — mobile only
+   TOPBAR, mobile only
    ========================================================================= */
 .topbar { display: none; }
 .sheet { display: none; }
@@ -702,7 +702,7 @@ section { position: relative; scroll-margin-top: 88px; }
 
 
 /* =========================================================================
-   SIGNAL · v2.css — COLOR edition
+   SIGNAL · v2.css, COLOR edition
    Floating nav + interactive 3D "Stack Tower" hero + page colorization.
    Loaded AFTER styles.css. Shares the base system; overrides the hero.
    ========================================================================= */
@@ -1067,9 +1067,11 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .about__chips .chip:nth-child(1) { border-color: color-mix(in oklab, var(--c1) 45%, var(--line)); color: color-mix(in oklab, var(--c1) 60%, var(--text)); }
 .about__chips .chip:nth-child(2) { border-color: color-mix(in oklab, var(--c3) 45%, var(--line)); color: color-mix(in oklab, var(--c3) 60%, var(--text)); }
 .about__chips .chip:nth-child(3) { border-color: color-mix(in oklab, var(--c5) 45%, var(--line)); color: color-mix(in oklab, var(--c5) 60%, var(--text)); }
+.about__chips .chip:nth-child(4) { border-color: color-mix(in oklab, var(--c6) 45%, var(--line)); color: color-mix(in oklab, var(--c6) 60%, var(--text)); }
+.about__chips .chip:nth-child(5) { border-color: color-mix(in oklab, var(--c2) 45%, var(--line)); color: color-mix(in oklab, var(--c2) 60%, var(--text)); }
 
 /* =========================================================================
-   EXPERIENCE — ROADMAP
+   EXPERIENCE, ROADMAP
    ========================================================================= */
 .roadmap { position: relative; padding: 10px 0 20px; }
 .rm-spine { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--line); transform: translateX(-50%); z-index: 0; }
@@ -1126,7 +1128,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .rm-tag { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.02em; color: var(--text-2); border: 1px solid var(--line); border-radius: 100px; padding: 3px 10px; transition: color .25s var(--ease), border-color .25s var(--ease); }
 .rm-tag:hover { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
 
-/* roadmap reveal — cards slide in from their own side, dot pops, content staggers */
+/* roadmap reveal, cards slide in from their own side, dot pops, content staggers */
 .rm-stop.rv { transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .rm-stop--left.rv  { transform: translateX(-44px); }
 .rm-stop--right.rv { transform: translateX(44px); }
@@ -1153,7 +1155,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
   .rm-stop--left .rm-card, .rm-stop--right .rm-card { grid-column: 2; grid-row: 1; padding: 22px 22px; }
   .rm-node { grid-column: 1; grid-row: 1; }
   .rm-stop--left .rm-spacer, .rm-stop--right .rm-spacer { display: none; }
-  /* full-width cards: reveal vertically only — a sideways slide overflows the viewport */
+  /* full-width cards: reveal vertically only, a sideways slide overflows the viewport */
   .rm-stop--left.rv, .rm-stop--right.rv { transform: translateY(24px); }
   .rm-stop.rv.in { transform: none; }
   /* metrics: shrink + wrap so they never spill past the card edge */
@@ -1163,7 +1165,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 
 /* =========================================================================
-   ABOUT — redesign
+   ABOUT, redesign
    ========================================================================= */
 .about__quote {
   margin: 0 0 clamp(28px, 4vh, 44px);
@@ -1256,7 +1258,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 
 /* =========================================================================
-   BACKGROUND — balanced layout overrides
+   BACKGROUND, balanced layout overrides
    ========================================================================= */
 .bg__cols { display: flex; flex-direction: column; gap: clamp(36px, 5vh, 56px); }
 
@@ -1289,7 +1291,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 
 /* =========================================================================
-   WORK — PROJECT CARD GRID
+   WORK, PROJECT CARD GRID
    ========================================================================= */
 .proj-grid {
   display: grid;
@@ -1448,7 +1450,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 /* ============================================================
    Case study page (project.css) + theme-icon rules
    ============================================================ */
-/* ============ Project case-study page — extends styles.css tokens ============ */
+/* ============ Project case-study page, extends styles.css tokens ============ */
 
 .pj { margin-left: 0; }
 
@@ -1484,7 +1486,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .pj-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
 
 /* meta strip */
-.pj-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 38px; }
+.pj-meta { display: grid; grid-template-columns: 0.8fr 0.8fr 1.4fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 38px; }
 .pj-meta__cell { background: var(--bg); padding: 18px 20px; }
 .pj-meta__k { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .pj-meta__v { font-size: 14.5px; color: var(--text); margin-top: 7px; line-height: 1.45; }
@@ -1570,7 +1572,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 
 
 /* ============================================================
-   Work — "show more" toggle
+   Work, "show more" toggle
    ============================================================ */
 .work__more { display: flex; justify-content: center; margin-top: 36px; }
 .work__more-btn {
@@ -1584,7 +1586,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 
 
 /* ============================================================
-   About — bento grid
+   About, bento grid
    ============================================================ */
 .about__bento {
   display: grid;
@@ -1683,6 +1685,10 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .bento-reading__author { font-family: var(--f-mono); font-size: 12px; color: var(--text-2); }
 .bento-reading__series { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .bento-reading__note { color: var(--accent); font-size: 13px; font-style: italic; line-height: 1.5; margin-top: 12px; }
+.bento-reading__next { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.bento-reading__nextlabel { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.bento-reading__nexttitle { font-family: var(--f-display); font-weight: 600; font-size: 13.5px; color: var(--text); }
+.bento-reading__nextauthor { font-family: var(--f-mono); font-size: 11px; color: var(--text-2); }
 
 @media (max-width: 980px) {
   .about__bento {

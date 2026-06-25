@@ -18,7 +18,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
 
   // Only when COLLAPSING: the grid shrinks above the button, so pin the button
   // in place (before paint) instead of letting the page fly up to Experience.
-  // On expand we do nothing — cards just grow downward, nothing above shifts.
+  // On expand we do nothing, cards just grow downward, nothing above shifts.
   useLayoutEffect(() => {
     const before = beforeTop.current;
     beforeTop.current = null;
@@ -29,7 +29,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
   }, [showAll]);
 
   // Cards revealed by "Show more" aren't seen by the scroll-reveal observer
-  // (it only binds on route change) — reveal them immediately on expand.
+  // (it only binds on route change), reveal them immediately on expand.
   useEffect(() => {
     if (showAll) {
       document.querySelectorAll<HTMLElement>("#projGrid .rv:not(.in)").forEach((n) => n.classList.add("in"));
@@ -42,7 +42,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
         <div className="sec-head rv">
           <span className="sec-head__num">02</span>
           <h2 className="sec-head__title">Selected Work</h2>
-          <span className="sec-head__sub">CURATED PROJECTS · 2022—2026</span>
+          <span className="sec-head__sub">CURATED PROJECTS · 2022-2026</span>
         </div>
         <div className="proj-grid" id="projGrid">
           {visible.map((p, i) => {
@@ -88,7 +88,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        live ↗
+                        {p.liveLabel ? p.liveLabel.toLowerCase() : "live"} ↗
                       </a>
                     )}
                     {p.link && (

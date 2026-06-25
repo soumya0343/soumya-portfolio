@@ -394,7 +394,7 @@ export function ParticleTextEffect({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Renders only the canvas — the parent controls layout, background, and sizing.
+  // Renders only the canvas, the parent controls layout, background, and sizing.
   return (
     <canvas
       ref={canvasRef}
