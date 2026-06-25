@@ -28,11 +28,18 @@ const MAX_HISTORY = 6;
 
 /* ---- grounding: build Soumya's profile from the same data the site renders ---- */
 function buildProfile(): string {
-  const projects = PROJECTS.map(
-    (p) =>
-      `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}\n` +
-      p.details.map((d) => `    · ${d}`).join("\n"),
-  ).join("\n");
+  const projects = PROJECTS.map((p) => {
+    const d = p.deepdive;
+    const lines = [
+      `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`,
+      ...p.details.map((x) => `    · ${x}`),
+    ];
+    if (d?.overview) lines.push(`    Overview: ${d.overview}`);
+    if (d?.challenge) lines.push(`    Challenge: ${d.challenge}`);
+    if (d?.approach?.length) lines.push(...d.approach.map((a) => `    Approach [${a.h}]: ${a.p}`));
+    if (d?.outcome) lines.push(`    Outcome: ${d.outcome}`);
+    return lines.join("\n");
+  }).join("\n");
   const otherProjects = OTHER_PROJECTS.map(
     (p) => `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`,
   ).join("\n");

@@ -533,7 +533,7 @@ export const PROJECTS: Project[] = [
         },
         {
           h: "Theming through tokens, not branches",
-          p: "Dark 'Console' and light 'Spec' themes swap by toggling a single data-theme attribute on <html>, persisted to localStorage. All styling lives in one CSS file driven by custom properties, so no component carries its own theme logic.",
+          p: "Dark 'Console' and light 'Spec' themes swap instantly from one toggle, and the choice is remembered between visits. All styling runs off a single set of design tokens, so every section themes consistently and no component has to manage its own colors.",
         },
       ],
       outcome:
