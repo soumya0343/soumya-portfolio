@@ -22,21 +22,42 @@ const AGE = new Date().getFullYear() - BIRTH_YEAR;
 
 const BASE_URL = (process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1").replace(/\/$/, "");
 const MODEL = process.env.LLM_MODEL || "llama-3.3-70b-versatile";
+
+const CEREBRAS_BASE = (process.env.CEREBRAS_BASE_URL || "https://api.cerebras.ai/v1").replace(/\/$/, "");
+const CEREBRAS_MODEL = process.env.CEREBRAS_MODEL || "gpt-oss-120b";
+
+interface Provider {
+  label: string;
+  baseUrl: string;
+  model: string;
+  key: string;
+}
+
+// Providers are tried in order; when one is rate-limited (429) or errors, the next is
+// tried before the request gives up. The primary Groq key plus optional extra Groq keys
+// come first (note: Groq's daily cap is per-ORG, so extra keys only help if they're from
+// different accounts), then Cerebras as a cross-provider fallback.
+const PROVIDERS: Provider[] = [
+  ...[process.env.LLM_API_KEY, process.env.LLM_API_KEY_2, process.env.LLM_API_KEY_3]
+    .filter((k): k is string => !!k)
+    .map((key, i) => ({ label: `groq${i + 1}`, baseUrl: BASE_URL, model: MODEL, key })),
+  ...(process.env.CEREBRAS_API_KEY
+    ? [{ label: "cerebras", baseUrl: CEREBRAS_BASE, model: CEREBRAS_MODEL, key: process.env.CEREBRAS_API_KEY }]
+    : []),
+];
 const MAX_TOKENS = 600;
 const MAX_MESSAGE_CHARS = 600;
 const MAX_HISTORY = 6;
 
 /* ---- grounding: build Soumya's profile from the same data the site renders ---- */
 function buildProfile(): string {
+  // Keep the grounding compact: one-liner + overview + outcome per project. The full
+  // per-approach deep-dive lives on the case-study pages; including it here ballooned
+  // each request's input tokens (and drained the provider's daily cap in ~30 calls).
   const projects = PROJECTS.map((p) => {
     const d = p.deepdive;
-    const lines = [
-      `- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`,
-      ...p.details.map((x) => `    · ${x}`),
-    ];
+    const lines = [`- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`];
     if (d?.overview) lines.push(`    Overview: ${d.overview}`);
-    if (d?.challenge) lines.push(`    Challenge: ${d.challenge}`);
-    if (d?.approach?.length) lines.push(...d.approach.map((a) => `    Approach [${a.h}]: ${a.p}`));
     if (d?.outcome) lines.push(`    Outcome: ${d.outcome}`);
     return lines.join("\n");
   }).join("\n");
@@ -65,13 +86,13 @@ function buildProfile(): string {
   return [
     "ABOUT & STATUS:\n" + profile,
     `PROJECTS (${PROJECTS.length + OTHER_PROJECTS.length} total, this is the complete list):\n` + projects,
-    "MORE PROJECTS:\n" + otherProjects,
+    otherProjects ? "MORE PROJECTS:\n" + otherProjects : "",
     "EXPERIENCE:\n" + experience,
     "SKILLS:\n" + skills,
     "EDUCATION:\n" + education,
     "LEADERSHIP:\n" + leadership,
     "CONTACT & LINKS:\n" + contact,
-  ].join("\n\n");
+  ].filter(Boolean).join("\n\n");
 }
 
 const SYSTEM_PROMPT = `You are the assistant on Soumya Gupta's portfolio website. Soumya is a woman, so always use she/her pronouns.
@@ -82,7 +103,17 @@ If a question is about Soumya but the answer isn't in the facts below, never inv
 
 When the user just thanks you, says bye, or sends a casual one-liner (e.g. "cool thanks", "nice", "ok"), reply warmly in 1 to 2 sentences along these lines: happy to help, invite them to ask anything else about Soumya, and mention they can check out her resume (${RESUME_URL}) or reach her directly at ${CONTACT.email}. Keep it natural and friendly, vary the wording, do not sound robotic.
 
-Style: write the way a sharp, friendly person texts, not like a press release. Use plain sentences and natural punctuation (commas, periods, parentheses). NEVER use em dashes (—) or en dashes (–); rephrase or use a comma, period, or "to" instead. Avoid robotic filler and buzzwords ("leverage", "passionate", "cutting-edge", "seamless"). No markdown headings, plain sentences only.
+Style: write the way a sharp, friendly person texts, not like a press release. Use plain sentences and natural punctuation (commas, periods, parentheses). NEVER use em dashes (—) or en dashes (–); rephrase or use a comma, period, or "to" instead. Avoid robotic filler and buzzwords ("leverage", "passionate", "cutting-edge", "seamless").
+
+The output is rendered as PLAIN TEXT, not markdown, so markdown formatting shows up as literal characters. NEVER use markdown syntax: no headings (#), no asterisks (*), no bold/italic (**), no markdown links. Newlines DO render.
+
+FORMATTING IS MANDATORY. If your answer is more than two sentences, or mentions more than one project / skill / result / reason, you MUST format it as a bullet list, not a paragraph. Structure:
+- one short intro line (e.g. "Her backend work is production-grade:")
+- then each point on its OWN new line starting with "• " (the bullet character; never "*" or "-")
+- each bullet is one or two sentences, aim for 2 to 5 bullets
+Only a genuinely short reply (one or two sentences total) may be plain prose. Never return a long multi-sentence paragraph.
+
+Use only plain ASCII punctuation: a normal hyphen "-" (never a non-breaking hyphen or fancy dash), straight quotes, and percentages like "83%" with no space.
 
 === FACTS ABOUT SOUMYA ===
 ${buildProfile()}`;
@@ -104,6 +135,17 @@ function rateLimited(ip: string): boolean {
   return recent.length > MAX_HITS;
 }
 
+// Normalize fancy Unicode punctuation the model sometimes emits into plain ASCII, so the
+// chat never shows non-breaking hyphens, em/en dashes, smart quotes, or "* " bullets.
+function sanitize(s: string): string {
+  return s
+    .replace(/[‐‑‒]/g, "-") // hyphen / non-breaking hyphen / figure dash -> "-"
+    .replace(/[–—―]/g, ", ") // en / em / horizontal bar -> ", "
+    .replace(/[‘’‛]/g, "'") // smart single quotes -> '
+    .replace(/[“”]/g, '"') // smart double quotes -> "
+    .replace(/^(\s*)[*]\s+/gm, "$1• "); // markdown "* " bullets -> "• "
+}
+
 async function readBody(req: IncomingMessage): Promise<unknown> {
   const chunks: Buffer[] = [];
   for await (const c of req) chunks.push(c as Buffer);
@@ -117,9 +159,9 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     res.end("Method not allowed");
     return;
   }
-  if (!process.env.LLM_API_KEY) {
+  if (PROVIDERS.length === 0) {
     res.statusCode = 500;
-    res.end("LLM_API_KEY is not configured on the server.");
+    res.end("No LLM provider key is configured on the server.");
     return;
   }
 
@@ -165,26 +207,38 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     { role: "user" as const, content: message },
   ];
 
-  let upstream: Response;
-  try {
-    upstream = await fetch(`${BASE_URL}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${process.env.LLM_API_KEY}`,
-      },
-      body: JSON.stringify({ model: MODEL, messages, max_tokens: MAX_TOKENS, stream: true }),
-    });
-  } catch {
-    res.statusCode = 502;
-    res.end("Could not reach the model provider.");
-    return;
+  // Try each provider in order. Move past one on a transient/limit failure (429, 5xx, or
+  // a network error) and try the next; only stream once a provider returns a usable stream.
+  let upstream: Response | null = null;
+  let lastStatus = 0;
+  let lastDetail = "";
+  for (const p of PROVIDERS) {
+    const payload = JSON.stringify({ model: p.model, messages, max_tokens: MAX_TOKENS, stream: true });
+    let r: Response;
+    try {
+      r = await fetch(`${p.baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${p.key}` },
+        body: payload,
+      });
+    } catch {
+      lastStatus = 0;
+      lastDetail = `${p.label}: network error`;
+      continue; // try next provider
+    }
+    if (r.ok && r.body) {
+      upstream = r;
+      break;
+    }
+    lastStatus = r.status;
+    lastDetail = `${p.label}: ${await r.text().catch(() => "")}`;
+    // 429 (rate limit) and 5xx are worth retrying on another provider; other 4xx are not.
+    if (r.status !== 429 && r.status < 500) break;
   }
 
-  if (!upstream.ok || !upstream.body) {
-    const detail = await upstream.text().catch(() => "");
+  if (!upstream) {
     res.statusCode = 502;
-    res.end(`Model provider error (${upstream.status}). ${detail.slice(0, 200)}`);
+    res.end(`Model provider error (${lastStatus}). ${lastDetail.slice(0, 200)}`);
     return;
   }
 
@@ -193,7 +247,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   res.setHeader("cache-control", "no-cache, no-transform");
 
   // Parse the upstream OpenAI-style SSE stream, forward token text as plain chunks.
-  const reader = upstream.body.getReader();
+  const reader = upstream.body!.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
   try {
@@ -211,7 +265,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         try {
           const json = JSON.parse(data);
           const delta = json?.choices?.[0]?.delta?.content;
-          if (delta) res.write(delta);
+          if (delta) res.write(sanitize(delta));
         } catch {
           /* ignore keep-alives / partial frames */
         }

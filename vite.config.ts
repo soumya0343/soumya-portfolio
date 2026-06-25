@@ -12,7 +12,7 @@ function apiDevServer(): PluginOption {
       // dev handler can read them — Vite only exposes VITE_-prefixed vars by default.
       const env = loadEnv(mode, process.cwd(), '')
       for (const key of Object.keys(env)) {
-        if ((key.startsWith('LLM_') || key.startsWith('GITHUB_')) && !process.env[key]) process.env[key] = env[key]
+        if ((key.startsWith('LLM_') || key.startsWith('GITHUB_') || key.startsWith('CEREBRAS_')) && !process.env[key]) process.env[key] = env[key]
       }
     },
     configureServer(server: ViteDevServer) {

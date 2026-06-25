@@ -7,7 +7,7 @@ interface NavLinkDef {
 }
 
 const LINKS: NavLinkDef[] = [
-  { sec: "home", label: "Home" },
+  { sec: "about", label: "About" },
   { sec: "work", label: "Work" },
   { sec: "experience", label: "Experience" },
   { sec: "skills", label: "Skills" },
@@ -18,13 +18,14 @@ const LINKS: NavLinkDef[] = [
 
 const SHEET_LINKS: { href: string; num: string; label: string }[] = [
   { href: "#home", num: "00", label: "Home" },
-  { href: "#work", num: "01", label: "Selected Work" },
-  { href: "#experience", num: "02", label: "Experience" },
-  { href: "#skills", num: "03", label: "Skills" },
-  { href: "#background", num: "04", label: "Background" },
-  { href: "#blog", num: "05", label: "Blog" },
-  { href: "#ask", num: "06", label: "Ask my AI" },
-  { href: "#contact", num: "07", label: "Contact" },
+  { href: "#about", num: "01", label: "About" },
+  { href: "#work", num: "02", label: "Selected Work" },
+  { href: "#experience", num: "03", label: "Experience" },
+  { href: "#skills", num: "04", label: "Skills" },
+  { href: "#background", num: "05", label: "Background" },
+  { href: "#blog", num: "06", label: "Blog" },
+  { href: "#ask", num: "07", label: "Ask my AI" },
+  { href: "#contact", num: "08", label: "Contact" },
 ];
 
 const SunIcon = () => (
@@ -39,6 +40,12 @@ const SunIcon = () => (
 const MoonIcon = () => (
   <svg className="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+const HomeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5 9.5V21h14V9.5" />
   </svg>
 );
 
@@ -65,7 +72,7 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
   }, []);
 
   useEffect(() => {
-    const secIds = LINKS.map((l) => l.sec);
+    const secIds = ["home", ...LINKS.map((l) => l.sec)];
     let ticking = false;
 
     const spy = () => {
@@ -112,11 +119,12 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
   return (
     <>
       <nav className="nav" id="nav" ref={navRef} aria-label="Primary">
-        <a className="nav__brand" href="#home" aria-label="Home">
-          <span className="nav__mono">SG</span>
-          <span className="nav__brand-txt">
-            Soumya<span className="nav__brand-dim"> · systems</span>
-          </span>
+        <a
+          className={`nav__home${active === "home" ? " nav__home--active" : ""}`}
+          href="#home"
+          aria-label="Home"
+        >
+          <HomeIcon />
         </a>
 
         <div className="nav__links" id="navLinks" ref={linksWrapRef} onMouseLeave={() => movePill(activeRef.current)}>
@@ -156,7 +164,7 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
       <div className={`sheet${sheetOpen ? " open" : ""}`} id="sheet">
         <div className="sheet__top">
           <div className="nav__brand">
-            <span className="nav__mono">SG</span>
+            <img className="nav__mono" src="/logo.svg" alt="SG" width={32} height={32} />
             <span className="nav__brand-txt">Soumya Gupta</span>
           </div>
           <button className="sheet__close" id="sheetClose" aria-label="Close menu" onClick={() => setSheetOpen(false)}>

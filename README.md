@@ -123,8 +123,15 @@ Both serverless functions read secrets from the server only, never `VITE_`-prefi
 
 ```bash
 LLM_API_KEY=your_provider_key                 # required
+LLM_API_KEY_2=optional_second_key             # optional fallback, tried on 429 / error
+LLM_API_KEY_3=optional_third_key              # optional fallback
 LLM_BASE_URL=https://api.groq.com/openai/v1   # default; any OpenAI-compatible API
 LLM_MODEL=llama-3.3-70b-versatile             # e.g. gemini-2.0-flash, llama-3.3-70b
+
+# Optional cross-provider fallback, tried after all LLM_API_KEY* are exhausted:
+CEREBRAS_API_KEY=optional_cerebras_key
+CEREBRAS_BASE_URL=https://api.cerebras.ai/v1  # default
+CEREBRAS_MODEL=gpt-oss-120b                     # default; must be a model your key can access
 ```
 
 **Contact form**, delivered via Resend:

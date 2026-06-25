@@ -112,15 +112,7 @@ export interface OtherProject {
   link: string;
 }
 
-export const OTHER_PROJECTS: OtherProject[] = [
-  {
-    title: "Mandate",
-    cat: "AI Agent Security · Multi-Agent",
-    one: "An authorization gateway for AI-agent workflows, every consequential action a worker agent wants to execute is intercepted and routed through a five-agent security panel (Warden, Verity, Ledger, Codex, Arbiter) that investigates in parallel, issues a verdict, and escalates the highest-stakes actions to a human operator.",
-    tech: ["Python", "LangGraph", "FastAPI", "SSE", "Multi-Agent"],
-    link: "https://github.com/soumya0343/mandate",
-  },
-];
+export const OTHER_PROJECTS: OtherProject[] = [];
 
 export const PROJECTS: Project[] = [
   {
@@ -687,31 +679,31 @@ export const AGENT_KB: KBItem[] = [
     key: ["ai", "agent", "llm", "gemini", "mcp", "rag", "langgraph", "multi-agent", "voice", "model"],
     q: "Show me her AI work",
     tools: ["search_projects", "filter(domain='AI')"],
-    a: "It's her deepest interest, she works across the whole AI-systems stack. Highlights: Saral, a supervisor-orchestrated multi-agent support system with per-customer RAG grounding, compliance gates, and an LLM-judge eval suite; InferLog, a multi-provider LLM platform with full inference observability; RepoLens, which applies LLMs to repository-insight engines; CodeSentinel, AI code review with Gemini; an MCP server (~20 micro-APIs) powering a contextual assistant at Chakra Tech; plus Gemini-powered game dialogue and LLM résumé-parsing pipelines. Her goal: become an AI engineer.",
+    a: "The AI-systems layer is where she's most invested. Highlights:\n• Saral: supervisor-orchestrated multi-agent support system for regulated insurance/lending, with per-customer RAG, compliance + PII gates, and a per-language LLM-judge eval suite.\n• InferLog: multi-provider LLM platform with full inference observability, SSE streaming and two-stage PII redaction.\n• RepoLens: LLM assistant and analysis engines over repository data.\n• CodeSentinel: AI code review in VS Code, Gemini over a deterministic offline rule engine.\n• Infinite Canvas RPG: AI-driven game dialogue and narration with Gemini.\nAt Chakra Tech she also built an MCP server (~20 tools) powering a contextual market assistant.",
   },
   {
     key: ["impress", "best", "impact", "result", "proud", "biggest", "latency", "performance"],
     q: "What's her most impressive result?",
     tools: ["search_projects", "rank_by_impact"],
-    a: "Cutting backend latency from ~15 seconds to milliseconds on a live blockchain prediction market, by removing N+1 queries, adding indexing, and a fuzzy-match fallback. She also automated SEBI-compliant reporting for 5,000+ clients, cutting manual reporting time ~83% per cycle.",
+    a: "A few that stand out:\n• Cut backend latency from ~15s to <100ms on a live blockchain prediction market (Chakra Tech) by killing N+1 queries, adding indexing, and a fuzzy-match fallback.\n• Automated SEBI-compliant reporting for 5,000+ clients at Dezerv with a Go backend, cutting manual reporting time ~83% per cycle.\n• Built Saral's eval suite: ~95 labeled scenarios scored by a per-language LLM judge, with Cohen's kappa against human labels computed per language.",
   },
   {
     key: ["frontend", "front-end", "react", "ui", "design", "interface", "css"],
     q: "Is she good at frontend?",
     tools: ["query_profile", "search_projects"],
-    a: "Yes, and she genuinely loves it. React + TypeScript dashboards, Framer-Motion interfaces, WebGL fluid art, and real-time analytics views (RepoLens' D3 graph dashboard, InferLog's Next.js charts). This very panel, streaming tokens, live state, is her frontend work. She cares how things feel, not just how they run.",
+    a: "Yes, and she genuinely enjoys it:\n• React + TypeScript dashboards and Framer Motion interfaces.\n• Real-time analytics views: RepoLens' D3 graph dashboard, InferLog's Next.js charts.\n• This very chat panel, with token streaming and live state, is her frontend work.\nShe cares how things feel, not just how they run.",
   },
   {
     key: ["backend", "distributed", "go", "system", "scale", "infra", "database", "fastapi", "neo4j"],
     q: "How strong is her backend?",
     tools: ["get_experience", "summarize"],
-    a: "Strong and production-tested. Go services for SEBI-compliant reporting at 5,000+ clients, data pipelines integrating Polymarket + PandaScore, BullMQ + Redis jobs for reliable ingestion, and Elasticsearch search. Her own projects push further: RepoLens runs a multi-service FastAPI backend over PostgreSQL/TimescaleDB, Neo4j, and ARQ/Redis workers; InferLog decouples LLM logging onto a Redis Streams event pipeline. Her ECE background makes her think in systems and constraints.",
+    a: "Strong and production-tested:\n• Go services for SEBI-compliant reporting at 5,000+ clients (Dezerv).\n• Data pipelines integrating Polymarket + PandaScore, with BullMQ + Redis jobs and Elasticsearch search (Chakra Tech).\n• RepoLens: multi-service FastAPI backend over PostgreSQL/TimescaleDB, Neo4j, and ARQ/Redis workers.\n• InferLog: decouples LLM logging onto a Redis Streams event pipeline.\nHer ECE background makes her think in systems and constraints.",
   },
   {
     key: ["hire", "why", "recruit", "good fit", "founder", "startup"],
     q: "Why should we hire her?",
     tools: ["get_experience", "rank_by_impact", "summarize"],
-    a: "She ships end-to-end and owns outcomes: 10+ projects from idea to production, real AI-agent infrastructure (multi-agent systems, RAG, LLM observability), measurable performance wins, and a systems-thinking mindset. She's early-career, hungry to grow as an AI engineer, and she learns fast. Founder-friendly: she'll take an idea and run it to production.",
+    a: "She ships end-to-end and owns outcomes:\n• 10+ projects taken from idea to production.\n• Real AI-agent infrastructure: multi-agent systems, RAG, LLM observability and evals.\n• Measurable wins: ~15s to <100ms latency, ~83% less manual reporting time.\n• Systems-thinking mindset from an ECE background, and she learns fast.\nFounder-friendly: hand her an idea and she'll run it to production.",
   },
   {
     key: ["who", "about", "kind of engineer", "introduce", "yourself", "background"],
