@@ -2,10 +2,13 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 const USER = process.env.GITHUB_USER;
 
+// No from/to: GitHub returns the trailing year bucketed in the account's
+// configured timezone, matching the public profile calendar exactly. Passing
+// UTC from/to mis-buckets days near the IST/UTC boundary and undercounts today.
 const QUERY = `
-query($login: String!, $from: DateTime!, $to: DateTime!) {
+query($login: String!) {
   user(login: $login) {
-    contributionsCollection(from: $from, to: $to) {
+    contributionsCollection {
       contributionCalendar {
         weeks {
           contributionDays { date contributionCount }
@@ -24,11 +27,6 @@ export default async function handler(_req: IncomingMessage, res: ServerResponse
     return;
   }
 
-  // Trailing ~371 days so the calendar always has enough leading weeks.
-  const to = new Date();
-  const from = new Date(to);
-  from.setDate(from.getDate() - 371);
-
   let upstream: Response;
   try {
     upstream = await fetch("https://api.github.com/graphql", {
@@ -40,7 +38,7 @@ export default async function handler(_req: IncomingMessage, res: ServerResponse
       },
       body: JSON.stringify({
         query: QUERY,
-        variables: { login: USER, from: from.toISOString(), to: to.toISOString() },
+        variables: { login: USER },
       }),
     });
   } catch {

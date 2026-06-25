@@ -151,11 +151,18 @@ export default function About() {
             <div className="bento-reading__main">
               <img
                 className="bento-reading__cover"
-                src="https://covers.openlibrary.org/b/isbn/9781098166304-L.jpg"
+                src="/assets/ai-engineering.jpg"
                 alt="AI Engineering book cover"
                 loading="lazy"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                  const img = e.currentTarget as HTMLImageElement;
+                  // Fall back to Open Library if the local cover is missing, then hide.
+                  if (!img.dataset.fallback) {
+                    img.dataset.fallback = "1";
+                    img.src = "https://covers.openlibrary.org/b/isbn/9781098166304-L.jpg";
+                  } else {
+                    img.style.display = "none";
+                  }
                 }}
               />
               <div className="bento-reading__meta">
