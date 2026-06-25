@@ -43,18 +43,35 @@ export default function GithubCal() {
 
   useEffect(() => {
     let alive = true;
-    fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`)
-      .then((r) => (r.ok ? r.json() : { contributions: [] }))
+
+    const toMap = (data: { contributions?: { date: string; count: number }[] }) => {
+      const map: Record<string, number> = {};
+      (data.contributions || []).forEach((c) => {
+        if (c.date) map[c.date] = c.count;
+      });
+      return map;
+    };
+
+    // Primary: our serverless endpoint (GitHub GraphQL, real-time, includes today).
+    // Fallback: the public scraper API (cached, may lag a few hours) if the endpoint
+    // isn't configured (no GITHUB_TOKEN) or errors.
+    fetch("/api/github")
+      .then((r) => {
+        if (!r.ok) throw new Error("api/github unavailable");
+        return r.json();
+      })
+      .catch(() =>
+        fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`).then((r) =>
+          r.ok ? r.json() : { contributions: [] },
+        ),
+      )
       .then((data: { contributions?: { date: string; count: number }[] }) => {
-        const map: Record<string, number> = {};
-        (data.contributions || []).forEach((c) => {
-          if (c.date) map[c.date] = c.count;
-        });
-        if (alive) setByDate(map);
+        if (alive) setByDate(toMap(data));
       })
       .catch(() => {
         if (alive) setByDate({});
       });
+
     return () => {
       alive = false;
     };
@@ -62,6 +79,10 @@ export default function GithubCal() {
 
   const model = useMemo(() => {
     if (!byDate) return null;
+    // Local YYYY-MM-DD (NOT toISOString, which is UTC and rolls the date back a day
+    // for IST/positive-offset zones, mis-keying today's cell).
+    const ymd = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const today = new Date();
     today.setHours(23, 59, 59, 999);
     const start = new Date(today);
@@ -75,14 +96,14 @@ export default function GithubCal() {
     while (cursor <= today) {
       const week: Day[] = [];
       for (let d = 0; d < 7; d++) {
-        const key = cursor.toISOString().slice(0, 10);
+        const key = ymd(cursor);
         week.push({ date: new Date(cursor), key, count: byDate[key] || 0, future: cursor > today });
         cursor.setDate(cursor.getDate() + 1);
       }
       weeks.push(week);
     }
 
-    const startKey = start.toISOString().slice(0, 10);
+    const startKey = ymd(start);
     let total = 0;
     Object.keys(byDate).forEach((k) => {
       if (k >= startKey) total += byDate[k];

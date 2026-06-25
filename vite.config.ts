@@ -12,20 +12,23 @@ function apiDevServer(): PluginOption {
       // dev handler can read them — Vite only exposes VITE_-prefixed vars by default.
       const env = loadEnv(mode, process.cwd(), '')
       for (const key of Object.keys(env)) {
-        if (key.startsWith('LLM_') && !process.env[key]) process.env[key] = env[key]
+        if ((key.startsWith('LLM_') || key.startsWith('GITHUB_')) && !process.env[key]) process.env[key] = env[key]
       }
     },
     configureServer(server: ViteDevServer) {
-      server.middlewares.use('/api/ask', async (req, res) => {
-        try {
-          const mod = await server.ssrLoadModule('/api/ask.ts')
-          await mod.default(req, res)
-        } catch (err) {
-          server.config.logger.error(`[api/ask] ${String(err)}`)
-          if (!res.headersSent) res.statusCode = 500
-          res.end('Dev API error — see terminal.')
-        }
-      })
+      const mount = (route: string, file: string) =>
+        server.middlewares.use(route, async (req, res) => {
+          try {
+            const mod = await server.ssrLoadModule(file)
+            await mod.default(req, res)
+          } catch (err) {
+            server.config.logger.error(`[${route}] ${String(err)}`)
+            if (!res.headersSent) res.statusCode = 500
+            res.end('Dev API error, see terminal.')
+          }
+        })
+      mount('/api/ask', '/api/ask.ts')
+      mount('/api/github', '/api/github.ts')
     },
   }
 }
