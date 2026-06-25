@@ -8,7 +8,7 @@ A precision-editorial portfolio for a backend & AI systems engineer — dark "Co
 
 ## 👋 About Me
 
-🎓 Electronics & Communication Engineering @ BITS Pilani, K. K. Birla Goa Campus
+🎓 B.E. Electronics & Communication Engineering, BITS Pilani K. K. Birla Goa Campus (graduated May 2026)
 💻 Backend & AI Systems Engineer — from APIs and agents down to data
 🚀 I architect and ship production systems end to end
 

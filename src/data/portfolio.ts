@@ -669,7 +669,7 @@ export const AGENT_KB: KBItem[] = [
     key: ["who", "about", "kind of engineer", "introduce", "yourself", "background"],
     q: "What kind of engineer is Soumya?",
     tools: ["query_profile", "get_experience"],
-    a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack — Go and FastAPI backends with data pipelines, the LLM/agent layer on top (multi-agent systems, RAG, LLM infrastructure), and polished real-time frontends. Currently studying ECE at BITS Pilani, Goa.",
+    a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack — Go and FastAPI backends with data pipelines, the LLM/agent layer on top (multi-agent systems, RAG, LLM infrastructure), and polished real-time frontends. A 2026 ECE graduate from BITS Pilani, Goa.",
   },
 ];
 
