@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { AGENT_KB, AGENT_FALLBACK } from "../data/portfolio";
+import { AGENT_KB } from "../data/portfolio";
 
 interface Msg {
   id: number;
@@ -38,8 +38,10 @@ function linkify(text: string): ReactNode[] {
   return out;
 }
 
-/** Scripted fallback used when the live model is unreachable / over quota / not configured. */
-function fallbackAnswer(text: string): string {
+/** Scripted fallback used when the live model is unreachable / over quota / not configured.
+ *  Returns null when nothing in the local KB matches, so the caller can show an honest
+ *  "couldn't reach the model" message instead of a canned line that looks like a dodge. */
+function fallbackAnswer(text: string): string | null {
   const t = text.toLowerCase();
   let best: (typeof AGENT_KB)[number] | null = null;
   let score = 0;
@@ -51,8 +53,11 @@ function fallbackAnswer(text: string): string {
       best = item;
     }
   }
-  return best ? best.a : AGENT_FALLBACK;
+  return best ? best.a : null;
 }
+
+const MODEL_DOWN =
+  "I'm having trouble reaching the model right now (it may be briefly rate-limited). Give it a few seconds and try again, or reach Soumya directly at soumya0343@gmail.com.";
 
 export default function Ask() {
   const [messages, setMessages] = useState<Msg[]>([{ id: 0, role: "bot", text: GREETING, typing: false }]);
@@ -110,7 +115,7 @@ export default function Ask() {
       /* network / quota / not-configured, fall through to the scripted answer below */
     }
 
-    const answer = acc.trim() || fallbackAnswer(q);
+    const answer = acc.trim() || fallbackAnswer(q) || MODEL_DOWN;
     update(id, (m) => ({ ...m, typing: false, text: answer }));
     historyRef.current.push({ role: "assistant", content: answer });
     busyRef.current = false;

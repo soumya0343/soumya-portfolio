@@ -13,7 +13,11 @@
  * Streams plain UTF-8 text chunks back to the client.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { PROFILE, PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT, RESUME_URL } from "../src/data/portfolio";
+// NOTE: explicit .js extension is required. On Vercel the function runs as native ESM
+// ("type": "module"), and Node's ESM resolver rejects extensionless relative imports
+// (ERR_MODULE_NOT_FOUND for /var/task/src/data/portfolio). TS "bundler" resolution and
+// Vite both resolve the .js back to portfolio.ts at build/dev time.
+import { PROFILE, PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADERSHIP, CONTACT, RESUME_URL } from "../src/data/portfolio.js";
 
 // Birth year only, server-side (never bundled to the browser). Age is computed at
 // runtime; the agent reveals the age number but never the birth year / date.

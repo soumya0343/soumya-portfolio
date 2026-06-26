@@ -711,6 +711,18 @@ export const AGENT_KB: KBItem[] = [
     tools: ["query_profile", "get_experience"],
     a: "A full-stack engineer moving deep into AI engineering. She builds across the whole stack, Go and FastAPI backends with data pipelines, the LLM/agent layer on top (multi-agent systems, RAG, LLM infrastructure), and polished real-time frontends. A 2026 ECE graduate from BITS Pilani, Goa.",
   },
+  {
+    key: ["yoe", "experience", "years", "notice", "available", "availability", "join", "start", "when can", "on notice", "join date", "start date"],
+    q: "What's her experience and availability?",
+    tools: ["query_profile", "get_experience"],
+    a: "She's a 2026 ECE graduate from BITS Pilani, Goa, with hands-on experience from internships and 10+ shipped projects (Dezerv, Chakra Tech, Saral, and more). She's not currently in a notice period, she's available and joins Dezerv Investments as a Software Engineer in July 2026. For anything specific, reach her at soumya0343@gmail.com.",
+  },
+  {
+    key: ["contact", "email", "reach", "linkedin", "github", "get in touch", "resume", "cv", "connect", "dm"],
+    q: "How do I reach her?",
+    tools: ["query_profile"],
+    a: "Easiest is email: soumya0343@gmail.com. You can also find her on LinkedIn and GitHub (links are in the Contact section), and her resume is downloadable at /resume.pdf.",
+  },
 ];
 
 export const AGENT_FALLBACK =
