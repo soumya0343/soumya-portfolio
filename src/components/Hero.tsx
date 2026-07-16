@@ -9,7 +9,7 @@ export default function Hero() {
       <div className="wrap hero__body">
         <div className="hero__intro">
           <div className="hero__avail rv">
-            <span className="hero__dot" /> OPEN TO BACKEND &amp; AI ROLES
+            <span className="hero__dot" /> Software Development Engineer @ Dezerv Investments
           </div>
           <div className="hero__loc rv" aria-label="Location">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

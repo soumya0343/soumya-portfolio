@@ -55,7 +55,7 @@ export default function About() {
           <div className="bento-card bento-now">
             <Label>Currently</Label>
             <div className="bento-now__row bento-now__ok">
-              <span className="hero__dot" /> Incoming Software Engineer @ Dezerv
+              <span className="hero__dot" /> Software Development Engineer @ Dezerv Investments
             </div>
             <p className="bento-now__desc">
               Building production software and exploring how reliable AI systems are engineered.

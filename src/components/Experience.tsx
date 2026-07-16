@@ -63,7 +63,7 @@ export default function Experience() {
         <div className="sec-head rv">
           <span className="sec-head__num">03</span>
           <h2 className="sec-head__title">Experience</h2>
-          <span className="sec-head__sub">FOUR ROLES · PRODUCTION SYSTEMS</span>
+          <span className="sec-head__sub">ROLES · PRODUCTION SYSTEMS</span>
         </div>
         <div className="roadmap" id="expList" ref={roadmapRef}>
           <div className="rm-spine" ref={spineRef}>

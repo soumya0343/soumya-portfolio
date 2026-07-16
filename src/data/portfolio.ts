@@ -87,11 +87,12 @@ export const PROFILE = {
   beyondEngineering:
     "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's currently reading AI Engineering by Chip Huyen.",
   status:
-    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joins Dezerv Investments as a Software Development Engineer (SDE) in July 2026.",
+    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joined Dezerv Investments in July 2026 as a Software Development Engineer, working across backend + frontend AI pipelines.",
   experience:
-    "She is a 2026 graduate just starting her full-time career. When asked about years of experience (YOE), do NOT state a number and never say it is 'zero', '0', 'none', 'effectively zero', or similar, that sounds dismissive. Instead, lead with the positive: she is early-career with about a year of cumulative hands-on internship experience across four engineering roles, plus a deep portfolio of self-built production projects in backend and AI systems. Briefly name her most recent internships, Chakra Tech (Full Stack Developer Intern) and Dezerv Investments (Engineering Intern). Keep the tone confident and warm, not apologetic.",
+    "She is a 2026 graduate now in her first full-time role at Dezerv Investments. When asked about years of experience (YOE), do NOT state a number and never say it is 'zero', '0', 'none', 'effectively zero', or similar. Instead, lead with the positive: she is early-career with hands-on internship experience across multiple engineering roles, plus a deep portfolio of self-built production projects in backend systems and AI. Briefly name her most recent internships (Chakra Tech and Dezerv Investments) and emphasize what she's currently doing full-time: backend + frontend AI pipelines at Dezerv. Keep the tone confident and warm, not apologetic.",
+
   availability:
-    "She is not currently employed, so there is no notice period. She is available immediately and is open to building, learning, and collaborating, including AI projects and freelance/contract work, until her Dezerv start date in July 2026.",
+    "She joined Dezerv Investments in July 2026 as a full-time Software Development Engineer and is currently on a six-month probation period. She can still join immediately for the right opportunity.",
 };
 
 export const CONTACT = {
@@ -532,6 +533,17 @@ export const PROJECTS: Project[] = [
 ];
 
 export const EXPERIENCE: Experience[] = [
+  {
+    year: "JUL 2026 - PRESENT",
+    current: true,
+    role: "Software Development Engineer",
+    company: "Dezerv Investments",
+    loc: "Bengaluru, India",
+    points: [
+      "Working as a Software Development Engineer at Dezerv, initially contributing to backend and frontend AI pipeline foundations while ramping into broader dev work.",
+    ],
+    stack: ["Go", "React", "Flutter", "Dart", "TypeScript"],
+  },
   {
     year: "DEC 2025 - FEB 2026",
     role: "Full Stack Developer Intern",
