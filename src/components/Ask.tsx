@@ -59,6 +59,9 @@ function fallbackAnswer(text: string): string | null {
 const MODEL_DOWN =
   "I'm having trouble reaching the model right now (it may be briefly rate-limited). Give it a few seconds and try again, or reach Soumya directly at soumya0343@gmail.com.";
 
+const RATE_LIMITED =
+  "I'm getting a lot of questions right now and hit a short rate limit. Give it about a minute and ask again, or reach Soumya directly at soumya0343@gmail.com.";
+
 export default function Ask() {
   const [messages, setMessages] = useState<Msg[]>([{ id: 0, role: "bot", text: GREETING, typing: false }]);
   const [field, setField] = useState("");
@@ -94,12 +97,17 @@ export default function Ask() {
     const id = add("bot", "", true);
 
     let acc = "";
+    let limited = false;
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ message: q, history }),
       });
+      // The free tier's per-minute budget is small, so a 429 is expected under a burst of
+      // questions. Say so plainly instead of dropping to a scripted answer that reads as
+      // if the agent dodged the question.
+      if (res.status === 429) limited = true;
       if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -115,7 +123,7 @@ export default function Ask() {
       /* network / quota / not-configured, fall through to the scripted answer below */
     }
 
-    const answer = acc.trim() || fallbackAnswer(q) || MODEL_DOWN;
+    const answer = acc.trim() || (limited ? RATE_LIMITED : fallbackAnswer(q) || MODEL_DOWN);
     update(id, (m) => ({ ...m, typing: false, text: answer }));
     historyRef.current.push({ role: "assistant", content: answer });
     busyRef.current = false;

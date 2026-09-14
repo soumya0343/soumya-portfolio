@@ -24,32 +24,98 @@ import { PROFILE, PROJECTS, OTHER_PROJECTS, EXPERIENCE, SKILLS, EDUCATION, LEADE
 const BIRTH_YEAR = 2004;
 const AGE = new Date().getFullYear() - BIRTH_YEAR;
 
-const BASE_URL = (process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1").replace(/\/$/, "");
-const MODEL = process.env.LLM_MODEL || "llama-3.3-70b-versatile";
+// Env values can arrive with a trailing inline comment (`URL  # default`) or stray
+// whitespace; dotenv-style loaders keep those verbatim. Strip them so a cosmetic edit
+// in .env can't silently point a provider at an unroutable URL.
+function envStr(name: string, fallback: string): string {
+  const raw = process.env[name];
+  if (!raw) return fallback;
+  const cleaned = raw.replace(/\s+#.*$/, "").trim().replace(/\/$/, "");
+  return cleaned || fallback;
+}
 
-const CEREBRAS_BASE = (process.env.CEREBRAS_BASE_URL || "https://api.cerebras.ai/v1").replace(/\/$/, "");
-const CEREBRAS_MODEL = process.env.CEREBRAS_MODEL || "gpt-oss-120b";
+const BASE_URL = envStr("LLM_BASE_URL", "https://api.groq.com/openai/v1");
+const MODEL = envStr("LLM_MODEL", "openai/gpt-oss-120b");
+
+// Default output cap, used for the primary (Groq) provider. Groq reserves max_tokens
+// against its 8k tokens/MINUTE pool up front rather than billing actual output, so an
+// oversized cap costs budget on every call even when replies are short. 400 is ample for
+// the 2-to-5-bullet answers the system prompt asks for. Providers that reason before
+// answering override this per row in FALLBACKS.
+const MAX_TOKENS = 400;
 
 interface Provider {
   label: string;
   baseUrl: string;
   model: string;
   key: string;
+  /* Per-provider output cap. Reasoning models spend this budget on hidden thinking
+   * tokens before emitting any prose, so they need far more headroom than the visible
+   * answer length suggests; providers that bill max_tokens against a small per-minute
+   * pool want the opposite. See MAX_TOKENS. */
+  maxTokens: number;
 }
+
+// Each optional fallback is one row here: env var for the key, plus the base URL, model,
+// and output cap to use with it. Adding a provider means adding a row and setting its
+// key, not editing the request logic. All must speak the OpenAI /chat/completions shape.
+const FALLBACKS: {
+  label: string;
+  keyVar: string;
+  baseVar: string;
+  baseDefault: string;
+  modelVar: string;
+  modelDefault: string;
+  maxTokens: number;
+}[] = [
+  // Gemini's free tier allows far more tokens/minute than Groq's 8k, so it is the most
+  // useful backstop when Groq trips its per-minute cap.
+  {
+    label: "gemini",
+    keyVar: "GEMINI_API_KEY",
+    baseVar: "GEMINI_BASE_URL",
+    baseDefault: "https://generativelanguage.googleapis.com/v1beta/openai",
+    modelVar: "GEMINI_MODEL",
+    modelDefault: "gemini-2.5-flash",
+    // Gemini 2.5 Flash reasons before answering, and that thinking is charged against
+    // max_tokens: at 400 it spent the whole budget thinking and returned a sentence
+    // fragment with finish_reason "length". 1200 leaves room to think AND answer, and
+    // costs nothing extra since Gemini bills actual usage, not the reservation.
+    maxTokens: 1200,
+  },
+  {
+    label: "cerebras",
+    keyVar: "CEREBRAS_API_KEY",
+    baseVar: "CEREBRAS_BASE_URL",
+    baseDefault: "https://api.cerebras.ai/v1",
+    modelVar: "CEREBRAS_MODEL",
+    modelDefault: "gpt-oss-120b",
+    maxTokens: 400,
+  },
+];
 
 // Providers are tried in order; when one is rate-limited (429) or errors, the next is
 // tried before the request gives up. The primary Groq key plus optional extra Groq keys
-// come first (note: Groq's daily cap is per-ORG, so extra keys only help if they're from
-// different accounts), then Cerebras as a cross-provider fallback.
+// come first (note: Groq's limits are per-ORG, so extra keys only help if they're from
+// different accounts), then each configured fallback in FALLBACKS order.
 const PROVIDERS: Provider[] = [
   ...[process.env.LLM_API_KEY, process.env.LLM_API_KEY_2, process.env.LLM_API_KEY_3]
+    .map((k) => k?.trim())
     .filter((k): k is string => !!k)
-    .map((key, i) => ({ label: `groq${i + 1}`, baseUrl: BASE_URL, model: MODEL, key })),
-  ...(process.env.CEREBRAS_API_KEY
-    ? [{ label: "cerebras", baseUrl: CEREBRAS_BASE, model: CEREBRAS_MODEL, key: process.env.CEREBRAS_API_KEY }]
-    : []),
+    .map((key, i) => ({ label: `groq${i + 1}`, baseUrl: BASE_URL, model: MODEL, key, maxTokens: MAX_TOKENS })),
+  ...FALLBACKS.flatMap((f) => {
+    const key = process.env[f.keyVar]?.trim();
+    return key
+      ? [{
+          label: f.label,
+          baseUrl: envStr(f.baseVar, f.baseDefault),
+          model: envStr(f.modelVar, f.modelDefault),
+          key,
+          maxTokens: f.maxTokens,
+        }]
+      : [];
+  }),
 ];
-const MAX_TOKENS = 600;
 const MAX_MESSAGE_CHARS = 600;
 const MAX_HISTORY = 6;
 
@@ -58,10 +124,13 @@ function buildProfile(): string {
   // Keep the grounding compact: one-liner + overview + outcome per project. The full
   // per-approach deep-dive lives on the case-study pages; including it here ballooned
   // each request's input tokens (and drained the provider's daily cap in ~30 calls).
+  // Only the outcome line rides along with each project. The overview largely restates
+  // the one-liner, and carrying both pushed the system prompt to ~4k tokens against
+  // Groq's 8k tokens/MINUTE cap, so a second question within the same minute 429'd.
+  // Outcome alone keeps the concrete numbers the answers cite.
   const projects = PROJECTS.map((p) => {
     const d = p.deepdive;
     const lines = [`- ${p.title} (${p.cat}) [${p.tech.join(", ")}]: ${p.one}`];
-    if (d?.overview) lines.push(`    Overview: ${d.overview}`);
     if (d?.outcome) lines.push(`    Outcome: ${d.outcome}`);
     return lines.join("\n");
   }).join("\n");
@@ -147,7 +216,10 @@ function sanitize(s: string): string {
     .replace(/[–—―]/g, ", ") // en / em / horizontal bar -> ", "
     .replace(/[‘’‛]/g, "'") // smart single quotes -> '
     .replace(/[“”]/g, '"') // smart double quotes -> "
-    .replace(/^(\s*)[*]\s+/gm, "$1• "); // markdown "* " bullets -> "• "
+    .replace(/^(\s*)[*-]\s+/gm, "$1• ") // markdown "* " / "- " bullets -> "• "
+    // The model sometimes emits its own "• " and the rule above adds another, or it
+    // writes "• - "; collapse any run of bullet markers into a single bullet.
+    .replace(/^(\s*)(?:•\s*)+(?:[*-]\s+)?/gm, (m, indent) => (/^\s*$/.test(m) ? m : `${indent}• `));
 }
 
 async function readBody(req: IncomingMessage): Promise<unknown> {
@@ -217,7 +289,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   let lastStatus = 0;
   let lastDetail = "";
   for (const p of PROVIDERS) {
-    const payload = JSON.stringify({ model: p.model, messages, max_tokens: MAX_TOKENS, stream: true });
+    const payload = JSON.stringify({ model: p.model, messages, max_tokens: p.maxTokens, stream: true });
     let r: Response;
     try {
       r = await fetch(`${p.baseUrl}/chat/completions`, {
@@ -236,13 +308,24 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     }
     lastStatus = r.status;
     lastDetail = `${p.label}: ${await r.text().catch(() => "")}`;
-    // 429 (rate limit) and 5xx are worth retrying on another provider; other 4xx are not.
-    if (r.status !== 429 && r.status < 500) break;
+    // 429 (rate limit), 5xx, and 404 are worth retrying on another provider. A 404 means
+    // this provider retired the configured model, which says nothing about the next one,
+    // so falling through keeps the chat alive instead of failing the whole request.
+    // Other 4xx (bad key, malformed request) would fail identically everywhere.
+    if (r.status !== 429 && r.status !== 404 && r.status < 500) break;
   }
 
   if (!upstream) {
-    res.statusCode = 502;
-    res.end(`Model provider error (${lastStatus}). ${lastDetail.slice(0, 200)}`);
+    // 429/402 across every provider means the free-tier budget is momentarily spent, not
+    // that anything is broken. Send 429 so the client can say "try again in a moment"
+    // rather than surfacing a raw provider error.
+    const limited = lastStatus === 429 || lastStatus === 402;
+    res.statusCode = limited ? 429 : 502;
+    res.end(
+      limited
+        ? "Rate limited, give it a few seconds and try again."
+        : `Model provider error (${lastStatus}). ${lastDetail.slice(0, 200)}`,
+    );
     return;
   }
 
@@ -254,6 +337,15 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   const reader = upstream.body!.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  // sanitize() has line-anchored rules (bullets), but tokens arrive mid-line, so applying
+  // it per chunk misses any bullet split across chunk boundaries. Hold back the trailing
+  // partial line and only emit text once a newline proves the line is complete.
+  let pending = "";
+  const flush = (upTo: number) => {
+    const ready = pending.slice(0, upTo);
+    pending = pending.slice(upTo);
+    if (ready) res.write(sanitize(ready));
+  };
   try {
     for (;;) {
       const { done, value } = await reader.read();
@@ -269,7 +361,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         try {
           const json = JSON.parse(data);
           const delta = json?.choices?.[0]?.delta?.content;
-          if (delta) res.write(sanitize(delta));
+          if (delta) {
+            pending += delta;
+            flush(pending.lastIndexOf("\n") + 1); // 0 when no newline yet, so nothing flushes
+          }
         } catch {
           /* ignore keep-alives / partial frames */
         }
@@ -278,5 +373,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   } catch {
     /* client disconnected or stream broke, just end */
   }
+  flush(pending.length); // the last line carries no trailing newline
   res.end();
 }

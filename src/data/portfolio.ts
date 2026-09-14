@@ -82,12 +82,12 @@ export const PROFILE = {
   ],
   focus: [
     "Engineering: Full-Stack Products, Backend Systems, Distributed Systems",
-    "AI: RAG, LLM Evals, Multi-Agent Systems",
+    "AI: RAG, LLM Evals, Multi-Agent Systems, Voice Agents",
   ],
   beyondEngineering:
     "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's currently reading AI Engineering by Chip Huyen.",
   status:
-    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joined Dezerv Investments in July 2026 as a Software Development Engineer, working across backend + frontend AI pipelines.",
+    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joined Dezerv Investments in July 2026 as a Software Development Engineer, working across backend + frontend AI pipelines. Alongside that she is building in the voice agents space, working on real-time speech pipelines, latency, and what makes a spoken conversation with an agent actually feel like one. This is early, in-progress work: describe it in those general terms only, and do not state or guess a product name, launch date, company, or any specifics beyond this, even if asked directly.",
   experience:
     "She is a 2026 graduate now in her first full-time role at Dezerv Investments. When asked about years of experience (YOE), do NOT state a number and never say it is 'zero', '0', 'none', 'effectively zero', or similar. Instead, lead with the positive: she is early-career with hands-on internship experience across multiple engineering roles, plus a deep portfolio of self-built production projects in backend systems and AI. Briefly name her most recent internships (Chakra Tech and Dezerv Investments) and emphasize what she's currently doing full-time: backend + frontend AI pipelines at Dezerv. Keep the tone confident and warm, not apologetic.",
 
@@ -118,6 +118,56 @@ export const OTHER_PROJECTS: OtherProject[] = [];
 export const PROJECTS: Project[] = [
   {
     idx: "01",
+    slug: "curate",
+    cat: "RAG · Semantic Search",
+    title: "Curate",
+    one: "A natural-language shopping assistant over 6,000 real Amazon India products: it decomposes a request like \"three days trekking in Manali under ₹8,000\" into separate sub-needs, runs an independent vector search per need, and returns grouped recommendations with a one-line reason each, showing every assumption it made.",
+    details: [
+      "Designed a five-stage pipeline where two LLM calls (intent decomposition, rerank) bracket three deterministic Python stages (filter, vector retrieval, pre-ranking), keeping price and budget arithmetic exact rather than embedded.",
+      "Built a data trust-tier model where only source-grounded or title-verified attributes may hard-filter a product, while enrichment-inferred ones may only nudge ranking, so a bad inference costs rank position instead of making a product invisible.",
+      "Shipped SSE-over-POST streaming (understood → searching → results → done) with per-stage timings, plus session-based refinement that merges a follow-up like \"make it cheaper\" onto the prior intent instead of restarting.",
+      "Implemented a multi-provider generation chain (Gemini / Groq / Cerebras / GitHub Models) with credential rotation on rate limit, and a deliberately fallback-free embedding path since a second provider means a different vector space.",
+      "Covered by 214 backend and 56 frontend tests that run with no network and no API keys, backed by keyless mock generation and hashed bag-of-words embedding stand-ins.",
+    ],
+    tech: ["Python", "FastAPI", "Pydantic v2", "NumPy", "React 19", "TypeScript", "Vite", "Tailwind", "Gemini", "Jina Embeddings", "Groq", "SSE", "Render", "Vercel"],
+    link: "https://github.com/soumya0343/curate",
+    live: "https://curate--app.vercel.app",
+    image: "/assets/projects/curate-preview.png",
+    deepdive: {
+      role: "Solo, AI systems & full-stack engineering",
+      type: "RAG · semantic product search",
+      overview:
+        "Curate turns a plain-English shopping request into grouped, explained product recommendations over a catalogue derived from a 1.59M-row Amazon India dataset. An offline pipeline builds the catalogue and its embedding matrix; a runtime pipeline turns a query into recommendations against those artifacts. They meet at three files on disk and nowhere else.",
+      challenge:
+        "A single embedding of \"trekking essentials and clothing\" is a blurry average that drifts toward whatever the catalogue holds most of, so a sleeping bag never enters the candidate pool. Embeddings also don't encode price, which means a ₹2,000 jacket and a ₹22,000 one sit almost on top of each other in vector space. The problem isn't generating fluent recommendations, it's making sure the retrieval is actually discriminating and that nothing the model infers can quietly become a stated fact.",
+      approach: [
+        {
+          h: "One search per sub-need, not one blended query",
+          p: "The intent stage decomposes a request into distinct sub-needs, each with its own search phrase, and each sub-need becomes one result group. Groups therefore derive from the request rather than being invented after the fact, and a need with no decent candidate returns empty with a stated reason instead of silently vanishing from the response.",
+        },
+        {
+          h: "The LLM judges; code decides",
+          p: "Two LLM calls bracket three deterministic stages. Hard filtering, vector retrieval and pre-ranking are plain Python, because arithmetic over a few thousand rows must be exact and testable. Measured against the live providers, retrieval and pre-ranking together take about 7ms while the two model calls account for essentially the entire request, which is the justification for keeping everything correctness-critical out of the model.",
+        },
+        {
+          h: "Attribute provenance gates filtering, not ranking",
+          p: "Every product attribute carries a source tier. Source-grounded fields (price, rating, reviews) and title-verified extractions may exclude a product and be stated as fact; enrichment-inferred attributes may only influence score. Verification runs against the original title, never a translation, so a translation artifact can't manufacture a verified fact. The asymmetry is deliberate: a wrong inferred attribute costs a slightly worse ranking, while a wrong hard filter makes a product invisible with no way for the user to notice the mistake.",
+        },
+        {
+          h: "Every guess surfaced, never buried",
+          p: "Anything the model inferred but the user didn't say (season, gender, budget) comes back as an assumption chip with a confidence level, and any filter that had to be widened returns as a visible relaxation notice. A clarifying question may come back but never blocks, results are always returned alongside it.",
+        },
+        {
+          h: "Fallbacks where they're safe, none where they aren't",
+          p: "Generation runs an ordered provider chain and a provider with no credential is skipped rather than failing the chain; several credentials per provider rotate on a rate limit. Embeddings deliberately have no fallback chain, since query vectors must share the catalogue's vector space and a silent provider swap would return plausible-looking numbers that are pure noise. A manifest check enforces that at boot, so a mismatch fails loudly on startup instead of per-request under load.",
+        },
+      ],
+      outcome:
+        "A deployed two-tier system (FastAPI on Render, React on Vercel) serving 6,000 real products across 109 categories, with 270 tests that need neither network nor credentials, and keyless stand-ins for both the generation and embedding providers so the entire pipeline runs on a laptop with no API keys at all.",
+    },
+  },
+  {
+    idx: "02",
     slug: "saral",
     cat: "Multi-Agent AI · RAG",
     title: "Saral",
@@ -146,7 +196,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "02",
+    idx: "03",
     slug: "repolens",
     cat: "Developer Intelligence Platform",
     title: "RepoLens",
@@ -177,7 +227,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "03",
+    idx: "04",
     slug: "inferlog",
     cat: "LLM Infrastructure · Observability",
     title: "InferLog",
@@ -207,7 +257,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "04",
+    idx: "05",
     slug: "codesentinel",
     cat: "Developer Tooling · AI",
     title: "CodeSentinel",
@@ -253,7 +303,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "05",
+    idx: "06",
     slug: "zync",
     cat: "Productivity Platform",
     title: "Zync",
@@ -300,7 +350,7 @@ export const PROJECTS: Project[] = [
   },
   /* SplitSense, temporarily hidden
   {
-    idx: "06",
+    idx: "07",
     slug: "splitsense",
     cat: "Fintech · Mobile · AI",
     title: "SplitSense",
@@ -346,7 +396,7 @@ export const PROJECTS: Project[] = [
   },
   */
   {
-    idx: "06",
+    idx: "07",
     slug: "infinite-canvas-rpg",
     cat: "Game Development · AI",
     title: "Infinite Canvas RPG",
@@ -390,7 +440,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "07",
+    idx: "08",
     slug: "stockwise",
     cat: "Fintech Platform",
     title: "StockWise",
@@ -440,7 +490,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "08",
+    idx: "09",
     slug: "mandala",
     cat: "Interactive Art",
     title: "Mandala Studio",
@@ -485,7 +535,7 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    idx: "09",
+    idx: "10",
     slug: "portfolio",
     cat: "Creative Portfolio",
     title: "Digital Portfolio",
