@@ -87,7 +87,7 @@ export const PROFILE = {
   beyondEngineering:
     "Music (guitar and keyboard), visual art (mandala art, drawing, painting), travel, and people, conversations and new connections. She's currently reading AI Engineering by Chip Huyen.",
   status:
-    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joined Dezerv Investments in July 2026 as a Software Development Engineer, working across backend + frontend AI pipelines. Alongside that she is building in the voice agents space, working on real-time speech pipelines, latency, and what makes a spoken conversation with an agent actually feel like one. This is early, in-progress work: describe it in those general terms only, and do not state or guess a product name, launch date, company, or any specifics beyond this, even if asked directly.",
+    "She graduated with her B.E. in ECE from BITS Pilani, Goa in May 2026 and joined Dezerv Investments in July 2026 as a Software Development Engineer, working across backend + frontend AI pipeline foundations that the wider engineering team builds on. She is currently revamping the onboarding flow in the Dezerv app, architected as a plug-and-play module so any surface needing Dezerv onboarding reuses one flow instead of reimplementing it; on release it will serve 100% of Dezerv clients. Alongside that she is building in the voice agents space, working on real-time speech pipelines, latency, and what makes a spoken conversation with an agent actually feel like one. This is early, in-progress work: describe it in those general terms only, and do not state or guess a product name, launch date, company, or any specifics beyond this, even if asked directly.",
   experience:
     "She is a 2026 graduate now in her first full-time role at Dezerv Investments. When asked about years of experience (YOE), do NOT state a number and never say it is 'zero', '0', 'none', 'effectively zero', or similar. Instead, lead with the positive: she is early-career with hands-on internship experience across multiple engineering roles, plus a deep portfolio of self-built production projects in backend systems and AI. Briefly name her most recent internships (Chakra Tech and Dezerv Investments) and emphasize what she's currently doing full-time: backend + frontend AI pipelines at Dezerv. Keep the tone confident and warm, not apologetic.",
 
@@ -589,10 +589,12 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Development Engineer",
     company: "Dezerv Investments",
     loc: "Bengaluru, India",
+    metrics: [{ value: "100%", label: "of clients once live" }],
     points: [
-      "Working as a Software Development Engineer at Dezerv, initially contributing to backend and frontend AI pipeline foundations while ramping into broader dev work.",
+      "Revamping the onboarding flow in the Dezerv app, architected as a plug-and-play module so any surface needing Dezerv onboarding reuses one flow instead of reimplementing it; on release it serves 100% of Dezerv clients.",
+      "Building backend and frontend AI pipeline serving foundations that the wider engineering team builds on, alongside Go, React, and Flutter/Dart.",
     ],
-    stack: ["Go", "React", "Flutter", "Dart", "TypeScript"],
+    stack: ["Python", "Go", "React", "Flutter", "Dart", "TypeScript"],
   },
   {
     year: "DEC 2025 - FEB 2026",
