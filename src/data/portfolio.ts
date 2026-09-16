@@ -113,6 +113,8 @@ export interface OtherProject {
   link: string;
 }
 
+/** Currently empty, but api/ask.ts reads it when building the agent's prompt:
+    it is the slot for work the agent should know about without a card. */
 export const OTHER_PROJECTS: OtherProject[] = [];
 
 export const PROJECTS: Project[] = [
@@ -789,5 +791,3 @@ export const AGENT_KB: KBItem[] = [
   },
 ];
 
-export const AGENT_FALLBACK =
-  "I can walk you through Soumya's AI & agent work, her backend & distributed systems, her frontend craft, her biggest results, or why she'd be a strong hire, tap a suggestion below.";

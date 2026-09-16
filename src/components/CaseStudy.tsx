@@ -235,24 +235,31 @@ export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: P
 
       <div className="pj-wrap">
         <div className="pj-foot rv">
-          <a
+          {/* These were <a> elements with no href: not focusable, not
+              announced as links, and unusable without a mouse. Buttons carry
+              focus and Enter/Space, and `disabled` states the dead end
+              honestly instead of leaving a live-looking control that does
+              nothing. */}
+          <button
+            type="button"
             className="pj-foot__card"
-            aria-disabled={prev ? undefined : "true"}
+            disabled={!prev}
+            aria-label={prev ? `Previous project: ${prev.title}` : "No previous project"}
             onClick={() => prev && onNavigate(prev.slug)}
-            style={{ cursor: prev ? "pointer" : "default" }}
           >
             <div className="pj-foot__dir">← Previous</div>
             <div className="pj-foot__name">{prev ? prev.title : "—"}</div>
-          </a>
-          <a
+          </button>
+          <button
+            type="button"
             className="pj-foot__card pj-foot__card--next"
-            aria-disabled={next ? undefined : "true"}
+            disabled={!next}
+            aria-label={next ? `Next project: ${next.title}` : "No next project"}
             onClick={() => next && onNavigate(next.slug)}
-            style={{ cursor: next ? "pointer" : "default" }}
           >
             <div className="pj-foot__dir">Next →</div>
             <div className="pj-foot__name">{next ? next.title : "—"}</div>
-          </a>
+          </button>
         </div>
       </div>
     </div>

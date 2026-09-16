@@ -48,12 +48,16 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
           {visible.map((p, i) => {
             const extra = p.tech.length - 4;
             return (
+              // The card holds its own live/repo links, so it cannot BE a
+              // button — a button may not contain links. Instead the card is a
+              // plain container and the "Case study" control below is a real
+              // button that covers the card via ::before. Keyboard users get
+              // one focusable control per card; the nested links stay
+              // separately reachable and are not swallowed by the overlay.
               <div
                 className="proj-card rv"
                 key={p.slug}
                 data-d={i > 0 ? String(Math.min(i % 3, 3)) : undefined}
-                style={{ cursor: "pointer" }}
-                onClick={() => onOpen(p.slug)}
               >
                 <div className="proj-card__thumb">
                   {p.image ? (
@@ -102,7 +106,14 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
                         repo ↗
                       </a>
                     )}
-                    <span className="proj-card__cta">Case study →</span>
+                    <button
+                      type="button"
+                      className="proj-card__cta"
+                      aria-label={`Open case study: ${p.title}`}
+                      onClick={() => onOpen(p.slug)}
+                    >
+                      Case study →
+                    </button>
                   </div>
                 </div>
               </div>

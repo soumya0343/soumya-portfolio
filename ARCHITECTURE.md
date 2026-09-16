@@ -85,7 +85,7 @@ URL ?id            App state (slug)        Rendered tree
 | `SKILLS` | `SkillGroup[]` | Skills section, agent |
 | `EDUCATION`, `LEADERSHIP` | typed arrays | Background section, agent |
 | `CONTACT`, `RESUME_URL` | constants | Contact section, agent links |
-| `AGENT_KB`, `AGENT_FALLBACK` | `KBItem[]`, string | Scripted fallback when the LLM is unavailable |
+| `AGENT_KB` | `KBItem[]` | Scripted fallback when the LLM is unavailable |
 
 **Why one module:** the `/api/ask` endpoint builds its grounding prompt by importing these same exports ([`api/ask.ts`](api/ask.ts) `buildProfile()`). Editing a project's copy updates the rendered case study *and* what the agent knows, in one edit, they cannot disagree.
 
@@ -114,7 +114,7 @@ Both functions are plain Node `(req, res)` handlers (no framework). Secrets are 
 1. **Grounding**, `buildProfile()` serializes `portfolio.ts` into a facts block embedded in a system prompt that constrains the model to those facts (she/her, concise, no invented detail, no em dashes).
 2. **Provider-agnostic**, talks to any OpenAI-compatible `/chat/completions` API via `LLM_BASE_URL` / `LLM_MODEL` (Groq default; Gemini / Cerebras supported). Input is clamped (message length, history depth).
 3. **Streaming**, requests `stream: true`, parses the upstream SSE frames, and forwards just the token text to the client as plain UTF-8 chunks.
-4. **Graceful degradation**, if the key is missing or the provider errors, the client falls back to a scripted keyword bot built from `AGENT_KB` / `AGENT_FALLBACK` ([`Ask.tsx`](src/components/Ask.tsx) `fallbackAnswer`). The agent is never "down".
+4. **Graceful degradation**, if the key is missing or the provider errors, the client falls back to a scripted keyword bot built from `AGENT_KB` ([`Ask.tsx`](src/components/Ask.tsx) `fallbackAnswer`). The agent is never "down".
 
 ```
 Ask.tsx ──POST {message, history}──► /api/ask ──(grounded prompt)──► LLM (stream:true)
