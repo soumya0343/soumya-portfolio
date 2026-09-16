@@ -1215,6 +1215,13 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 /* GitHub calendar */
 .gh-cal-wrap { min-height: 110px; }
 .gh-loading { font-family: var(--f-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; padding: 20px 0; }
+.gh-error {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-family: var(--f-mono); font-size: 12px; color: var(--muted);
+  padding: 20px 0;
+}
+.gh-error a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+.gh-error a:hover { border-bottom-color: var(--accent); }
 .gh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .gh-total { font-family: var(--f-mono); font-size: 11px; color: var(--text-2); letter-spacing: 0.04em; }
 .gh-grid-wrap { position: relative; display: flex; gap: 8px; align-items: stretch; padding-bottom: 4px; }
@@ -1237,12 +1244,17 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .gh-week { flex: 1 1 0; max-width: 28px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .gh-cell { width: 100%; height: auto; aspect-ratio: 1; border-radius: 3px; cursor: default; transition: opacity .15s; }
 .gh-cell:hover { opacity: 0.8; }
+/* Contribution levels. Tuned for VISIBILITY against the card, not just for
+   separation from each other: the previous l1 (#660708) sat at 1.27:1 on
+   --bg-2, so single-contribution days were nearly invisible and a busy year
+   read as empty. Every active level now clears 2.0:1, and l2/l3 — previously
+   1.19:1 apart — are properly distinct. */
 .gh-cell.lf { background: transparent; }
-.gh-cell.l0 { background: var(--bg-3); }
-.gh-cell.l1 { background: #660708; }
-.gh-cell.l2 { background: #a4161a; }
-.gh-cell.l3 { background: #ba181b; }
-.gh-cell.l4 { background: #e5383b; }
+.gh-cell.l0 { background: #2b2627; }
+.gh-cell.l1 { background: #a20810; }
+.gh-cell.l2 { background: #c31218; }
+.gh-cell.l3 { background: #e02c2e; }
+.gh-cell.l4 { background: #ef6b6b; }
 .about__bio p { color: var(--text-2); margin-bottom: 16px; font-size: 15.5px; max-width: 62ch; }
 .about__bio p.accent { color: var(--text); font-weight: 500; }
 .about__bio .about__chips { margin-top: 22px; }

@@ -3,8 +3,11 @@ import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEven
 /* Custom GitHub contribution calendar, ported from github-cal.js. */
 
 const USERNAME = "soumya0343";
-const DESKTOP_MONTHS = 6;
-const MOBILE_MONTHS = 4; // fewer columns on phones so month labels don't collide
+const DESKTOP_MONTHS = 12;
+// A 53-week grid cannot render legibly below ~760px: the cells collapse to a
+// couple of pixels. Phones get the recent 6 months at a readable size instead,
+// and the header states the window so the number is never mislabelled.
+const MOBILE_MONTHS = 6;
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -26,10 +29,10 @@ function level(day: Day): string {
 
 function useMonths(): number {
   const [months, setMonths] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches ? MOBILE_MONTHS : DESKTOP_MONTHS,
+    typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches ? MOBILE_MONTHS : DESKTOP_MONTHS,
   );
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 600px)");
+    const mq = window.matchMedia("(max-width: 760px)");
     const sync = () => setMonths(mq.matches ? MOBILE_MONTHS : DESKTOP_MONTHS);
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
@@ -39,6 +42,7 @@ function useMonths(): number {
 
 export default function GithubCal() {
   const [byDate, setByDate] = useState<Record<string, number> | null>(null);
+  const [failed, setFailed] = useState(false);
   const months = useMonths();
 
   useEffect(() => {
@@ -61,15 +65,25 @@ export default function GithubCal() {
         return r.json();
       })
       .catch(() =>
-        fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`).then((r) =>
-          r.ok ? r.json() : { contributions: [] },
-        ),
+        fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`).then((r) => {
+          // Throw rather than resolving with an empty set: resolving would look
+          // like a successful request that found no contributions, which is a
+          // different (and false) statement from "both sources are down".
+          if (!r.ok) throw new Error("contributions API unavailable");
+          return r.json();
+        }),
       )
       .then((data: { contributions?: { date: string; count: number }[] }) => {
         if (alive) setByDate(toMap(data));
       })
       .catch(() => {
-        if (alive) setByDate({});
+        // An outage must never render as an empty grid: "no contributions for a
+        // year" and "we could not reach GitHub" look identical otherwise, and
+        // only one of them is true.
+        if (alive) {
+          setFailed(true);
+          setByDate({});
+        }
       });
 
     return () => {
@@ -138,6 +152,17 @@ export default function GithubCal() {
   const onCellOut = (e: ReactMouseEvent) => {
     if ((e.target as HTMLElement).dataset?.tip) setTip(null);
   };
+
+  if (failed) {
+    return (
+      <div className="gh-error" role="status">
+        <span>GitHub stats unavailable right now.</span>
+        <a href={`https://github.com/${USERNAME}`} target="_blank" rel="noopener noreferrer">
+          View on GitHub ↗
+        </a>
+      </div>
+    );
+  }
 
   if (!model) {
     return <div className="gh-loading">Loading contributions…</div>;
