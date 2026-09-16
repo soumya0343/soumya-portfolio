@@ -382,7 +382,18 @@ section { position: relative; scroll-margin-top: 64px; }
   padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-radius: 7px; color: var(--text-2);
 }
 /* Focus: two grouped lists (Engineering / AI) with arrow bullets */
-.focus-groups { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-5); }
+/* Auto-fit rather than a hard 1fr 1fr: at 3 grid columns the side-by-side
+   split forced "Multi-Agent Systems" onto three lines. This keeps two columns
+   where there is room and drops to one where there isn't. */
+/* Two columns, Engineering | AI. minmax(0,1fr) rather than auto-fit so the
+   split holds instead of collapsing to one column when space is tight. */
+.focus-groups {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4); margin-top: var(--s-5);
+}
+/* Long entries like "Multi-Agent Systems" wrapped to three lines in a narrow
+   column. Let them use the full card width instead of a half-column. */
+.focus-group__list li { overflow-wrap: normal; }
 .focus-group__name { display: block; font-family: var(--f-display); font-weight: 600; font-size: var(--t-4); color: var(--text); margin-bottom: var(--s-3); }
 .focus-group__list { list-style: none; display: flex; flex-direction: column; gap: var(--s-2); }
 .focus-group__list li { position: relative; padding-left: var(--s-5); font-family: var(--f-mono); font-size: var(--t-4); color: var(--text-2); line-height: 1.4; }
@@ -1519,14 +1530,14 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: var(--s-3);
-  /* GitHub spans all 12 columns on its own row: 53 weeks in a 9-column card
-     forced ~10.7px cells, where full width reaches ~16px — larger than
-     github.com's own 10px. Reading moves up beside the interests instead. */
+  /* GitHub spans all 12 columns: 53 weeks in a 9-column card forced ~10.7px
+     cells, where full width reaches ~16px — larger than github.com's own 10px.
+     Reading sits under CURRENTLY rather than in row two: four cards in one row
+     are forced to equal height, which turned the short ones into tall voids. */
   grid-template-areas:
     "intro intro intro intro intro intro think think think now now now"
-    "intro intro intro intro intro intro think think think now now now"
-    "howthink howthink howthink howthink interests interests interests interests interests focus focus focus"
-    "reading reading reading reading reading reading reading reading reading reading reading reading"
+    "intro intro intro intro intro intro think think think reading reading reading"
+    "howthink howthink howthink howthink interests interests interests interests focus focus focus focus"
     "github github github github github github github github github github github github";
 }
 .bento-card {
@@ -1538,6 +1549,29 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 }
 .bento-card:hover { border-color: var(--line-2); }
 .bento-card > * { position: relative; z-index: 1; }
+
+/* ---- decorative card marks ----------------------------------------------
+   Drawn SVG bled off a corner, sitting behind the content. Low opacity so it
+   reads as texture rather than as a second thing to look at; lifts on hover.
+   currentColor carries the accent, so it follows the theme. */
+.bento-art {
+  position: absolute; z-index: 0; pointer-events: none;
+  color: var(--accent); opacity: 0.10; line-height: 0;
+  transition: opacity .45s var(--ease), transform .55s var(--ease);
+}
+.bento-art--tr { right: -26px; top: -26px; }
+.bento-art--br { right: -22px; bottom: -22px; }
+.bento-card:hover .bento-art { opacity: 0.22; transform: scale(1.06) rotate(-3deg); }
+
+/* Interests: the icon sits INLINE with the name rather than in its own column.
+   A leading icon column stole ~34px from an already-narrow cell and forced
+   "Visual Art" onto two lines and Travel's copy into a five-line strip. */
+.bento-int__icon { flex: none; color: var(--accent); opacity: 0.75; line-height: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-art { transition: none; }
+  .bento-card:hover .bento-art { transform: none; }
+}
 /* traveling red glow that orbits the border */
 .bento-card::before, .bento-card::after {
   content: ""; position: absolute; inset: 0; border-radius: 16px; padding: 1.5px; z-index: 0;
@@ -1563,17 +1597,18 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .bento-howthink  { grid-area: howthink; }
 .bento-interests { grid-area: interests; }
 .bento-github    { grid-area: github; z-index: 2; }
-/* A full-width band, so it reads left-to-right: label, cover, meta, then the
-   note anchored right. A smaller cover keeps the band shallow — at full width
-   a tall cover just opens dead space beside it. */
+/* Back to a column in row two, beside the other cards: label, then cover and
+   meta side by side, then the note. Sized to sit at the same height as its
+   row-mates rather than stretching a band across the full grid. */
 .bento-reading {
-  grid-area: reading; display: flex; align-items: center; gap: var(--s-6);
-  align-self: start; flex-wrap: wrap;
+  grid-area: reading; display: flex; flex-direction: column;
+  align-self: start;                 /* hug the content, do not fill the row */
 }
-.bento-reading > .bento__label { flex: none; margin-bottom: 0; }
-.bento-reading .bento-reading__main { flex: none; align-items: center; gap: var(--s-4); }
-.bento-reading .bento-reading__cover { width: 64px; }
-.bento-reading .bento-reading__note { margin: 0 0 0 auto; text-align: right; max-width: 38ch; }
+.bento-reading .bento-reading__main { align-items: flex-start; gap: var(--s-3); }
+.bento-reading .bento-reading__cover { width: 72px; }
+/* margin-top:auto pushed the note to the floor of a stretched card, opening
+   ~200px of dead space above it. It sits under the meta instead. */
+.bento-reading .bento-reading__note { margin-top: var(--s-4); }
 
 .bento__label {
   display: flex; align-items: center; gap: var(--s-2);
@@ -1609,8 +1644,21 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
 .bento-howthink p { color: var(--text-2); font-size: var(--t-4); line-height: 1.6; max-width: 70ch; }
 
 /* beyond engineering */
-.bento-interests__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-3) var(--s-4); }
-.bento-int__name { display: block; font-family: var(--f-display); font-weight: 600; font-size: var(--t-5); color: var(--text); margin-bottom: var(--s-1); }
+/* auto-fit, not a hard 2x2: in a narrow card two ~110px columns shred the
+   prose and push content past the card edge. This drops to one column when
+   there isn't room for two. */
+.bento-interests__grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s-3) var(--s-4);
+}
+/* flex, not block: the leading icon sits on the same line as the name.
+   An earlier duplicate of this selector set display:flex but lost to this
+   one on source order, which is why the icons stacked above the labels. */
+.bento-int__name {
+  display: flex; align-items: center; gap: var(--s-2); white-space: nowrap;
+  font-family: var(--f-display); font-weight: 600; font-size: var(--t-5);
+  color: var(--text); margin-bottom: var(--s-1);
+}
 .bento-int p { color: var(--text-2); font-size: var(--t-4); line-height: 1.55; }
 
 /* github tile */
@@ -1631,7 +1679,7 @@ html.no-reveal .ins__tech .chip { opacity: 1 !important; transform: none !import
   box-shadow: 0 10px 26px -10px oklch(0 0 0 / 0.7); border: 1px solid var(--line);
 }
 .bento-reading__meta { min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: var(--s-1); padding-top: var(--s-1); }
-.bento-reading__title { font-family: var(--f-display); font-weight: 600; font-size: clamp(17px, 1.4vw, 19px); letter-spacing: -0.01em; line-height: 1.2; overflow-wrap: anywhere; }
+.bento-reading__title { font-family: var(--f-display); font-weight: 600; font-size: clamp(17px, 1.4vw, 19px); letter-spacing: -0.01em; line-height: 1.2; overflow-wrap: break-word; }
 .bento-reading__author { font-family: var(--f-mono); font-size: var(--t-3); color: var(--text-2); }
 .bento-reading__series { font-family: var(--f-mono); font-size: var(--t-2); color: var(--muted); line-height: 1.4; }
 .bento-reading__note { color: var(--accent-text); font-size: var(--t-3); font-style: italic; line-height: 1.5; margin-top: var(--s-3); }

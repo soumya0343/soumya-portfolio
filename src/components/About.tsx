@@ -1,7 +1,21 @@
 import GithubCal from "./GithubCal";
+import {
+  AgentGraph, QuoteMark, StackLayers, Mandala, CommitGraph, BookMark,
+  WaveIcon, CompassIcon, PeopleIcon, MandalaIcon,
+} from "./BentoArt";
 
 function Label({ children }: { children: React.ReactNode }) {
   return <span className="bento__label">{children}</span>;
+}
+
+/** Decorative mark bled off a card corner. Sits behind the content at low
+ *  opacity and lifts on hover; `pos` picks which corner it hangs from. */
+function Art({ pos, children }: { pos: "tr" | "br"; children: React.ReactNode }) {
+  return (
+    <div className={`bento-art bento-art--${pos}`} aria-hidden="true">
+      {children}
+    </div>
+  );
 }
 
 export default function About() {
@@ -17,6 +31,7 @@ export default function About() {
         <div className="about__bento rv">
           {/* INTRO */}
           <div className="bento-card bento-intro">
+            <Art pos="tr"><AgentGraph /></Art>
             <Label>Who I am</Label>
             <p>
               I'm Soumya, a full-stack engineer who enjoys building production systems end to end. I work across Go and
@@ -37,6 +52,7 @@ export default function About() {
 
           {/* THINKING ABOUT */}
           <div className="bento-card bento-think">
+            <Art pos="br"><QuoteMark /></Art>
             <Label>Thinking about</Label>
             <blockquote className="bento-think__q">
               Don't just build systems that work; build systems that stay clear, correct, and reliable when the world
@@ -66,6 +82,7 @@ export default function About() {
 
           {/* FOCUS */}
           <div className="bento-card bento-focus">
+            <Art pos="br"><StackLayers /></Art>
             <Label>Where I'm heading</Label>
             <div className="focus-groups">
               <div className="focus-group">
@@ -102,14 +119,21 @@ export default function About() {
 
           {/* BEYOND ENGINEERING */}
           <div className="bento-card bento-interests">
+            <Art pos="br"><Mandala /></Art>
             <Label>Beyond engineering</Label>
             <div className="bento-interests__grid">
               <div className="bento-int">
-                <span className="bento-int__name">Music</span>
+                <span className="bento-int__name">
+                  <span className="bento-int__icon"><WaveIcon /></span>
+                  Music
+                </span>
                 <p>Guitar &amp; keyboard, rhythm and structure in a different language.</p>
               </div>
               <div className="bento-int">
-                <span className="bento-int__name">Visual Art</span>
+                <span className="bento-int__name">
+                  <span className="bento-int__icon"><MandalaIcon /></span>
+                  Visual Art
+                </span>
                 <p>Mandala art, drawing, painting, symmetry and balance on paper.</p>
               </div>
               {/* <div className="bento-int">
@@ -117,11 +141,17 @@ export default function About() {
                 <p>Building the habit, one book at a time, more about the discipline than the count.</p>
               </div> */}
               <div className="bento-int">
-                <span className="bento-int__name">Travel</span>
+                <span className="bento-int__name">
+                  <span className="bento-int__icon"><CompassIcon /></span>
+                  Travel
+                </span>
                 <p>Haven't seen much of the world yet, but it's high on the list. Always up for a recommendation.</p>
               </div>
               <div className="bento-int">
-                <span className="bento-int__name">People</span>
+                <span className="bento-int__name">
+                  <span className="bento-int__icon"><PeopleIcon /></span>
+                  People
+                </span>
                 <p>Conversations, new connections, collaboration, growth is human.</p>
               </div>
             </div>
@@ -129,6 +159,7 @@ export default function About() {
 
           {/* GITHUB */}
           <div className="bento-card bento-github">
+            <Art pos="tr"><CommitGraph /></Art>
             <div className="bento-github__bar">
               <Label>GitHub activity</Label>
               <a
@@ -147,6 +178,7 @@ export default function About() {
 
           {/* CURRENTLY READING */}
           <div className="bento-card bento-reading">
+            <Art pos="br"><BookMark /></Art>
             <Label>Currently reading</Label>
             <div className="bento-reading__main">
               <img
