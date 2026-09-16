@@ -312,7 +312,7 @@ export const PROJECTS: Project[] = [
       "Kanban Board: visualize workflow with a fully interactive, drag-and-drop board.",
       "Task Management: create, update, and organize tasks; break complex work into subtasks for granularity.",
       "Goal Tracking: set high-level goals and link them to actionable tasks to measure progress.",
-      "Responsive Design: customized sidebar and layout for a seamless experience across devices.",
+      "Responsive design: sidebar and layout adapt from phone to desktop without a separate mobile build.",
       "Authentication: secure user authentication powered by Firebase.",
     ],
     tech: ["React 19", "TypeScript", "Vite", "React Router v7", "Express 5", "Firebase Auth", "Cloud Firestore", "Workbox"],
@@ -725,7 +725,7 @@ export const LEADERSHIP: Leadership[] = [
     period: "FEB 2023 - MAY 2024",
     desc: [
       "Coordinated 'Tech Weekend', a marquee technical event and exhibition at BITS Goa.",
-      "Led outreach to 20+ schools and managed end-to-end logistics for seamless execution.",
+      "Led outreach to 20+ schools and ran logistics end to end, venue, scheduling and volunteers.",
     ],
   },
 ];

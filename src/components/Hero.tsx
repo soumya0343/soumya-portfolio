@@ -1,10 +1,16 @@
-import HeroHills from "./HeroHills";
+import { lazy, Suspense } from "react";
+
+// three.js is ~113KB gzipped and only powers the decorative hero field,
+// so it loads after first paint. hero__veil covers the gap.
+const HeroHills = lazy(() => import("./HeroHills"));
 import { RESUME_URL } from "../data/portfolio";
 
 export default function Hero() {
   return (
     <section id="home" className="hero">
-      <HeroHills />
+      <Suspense fallback={null}>
+        <HeroHills />
+      </Suspense>
       <div className="hero__veil" aria-hidden="true" />
       <div className="wrap hero__body">
         <div className="hero__intro">

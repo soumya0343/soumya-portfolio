@@ -27,3 +27,21 @@ dist-ssr
 /soumya-portfolio
 .gstack/
 .vercel
+
+# local design review doc (not part of the site)
+portfolio-review.html
+portfolio-explain.html
+portfolio-round2.html
+portfolio-round3.html
+portfolio-round4.html
+review-assets/
+portfolio-round5.html
+portfolio-round6.html
+portfolio-round7.html
+portfolio-round8.html
+portfolio-round9.html
+portfolio-round10.html
+portfolio-round11.html
+portfolio-round12.html
+portfolio-round13.html
+portfolio-about-rebuilt.html
