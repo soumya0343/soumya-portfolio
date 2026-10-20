@@ -111,9 +111,9 @@ Both functions are plain Node `(req, res)` handlers (no framework). Secrets are 
 
 [`api/ask.ts`](api/ask.ts):
 
-1. **Grounding**, `buildProfile()` serializes `portfolio.ts` into a facts block embedded in a system prompt that constrains the model to those facts (she/her, concise, no invented detail, no em dashes).
-2. **Provider-agnostic**, talks to any OpenAI-compatible `/chat/completions` API via `LLM_BASE_URL` / `LLM_MODEL` (Groq default; Gemini / Cerebras supported). Input is clamped (message length, history depth).
-3. **Streaming**, requests `stream: true`, parses the upstream SSE frames, and forwards just the token text to the client as plain UTF-8 chunks.
+1. **Grounding**, two layers built from `portfolio.ts`. `buildBase()` (profile, one-line index of every project, experience, skills, contact) goes out every turn. `retrieve()` then picks the 1-2 projects the question is about (title, aliases, rarity-weighted tech; the previous exchange counts at 0.4x so follow-ups like "what was hard about it?" stay on topic) and appends their full case study via `deepDive()`. Lexical on purpose: ten distinctive projects, and no embedding call to spend free-tier quota. The rules constrain the model to those facts (she/her, no invented detail, no em dashes).
+2. **Provider-agnostic**, talks to any OpenAI-compatible `/chat/completions` API via `LLM_BASE_URL` / `LLM_MODEL` (Groq default; Gemini / Cerebras fallbacks). Any failure moves on to the next provider; a 429 also puts that provider on cooldown for its `retry-after`. Reasoning models get a low `reasoning_effort` so thinking doesn't eat the output cap. Input is clamped (message length, history depth).
+3. **Streaming**, requests `stream: true`, parses the upstream SSE frames, and forwards just the token text to the client as plain UTF-8 chunks. `LineStreamer` sanitizes mid-line (dashes, smart quotes, bullets) without waiting for a newline. Response headers `x-ask-provider`, `x-ask-tried`, and `x-ask-context` show who answered, each attempt's status and time, and which deep dives were used.
 4. **Graceful degradation**, if the key is missing or the provider errors, the client falls back to a scripted keyword bot built from `AGENT_KB` ([`Ask.tsx`](src/components/Ask.tsx) `fallbackAnswer`). The agent is never "down".
 
 ```

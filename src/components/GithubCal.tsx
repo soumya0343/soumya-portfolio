@@ -18,13 +18,19 @@ interface Day {
   future: boolean;
 }
 
+// Ten steps, not five. A five-band ramp collapses everything from 10 to 47
+// contributions into one colour, which is most of the busy days, so a heavy
+// year renders as flat as a quiet one. Cuts are upper bounds per level.
+const CUTS = [0, 1, 2, 3, 5, 7, 10, 15, 25];
+// Shown in the legend tooltip so the colours are readable as values.
+export const BANDS = ["0", "1", "2", "3", "4–5", "6–7", "8–10", "11–15", "16–25", "26+"];
+
 function level(day: Day): string {
   if (day.future) return "f";
-  if (day.count === 0) return "0";
-  if (day.count <= 2) return "1";
-  if (day.count <= 5) return "2";
-  if (day.count <= 9) return "3";
-  return "4";
+  for (let i = 0; i < CUTS.length; i++) {
+    if (day.count <= CUTS[i]) return String(i);
+  }
+  return "9";
 }
 
 function useMonths(): number {
@@ -133,7 +139,36 @@ export default function GithubCal() {
       return "";
     });
 
-    return { weeks, total, monthLabels };
+    // Stats are framed by WEEK, not by day. A daily grid draws one square per
+    // day, so a year with 71 active days out of 368 is 81% blank by
+    // construction and reads as "no contributions" however it is coloured.
+    // Active weeks is the same data at the resolution the work actually
+    // happened in, and it is the honest headline.
+    const past = weeks.map((w) => w.filter((d) => !d.future));
+    const weeksElapsed = past.filter((w) => w.length > 0).length;
+    const activeWeeks = past.filter((w) => w.some((d) => d.count > 0)).length;
+
+    let bestWeek = 0;
+    past.forEach((w) => {
+      const sum = w.reduce((n, d) => n + d.count, 0);
+      if (sum > bestWeek) bestWeek = sum;
+    });
+
+    // Longest run of consecutive days with at least one contribution.
+    let bestDay = 0;
+    let streakBest = 0;
+    let streakRun = 0;
+    past.flat().forEach((d) => {
+      if (d.count > bestDay) bestDay = d.count;
+      if (d.count > 0) {
+        streakRun += 1;
+        if (streakRun > streakBest) streakBest = streakRun;
+      } else {
+        streakRun = 0;
+      }
+    });
+
+    return { weeks, total, monthLabels, weeksElapsed, activeWeeks, bestWeek, bestDay, streakBest };
   }, [byDate, months]);
 
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -172,6 +207,12 @@ export default function GithubCal() {
     <>
       <div className="gh-header">
         <span className="gh-total">
+          <b>
+            {model.activeWeeks}/{model.weeksElapsed}
+          </b>{" "}
+          active weeks
+        </span>
+        <span className="gh-sub">
           {model.total} contributions in the last {months} months
         </span>
       </div>
@@ -211,6 +252,29 @@ export default function GithubCal() {
             {tip.text}
           </div>
         )}
+      </div>
+      <div className="gh-foot">
+        <div className="gh-stats">
+          {/* active weeks is the header's headline, so the footer carries the
+              three figures that aren't stated anywhere else */}
+          {[
+            [String(model.bestWeek), "best week"],
+            [String(model.bestDay), "peak day"],
+            [String(model.streakBest), "day streak"],
+          ].map(([value, label]) => (
+            <div className="gh-stat" key={label}>
+              <span className="gh-stat__v">{value}</span>
+              <span className="gh-stat__k">{label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="gh-legend" aria-hidden="true">
+          <span>Less</span>
+          {["l0", "l1", "l2", "l3", "l4"].map((l) => (
+            <i className={`gh-cell ${l}`} key={l} />
+          ))}
+          <span>More</span>
+        </div>
       </div>
     </>
   );

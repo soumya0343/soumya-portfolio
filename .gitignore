@@ -31,5 +31,6 @@ dist-ssr
 # Local design review docs, not part of the site. Pattern rather than one
 # line per file so new docs are covered automatically; it cannot match
 # index.html, which is the real page and stays tracked.
-portfolio-*.html
+portfolio-revamp/
 review-assets/
+design-review/

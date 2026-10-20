@@ -793,8 +793,29 @@ html.no-reveal .rv { opacity: 1 !important; transform: none !important; transiti
 }
 .gh-error a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
 .gh-error a:hover { border-bottom-color: var(--accent); }
-.gh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-3); }
-.gh-total { font-family: var(--f-mono); font-size: var(--t-2); color: var(--text-2); letter-spacing: 0.04em; }
+.gh-header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-3); }
+/* Active weeks leads; the raw contribution count follows as the supporting
+   figure. A daily grid is ~80% blank by construction even in a busy year, so
+   the week-level number is the one that states the truth at a glance. */
+.gh-total { font-family: var(--f-mono); font-size: var(--t-3); color: var(--text-2); letter-spacing: 0.04em; }
+.gh-total b { font-family: var(--f-display); font-weight: 600; font-size: var(--t-5); color: var(--text); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.gh-sub { font-family: var(--f-mono); font-size: var(--t-2); color: var(--muted); letter-spacing: 0.04em; }
+
+/* stats + legend footer */
+.gh-foot {
+  display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap;
+  margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line);
+}
+.gh-stats { display: flex; align-items: baseline; gap: var(--s-5); flex-wrap: wrap; }
+.gh-stat { display: flex; flex-direction: column; gap: 3px; }
+.gh-stat__v { font-family: var(--f-display); font-weight: 600; font-size: var(--t-5); color: var(--text); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+.gh-stat__k { font-family: var(--f-mono); font-size: var(--t-1); color: var(--muted); letter-spacing: 0.06em; }
+.gh-legend { display: flex; align-items: center; gap: 3px; margin-left: auto; font-family: var(--f-mono); font-size: var(--t-1); color: var(--muted); }
+/* breathing room around the words, tight between the swatches themselves */
+.gh-legend > span:first-child { margin-right: var(--s-2); }
+.gh-legend > span:last-child { margin-left: var(--s-2); }
+/* .gh-cell is width:100% for the grid; the legend swatches need a fixed box */
+.gh-legend .gh-cell { width: 11px; height: 11px; flex: none; aspect-ratio: auto; border-radius: 2.5px; }
 .gh-grid-wrap { position: relative; display: flex; gap: var(--s-2); align-items: stretch; padding-bottom: var(--s-1); }
 .gh-tip {
   position: absolute; z-index: 20; transform: translate(-50%, calc(-100% - 9px));
@@ -826,6 +847,18 @@ html.no-reveal .rv { opacity: 1 !important; transform: none !important; transiti
 .gh-cell.l2 { background: #c31218; }
 .gh-cell.l3 { background: #e02c2e; }
 .gh-cell.l4 { background: #ef6b6b; }
+
+/* Light theme needs the ramp inverted, not merely re-tinted. The dark values
+   run light-on-dark: l0 (#2b2627) is near-black and l4 (#ef6b6b) is pale, so
+   on a white card the graph reads backwards, empty days become the heaviest
+   marks (14.90:1 on white) while the busiest days are the faintest (3.01:1).
+   Here l0 sits just above the card and each level deepens: 1.26 / 1.80 / 3.33
+   / 6.19 / 9.64:1, monotonic with no two steps closer than 1.4:1. */
+[data-theme="light"] .gh-cell.l0 { background: #e9e4e5; }
+[data-theme="light"] .gh-cell.l1 { background: #f3b0b2; }
+[data-theme="light"] .gh-cell.l2 { background: #e06769; }
+[data-theme="light"] .gh-cell.l3 { background: #c0181e; }
+[data-theme="light"] .gh-cell.l4 { background: #8a1215; }
 
 /* =========================================================================
    BACKGROUND, balanced layout overrides

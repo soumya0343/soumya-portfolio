@@ -11,8 +11,9 @@ interface Msg {
 const GREETING = "Hi, I'm Soumya's agent. Ask me anything about her work, or tap a question below.";
 const SUGGESTIONS = AGENT_KB.slice(0, 4).map((k) => k.q);
 
-/* Turn URLs, /resume.pdf, and emails inside an answer into clickable links. */
-const LINK_RE = /(https?:\/\/[^\s)]+|\/resume\.pdf|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
+/* Turn URLs, /resume.pdf, case-study links (/?id=slug), and emails inside an answer into
+ * clickable links. */
+const LINK_RE = /(https?:\/\/[^\s)]+|\/resume\.pdf|\/\?id=[\w-]+|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
 function linkify(text: string): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
