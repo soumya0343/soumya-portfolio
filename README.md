@@ -67,7 +67,7 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 | Project          | Description                                                                         |
 | ---------------- | ----------------------------------------------------------------------------------- |
 | **Saral**        | Supervisor-orchestrated multi-agent support system for regulated insurance/lending (EN/Hindi/Hinglish) with per-customer RAG, compliance + PII gates, and a per-language LLM-judge eval suite scored against human labels |
-| **RepoLens**     | GitHub-native SDLC intelligence platform, coupling, architecture violations, bus factor, CI flakiness, DORA metrics, a live WebSocket feed, and a PR-commenting GitHub App bot |
+| **RepoLens**     | GitHub-native SDLC intelligence platform, coupling, architecture violations, secret scanning, bus factor, CI flakiness, DORA metrics, a live WebSocket feed, and an LLM assistant over the analytics |
 | **InferLog**     | Production multi-provider LLM chatbot with full inference observability, SSE streaming with TTFT, Redis Streams ingestion, two-stage PII redaction |
 | **CodeSentinel** | VS Code / Cursor extension for AI code review, Gemini semantic analysis over a deterministic offline rule engine ([Marketplace](https://marketplace.visualstudio.com/items?itemName=SoumyaGupta.codesentinel)) |
 | **Zync**         | Full-stack task, goal & journaling app with drag-and-drop Kanban, nested subtasks, daily check-ins, and offline PWA support |

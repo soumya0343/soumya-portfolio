@@ -147,7 +147,7 @@ const MAX_HISTORY = 6;
 const ALIASES: Record<string, string[]> = {
   curate: ["shopping assistant", "shopping", "recommendation", "recommendations", "recommender", "product search", "amazon", "e-commerce", "ecommerce"],
   saral: ["support bot", "customer support", "support agent", "insurance", "insurer", "lending", "hinglish", "hindi", "multilingual", "compliance", "llm judge", "llm-judge", "relationship manager", "rm request", "dpdp", "hugging face", "eval suite"],
-  repolens: ["repo lens", "github bot", "github app", "dora", "bus factor", "coupling", "flaky", "flakiness", "architecture drift", "drift", "sdlc", "pr comments"],
+  repolens: ["repo lens", "github bot", "github app", "dora", "bus factor", "coupling", "flaky", "flakiness", "architecture drift", "drift", "sdlc", "pr comments", "secret scanning", "leaked secrets", "secretsentinel", "risk score"],
   inferlog: ["infer log", "observability", "pii", "redaction", "ttft", "inference logging", "inference logs"],
   codesentinel: ["code sentinel", "vs code", "vscode", "cursor", "extension", "code review"],
   zync: ["kanban", "journaling", "journal", "task app", "todo", "pwa", "productivity app"],
