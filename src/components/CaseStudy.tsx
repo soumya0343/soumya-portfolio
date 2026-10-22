@@ -1,17 +1,9 @@
-import { useEffect } from "react";
-import { PROJECTS } from "../data/portfolio";
+import "../styles/sections/case.css";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { CSSProperties, MouseEvent } from "react";
+import { CONTACT, PROJECTS, RESUME_URL } from "../data/portfolio";
 import { useScrollReveal } from "../hooks/useScrollReveal";
-
-const ChevLeft = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="15 18 9 12 15 6" />
-  </svg>
-);
-const ChevRight = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-);
+import { shotAlt } from "./projectShots";
 
 interface Props {
   slug: string;
@@ -20,247 +12,537 @@ interface Props {
   onToggleTheme: () => void;
 }
 
+/* ---- current theme, read from <html data-theme> so the toggle can name its action ---- */
+function subscribeTheme(cb: () => void) {
+  const mo = new MutationObserver(cb);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => mo.disconnect();
+}
+const readTheme = () => document.documentElement.getAttribute("data-theme") ?? "light";
+
+/** Short rail label for an approach step: its heading up to the first comma. */
+function railLabel(h: string): string {
+  const i = h.indexOf(", ");
+  return i > 0 ? h.slice(0, i) : h;
+}
+
+const isPlainClick = (e: MouseEvent) => !(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+
+const Ico = {
+  back: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 12H5" />
+      <path d="m11 6-6 6 6 6" />
+    </svg>
+  ),
+  prev: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M15 18 9 12l6-6" />
+    </svg>
+  ),
+  next: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  ),
+  out: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 17 17 7" />
+      <path d="M8 7h9v9" />
+    </svg>
+  ),
+  plus: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  ),
+  right: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 12h15" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  ),
+  left: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 12H5" />
+      <path d="m11 6-6 6 6 6" />
+    </svg>
+  ),
+  doc: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M14 3v5h5" />
+      <path d="M9 13h6M9 17h4" />
+    </svg>
+  ),
+  mail: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m4 7 8 6 8-6" />
+    </svg>
+  ),
+};
+
+const Squiggle = () => (
+  <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true">
+    <path pathLength={1} d="M2 6c20-5 40 4 62 1s44-4 66 0 46 3 68-2" />
+  </svg>
+);
+
 export default function CaseStudy({ slug, onBack, onNavigate, onToggleTheme }: Props) {
   const idx = PROJECTS.findIndex((p) => p.slug === slug);
+  const p = idx === -1 ? null : PROJECTS[idx];
+  const prev = idx > 0 ? PROJECTS[idx - 1] : null;
+  const next = idx !== -1 && idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, () => "light");
+
+  // Approach steps: the first starts open, the rest are collapsed.
+  const [open, setOpen] = useState<Set<number>>(() => new Set([0]));
+  const [active, setActive] = useState("overview");
+  const [seenSlug, setSeenSlug] = useState(slug);
+  if (seenSlug !== slug) {
+    // reset per-project state when Previous/Next swaps the project in place
+    setSeenSlug(slug);
+    setOpen(new Set([0]));
+    setActive("overview");
+  }
+
+  const progRef = useRef<SVGPathElement>(null);
 
   useScrollReveal([slug]);
-  useEffect(() => {
-    // jump to top instantly, `scroll-behavior: smooth` would otherwise animate
-    // the whole way up from wherever the project card was clicked.
+
+  // Jump to the top before paint (a layout effect, so it has run before a
+  // view transition from the Work folders takes its "after" snapshot).
+  useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-    const t = setTimeout(() => {
-      document.querySelectorAll<HTMLElement>(".pj-hero .rv, .pj-shot").forEach((n) => n.classList.add("in"));
-    }, 80);
+    const t = window.setTimeout(() => {
+      document.querySelectorAll<HTMLElement>(".cs-hero .rv, .cs-tldr.rv").forEach((n) => n.classList.add("in"));
+    }, 60);
     return () => clearTimeout(t);
   }, [slug]);
 
   useEffect(() => {
-    document.title =
-      idx === -1 ? "Project not found, Soumya Gupta" : `${PROJECTS[idx].title}, Case Study, Soumya Gupta`;
-  }, [idx]);
+    document.title = p ? `${p.title}, Case Study, Soumya Gupta` : "Project not found, Soumya Gupta";
+  }, [p]);
+
+  // Reading progress: the wavy line under the top bar draws as you scroll.
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const r = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      if (progRef.current) progRef.current.style.strokeDashoffset = String(1 - r);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [slug]);
+
+  // "On this page": highlight the section (or approach step) being read.
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-cs-sec]"));
+    if (!nodes.length) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.3;
+      let cur = nodes[0].dataset.csSec!;
+      for (const n of nodes) {
+        if (n.getBoundingClientRect().top <= line) cur = n.dataset.csSec!;
+      }
+      setActive(cur);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [slug]);
+
+  const toggleStep = (i: number) =>
+    setOpen((s) => {
+      const n = new Set(s);
+      if (n.has(i)) n.delete(i);
+      else n.add(i);
+      return n;
+    });
+
+  // Rail link to an approach step: open it, then scroll to it.
+  const jumpToStep = (i: number) => (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setOpen((s) => new Set(s).add(i));
+    const el = document.getElementById(`cs-step-${i + 1}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    el?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
+  };
+
+  const go = (target: string) => (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!isPlainClick(e)) return;
+    e.preventDefault();
+    onNavigate(target);
+  };
+
+  const backTo = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => {
+      if (!isPlainClick(e)) return;
+      e.preventDefault();
+      onBack();
+    },
+    [onBack],
+  );
+
+  // "Get in touch": back to the home page, then down to the contact section.
+  const toContact = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!isPlainClick(e)) return;
+    e.preventDefault();
+    onBack();
+    requestAnimationFrame(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
+  const count = String(PROJECTS.length).padStart(2, "0");
 
   const TopBar = (
-    <div className="pj-top">
-      <button className="pj-back" onClick={onBack} style={{ background: "none" }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="19 12 5 12" />
-          <polyline points="12 5 5 12 12 19" />
-        </svg>
-        All Projects
-      </button>
-      <span className="pj-top__spacer" />
-      <div className="pj-top__nav">
-        <button
-          className="pj-ibtn"
-          aria-label="Previous project"
-          aria-disabled={idx <= 0 ? "true" : undefined}
-          onClick={() => idx > 0 && onNavigate(PROJECTS[idx - 1].slug)}
-        >
-          <ChevLeft />
-        </button>
-        <span className="pj-count">
-          <b>{idx === -1 ? "—" : PROJECTS[idx].idx}</b>
-          {idx !== -1 && ` / ${String(PROJECTS.length).padStart(2, "0")}`}
+    <div className="cs-top">
+      <a className="cs-back" href="/#work" onClick={backTo}>
+        {Ico.back}
+        All projects
+      </a>
+      {p && (
+        <span className="cs-name" aria-hidden="true">
+          {p.title}
         </span>
-        <button
-          className="pj-ibtn"
-          aria-label="Next project"
-          aria-disabled={idx === -1 || idx >= PROJECTS.length - 1 ? "true" : undefined}
-          onClick={() => idx !== -1 && idx < PROJECTS.length - 1 && onNavigate(PROJECTS[idx + 1].slug)}
-        >
-          <ChevRight />
-        </button>
-      </div>
-      <button className="pj-ibtn" aria-label="Toggle theme" title="Toggle theme" onClick={onToggleTheme}>
-        <svg className="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="5" />
-          <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-          <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-        </svg>
-        <svg className="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
+      )}
+      <span className="cs-sp" />
+      {p && (
+        <nav className="cs-nav" aria-label="Projects">
+          {prev ? (
+            <a className="cs-ib" href={`?id=${encodeURIComponent(prev.slug)}`} onClick={go(prev.slug)} aria-label={`Previous project: ${prev.title}`}>
+              {Ico.prev}
+            </a>
+          ) : (
+            <span className="cs-ib" aria-hidden="true" data-off="true">
+              {Ico.prev}
+            </span>
+          )}
+          <span className="cs-count">
+            <span className="sr-only">Project </span>
+            <b>{p.idx}</b>
+            <span aria-hidden="true">&nbsp;/ </span>
+            <span className="sr-only"> of </span>
+            {count}
+          </span>
+          {next ? (
+            <a className="cs-ib" href={`?id=${encodeURIComponent(next.slug)}`} onClick={go(next.slug)} aria-label={`Next project: ${next.title}`}>
+              {Ico.next}
+            </a>
+          ) : (
+            <span className="cs-ib" aria-hidden="true" data-off="true">
+              {Ico.next}
+            </span>
+          )}
+        </nav>
+      )}
+      <a className="cs-resume" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+        Resume
+        <span className="sr-only"> (PDF, opens in a new tab)</span>
+      </a>
+      <button
+        className="cs-tg"
+        type="button"
+        onClick={onToggleTheme}
+        aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      >
+        <span className="cs-tg-card">
+          <span className="cs-tg-face cs-tg-sun" />
+          <span className="cs-tg-face cs-tg-moon" />
+        </span>
+        <span className="cs-tg-line" aria-hidden="true" />
       </button>
+      <svg className="cs-prog" viewBox="0 0 1280 14" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          ref={progRef}
+          pathLength={1}
+          d="M0 7c40-8 80 8 120 0s80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0 80 8 120 0"
+        />
+      </svg>
     </div>
   );
 
-  if (idx === -1) {
+  if (!p) {
     return (
-      <div className="pj">
+      <div className="cs">
         {TopBar}
-        <header className="pj-hero">
-          <div className="pj-wrap">
-            <div className="pj-cat">404</div>
-            <h1 className="pj-title">Project not found.</h1>
-          </div>
-        </header>
+        <main className="cs-wrap cs-404">
+          <p className="cs-cat">404</p>
+          <h1>Project not found.</h1>
+          <p>That folder isn't in the drawer. Every project is listed on the home page.</p>
+          <a className="cs-btn p" href="/#work" onClick={backTo}>
+            {Ico.left}
+            All projects
+          </a>
+        </main>
       </div>
     );
   }
 
-  const p = PROJECTS[idx];
   const d = p.deepdive;
-  const prev = idx > 0 ? PROJECTS[idx - 1] : null;
-  const next = idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
-  const stack = p.tech.join(", ");
+  const builtWith = p.tech.slice(0, 5).join(", ") + (p.tech.length > 5 ? `, +${p.tech.length - 5} more` : "");
+  const result = p.result ?? d.outcome;
+
+  type RailItem = { id: string; label: string; sub?: number };
+  const rail: RailItem[] = [];
+  if (d.overview) rail.push({ id: "overview", label: "Overview" });
+  if (d.challenge) rail.push({ id: "challenge", label: "The challenge" });
+  if (d.approach.length) {
+    rail.push({ id: "approach", label: "Approach" });
+    d.approach.forEach((s, i) => rail.push({ id: `step-${i + 1}`, label: railLabel(s.h), sub: i }));
+  }
+  rail.push({ id: "stack", label: "Tech stack" });
+  if (d.outcome) rail.push({ id: "outcome", label: "Outcome" });
+  const activeAt = Math.max(0, rail.findIndex((r) => r.id === active));
+  const railDone = rail.length > 1 ? activeAt / (rail.length - 1) : 1;
 
   return (
-    <div className="pj">
+    <div className="cs">
       {TopBar}
-
-      <header className="pj-hero">
-        <div className="pj-wrap pj-hero__grid">
-          <div className="pj-hero__text">
-            <div className="pj-cat rv">{p.cat}</div>
-            <h1 className="pj-title rv" data-d="1">
+      <div className="cs-wrap">
+        <header className="cs-hero">
+          <div className="cs-hero-t">
+            <p className="cs-cat rv">
+              <i aria-hidden="true" />
+              {p.cat}
+            </p>
+            <h1 className="rv" data-d="1">
               {p.title}
             </h1>
-            <p className="pj-one rv" data-d="2">
+            <p className="cs-one rv" data-d="2">
               {p.one}
             </p>
-            <div className="pj-actions rv" data-d="3">
-              {p.live && (
-                <a className="btn btn--primary" href={p.live} target="_blank" rel="noopener noreferrer">
-                  {p.liveLabel || "Live Demo"} ↗
-                </a>
-              )}
-              {p.link && (
-                <a className={`btn ${p.live ? "btn--ghost" : "btn--primary"}`} href={p.link} target="_blank" rel="noopener noreferrer">
-                  View Repo ↗
-                </a>
-              )}
-              <button className="btn btn--ghost" onClick={onBack} style={{ background: "none" }}>
-                ← All Projects
-              </button>
-            </div>
-            <div className="pj-meta rv" data-d="4">
-              <div className="pj-meta__cell">
-                <div className="pj-meta__k">Role</div>
-                <div className="pj-meta__v">{d.role || "—"}</div>
+            {(p.live || p.link) && (
+              <div className="cs-acts rv" data-d="3">
+                {p.live && (
+                  <a className="cs-btn p" href={p.live} target="_blank" rel="noopener noreferrer">
+                    {p.liveLabel ?? "Live demo"}
+                    {Ico.out}
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
+                {p.link && (
+                  <a className={`cs-btn${p.live ? "" : " p"}`} href={p.link} target="_blank" rel="noopener noreferrer">
+                    View repo
+                    {Ico.out}
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
               </div>
-              <div className="pj-meta__cell">
-                <div className="pj-meta__k">Type</div>
-                <div className="pj-meta__v">{d.type || p.cat}</div>
-              </div>
-              <div className="pj-meta__cell">
-                <div className="pj-meta__k">Stack</div>
-                <div className="pj-meta__v">{stack}</div>
-              </div>
-            </div>
+            )}
           </div>
-
-          <div className="pj-shot rv" id="pjShot">
-            <div className="pj-shot__chrome">
-              <span style={{ display: "flex", gap: 6 }}>
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#e5383b" }} />
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#b1a7a6" }} />
-                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#d3d3d3" }} />
-              </span>
-              <span className="pj-shot__url">soumya.dev/work/{p.slug}</span>
-            </div>
-            <div className="pj-shot__img">
+          <figure className="cs-shot rv" data-d="2">
+            <span className="cs-clip">
               {p.image ? (
-                <img src={p.image} alt={`${p.title} screenshot`} loading="eager" />
+                <img src={p.image} alt={shotAlt(p.slug, p.title)} loading="eager" decoding="async" width={1470} height={805} />
               ) : (
-                <div className="pj-shot__ph">
-                  <span>// {p.title} · preview</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="pj-wrap" aria-label="Case study">
-        {d.overview && (
-          <div className="pj-sec rv">
-            <div className="pj-sec__label">Overview</div>
-            <div className="pj-sec__body">
-              <p className="pj-lead">{d.overview}</p>
-            </div>
-          </div>
-        )}
-        {d.challenge && (
-          <div className="pj-sec rv">
-            <div className="pj-sec__label">The Challenge</div>
-            <div className="pj-sec__body">
-              <p>{d.challenge}</p>
-            </div>
-          </div>
-        )}
-        {d.approach.length > 0 && (
-          <div className="pj-sec rv">
-            <div className="pj-sec__label">Approach</div>
-            <div className="pj-sec__body">
-              <div className="pj-approach">
-                {d.approach.map((s, i) => (
-                  <div className="pj-step" key={i}>
-                    <span className="pj-step__n">0{i + 1}</span>
-                    <div>
-                      <div className="pj-step__h">{s.h}</div>
-                      <p className="pj-step__p">{s.p}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="pj-sec rv">
-          <div className="pj-sec__label">Tech Stack</div>
-          <div className="pj-sec__body">
-            <div className="pj-stack">
-              {p.tech.map((t) => (
-                <span className="chip" key={t}>
-                  {t}
+                <span className="cs-ph" role="img" aria-label={`Placeholder: no screenshot of ${p.title} yet`}>
+                  Screenshot coming
                 </span>
-              ))}
-            </div>
-          </div>
-        </div>
-        {d.outcome && (
-          <div className="pj-sec rv">
-            <div className="pj-sec__label">Outcome</div>
-            <div className="pj-sec__body">
-              <div className="pj-outcome">
-                <div className="pj-outcome__k">Result</div>
-                <p>{d.outcome}</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+              )}
+            </span>
+          </figure>
+        </header>
 
-      <div className="pj-wrap">
-        <div className="pj-foot rv">
-          {/* These were <a> elements with no href: not focusable, not
-              announced as links, and unusable without a mouse. Buttons carry
-              focus and Enter/Space, and `disabled` states the dead end
-              honestly instead of leaving a live-looking control that does
-              nothing. */}
-          <button
-            type="button"
-            className="pj-foot__card"
-            disabled={!prev}
-            aria-label={prev ? `Previous project: ${prev.title}` : "No previous project"}
-            onClick={() => prev && onNavigate(prev.slug)}
-          >
-            <div className="pj-foot__dir">← Previous</div>
-            <div className="pj-foot__name">{prev ? prev.title : "—"}</div>
-          </button>
-          <button
-            type="button"
-            className="pj-foot__card pj-foot__card--next"
-            disabled={!next}
-            aria-label={next ? `Next project: ${next.title}` : "No next project"}
-            onClick={() => next && onNavigate(next.slug)}
-          >
-            <div className="pj-foot__dir">Next →</div>
-            <div className="pj-foot__name">{next ? next.title : "—"}</div>
-          </button>
+        <dl className="cs-tldr rv" data-d="4" aria-label="At a glance">
+          <div>
+            <dt>Role</dt>
+            <dd>{d.role || "—"}</dd>
+          </div>
+          <div>
+            <dt>Type</dt>
+            <dd>{d.type || p.cat}</dd>
+          </div>
+          <div>
+            <dt>Built with</dt>
+            <dd>{builtWith}</dd>
+          </div>
+          <div className="cs-res">
+            <dt>Result</dt>
+            <dd>{result}</dd>
+          </div>
+        </dl>
+
+        <div className="cs-body">
+          <nav className="cs-rail rv" aria-label="On this page" style={{ "--rp": railDone } as CSSProperties}>
+            <p className="cs-rail-h">On this page</p>
+            <svg viewBox="0 0 12 340" preserveAspectRatio="none" aria-hidden="true">
+              <path className="bg" d="M6 0c5 20-5 40 0 60s-5 40 0 60-5 40 0 60-5 40 0 60-5 40 0 60-5 40 0 40" />
+              <path className="fg" pathLength={1} d="M6 0c5 20-5 40 0 60s-5 40 0 60-5 40 0 60-5 40 0 60-5 40 0 60-5 40 0 40" />
+            </svg>
+            <ul>
+              {rail.map((r) => (
+                <li key={r.id} className={r.sub !== undefined ? "sub" : undefined}>
+                  <a
+                    href={`#cs-${r.id}`}
+                    className={active === r.id ? "on" : undefined}
+                    aria-current={active === r.id ? "location" : undefined}
+                    onClick={r.sub !== undefined ? jumpToStep(r.sub) : undefined}
+                  >
+                    <span>{r.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <main className="cs-col" aria-label={`${p.title} case study`}>
+            {d.overview && (
+              <section id="cs-overview" data-cs-sec="overview" className="cs-sec rv">
+                <h2 className="cs-lbl">
+                  Overview
+                  <Squiggle />
+                </h2>
+                <p className="cs-p">{d.overview}</p>
+              </section>
+            )}
+            {d.challenge && (
+              <section id="cs-challenge" data-cs-sec="challenge" className="cs-sec rv">
+                <h2 className="cs-lbl">
+                  The challenge
+                  <Squiggle />
+                </h2>
+                <p className="cs-p">{d.challenge}</p>
+              </section>
+            )}
+            {d.approach.length > 0 && (
+              <section id="cs-approach" data-cs-sec="approach" className="cs-sec rv">
+                <h2 className="cs-lbl">
+                  Approach
+                  <Squiggle />
+                </h2>
+                <div className="cs-acc">
+                  {d.approach.map((s, i) => {
+                    const isOpen = open.has(i);
+                    const n = i + 1;
+                    return (
+                      <div className={`cs-row${isOpen ? " open" : ""}`} key={`${slug}-${i}`} id={`cs-step-${n}`} data-cs-sec={`step-${n}`}>
+                        <h3>
+                          <button
+                            type="button"
+                            aria-expanded={isOpen}
+                            aria-controls={`cs-pan-${n}`}
+                            id={`cs-btn-${n}`}
+                            onClick={() => toggleStep(i)}
+                          >
+                            <span className="cs-n">{n}</span>
+                            <span className="cs-h">{s.h}</span>
+                            {Ico.plus}
+                          </button>
+                        </h3>
+                        <div className="cs-pan" id={`cs-pan-${n}`} role="region" aria-labelledby={`cs-btn-${n}`}>
+                          <div>
+                            <p>{s.p}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+            <section id="cs-stack" data-cs-sec="stack" className="cs-sec rv">
+              <h2 className="cs-lbl">
+                Tech stack
+                <Squiggle />
+              </h2>
+              <ul className="cs-stack">
+                {p.tech.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </section>
+            {d.outcome && (
+              <section id="cs-outcome" data-cs-sec="outcome" className="cs-sec rv">
+                <h2 className="cs-lbl">
+                  Outcome
+                  <Squiggle />
+                </h2>
+                <div className="cs-out">
+                  <p>{d.outcome}</p>
+                </div>
+              </section>
+            )}
+
+            <nav className="cs-end rv" aria-label="More projects">
+              {prev ? (
+                <a className="cs-pn" href={`?id=${encodeURIComponent(prev.slug)}`} onClick={go(prev.slug)}>
+                  <span>Previous project</span>
+                  <b>
+                    {Ico.left}
+                    {prev.title}
+                  </b>
+                </a>
+              ) : (
+                <a className="cs-pn" href="/#work" onClick={backTo}>
+                  <span>First folder</span>
+                  <b>
+                    {Ico.left}
+                    All projects
+                  </b>
+                </a>
+              )}
+              {next ? (
+                <a className="cs-pn cs-pn--next" href={`?id=${encodeURIComponent(next.slug)}`} onClick={go(next.slug)}>
+                  <span>Next project</span>
+                  <b>
+                    {next.title}
+                    {Ico.right}
+                  </b>
+                </a>
+              ) : (
+                <a className="cs-pn cs-pn--next" href="/#work" onClick={backTo}>
+                  <span>Last folder</span>
+                  <b>
+                    All projects
+                    {Ico.right}
+                  </b>
+                </a>
+              )}
+            </nav>
+          </main>
         </div>
+
+        <aside className="cs-close rv" aria-labelledby="cs-close-h">
+          <div className="cs-close-t">
+            <h2 id="cs-close-h">Want the rest of the story?</h2>
+            <p>The resume has every project and role on one page, or write to me and ask about this one.</p>
+          </div>
+          <div className="cs-close-acts">
+            <a className="cs-btn cs-btn--sun" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+              {Ico.doc}
+              Resume
+              <span className="sr-only"> (PDF, opens in a new tab)</span>
+            </a>
+            <a className="cs-btn cs-btn--paper" href="/#contact" onClick={toContact}>
+              Get in touch
+              {Ico.right}
+            </a>
+            <a className="cs-mail" href={`mailto:${CONTACT.email}`}>
+              {Ico.mail}
+              {CONTACT.email}
+            </a>
+          </div>
+        </aside>
       </div>
     </div>
   );
