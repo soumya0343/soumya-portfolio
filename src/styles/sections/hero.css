@@ -11,7 +11,7 @@
   --me: var(--m-ease, cubic-bezier(.22, .61, .36, 1));
   --md: calc(160ms + var(--mm) * 60ms);
   --u: min(1px, 100vw / 1280);
-  --hr-pad: 168px;                     /* clears the fixed felt bar */
+  --hr-pad: 146px;                     /* clears the fixed felt bar (bottom at 130px) with a small gap */
   --rule: color-mix(in oklab, var(--w-cobalt) 12%, transparent);
   --hr-shadow: rgba(25, 21, 16, .22);
   --hr-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 -.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -106,6 +106,38 @@
 .hr-t2 { right: calc(30 * var(--u)); top: 0; }
 .hr-t3 { left: calc(-10 * var(--u)); bottom: calc(-20 * var(--u)); }
 .hr-t4 { right: calc(40 * var(--u)); bottom: calc(-12 * var(--u)); }
+
+/* invert lens (portfoliofy creative-artsy): a selection square that inverts whatever
+   is under it, with ink corner handles, following the mouse over the name. Desktop
+   mouse only; Hero.tsx sets --lx/--ly and data-on. */
+.hr-lens { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .hr-lens {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    width: calc(288 * var(--u));
+    aspect-ratio: 1;
+    translate: calc(var(--lx, 50%) - 50%) calc(var(--ly, 50%) - 50%);
+    scale: .35;
+    opacity: 0;
+    backdrop-filter: invert(1);
+    -webkit-backdrop-filter: invert(1);
+    pointer-events: none;
+    transition: opacity .3s ease-out, scale .3s ease-out;
+  }
+  .hr-lens[data-on] { opacity: 1; scale: 1; }
+  .hr-lens i { position: absolute; width: 16px; height: 16px; background: var(--w-ink); }
+  .hr-lens i:nth-child(1) { left: -8px; top: -8px; }
+  .hr-lens i:nth-child(2) { right: -8px; top: -8px; }
+  .hr-lens i:nth-child(3) { left: -8px; bottom: -8px; }
+  .hr-lens i:nth-child(4) { right: -8px; bottom: -8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hr-lens { scale: 1; transition: opacity .2s linear; }
+}
 
 /* ---------------- tagline, subhead, buttons ---------------- */
 .hr-line {

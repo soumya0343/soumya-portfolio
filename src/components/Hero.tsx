@@ -1,5 +1,5 @@
 import "../styles/sections/hero.css";
-import type { CSSProperties } from "react";
+import { useRef, type CSSProperties, type PointerEvent } from "react";
 import { EDUCATION, EXPERIENCE, PROFILE, RESUME_URL } from "../data/portfolio";
 
 /* Hero · "Notebook name box" with the café chalkboard (spec S02-C cafe1).
@@ -86,6 +86,20 @@ const ArrowUpRight = () => (
 );
 
 export default function Hero() {
+  /* invert lens over the name: follows a mouse pointer, set straight on the element so moving it never re-renders */
+  const lens = useRef<HTMLSpanElement>(null);
+  const moveLens = (e: PointerEvent<HTMLDivElement>) => {
+    const el = lens.current;
+    if (!el || e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    el.style.setProperty("--lx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--ly", `${e.clientY - r.top}px`);
+    el.dataset.on = "";
+  };
+  const hideLens = () => {
+    if (lens.current) delete lens.current.dataset.on;
+  };
+
   return (
     <section id="home" className="hr rv" aria-labelledby="hr-name">
       {/* shared SVG filters: a wobbly pen line for the box, a chalk texture for the sign */}
@@ -117,7 +131,7 @@ export default function Hero() {
       <div className="hr-body">
         <p className="hr-hi">hi, my name is</p>
 
-        <div className="hr-stage">
+        <div className="hr-stage" onPointerEnter={moveLens} onPointerMove={moveLens} onPointerLeave={hideLens}>
           <svg className="hr-arrows" viewBox="0 0 1040 360" aria-hidden="true">
             <g fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path style={{ "--ad": "0s" } as CSSProperties} pathLength={1} d="M150 56 C 170 90 186 104 214 116 M200 120 L216 116 L208 102" />
@@ -148,6 +162,10 @@ export default function Hero() {
               </li>
             ))}
           </ul>
+
+          <span ref={lens} className="hr-lens" aria-hidden="true">
+            <i /><i /><i /><i />
+          </span>
         </div>
 
         <p className="hr-line">
