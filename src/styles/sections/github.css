@@ -89,7 +89,8 @@
 /* ---------- body ---------- */
 .gh-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; align-items: center; margin-top: 4px; }
 .gh-box { container-type: inline-size; min-width: 0; }
-.gh-stage { --c: min(19px, calc(100cqi / 43)); position: relative; height: calc(var(--c) * 31.4); }
+/* --gh-sh / --gh-cy come from GithubCal's fitStage: the stage is as tall as this year's bars need */
+.gh-stage { --c: min(19px, calc(100cqi / 43)); position: relative; height: calc(var(--c) * var(--gh-sh, 31.4)); }
 
 /* levels: colour and height. 0 lies flat; 1 already stands half a cell */
 .gh [data-l="0"] { --t: var(--gh-r0); --hz: 0; }
@@ -107,7 +108,7 @@
 .gh-plane {
   position: absolute;
   left: 50%;
-  top: calc(var(--c) * 17.7);
+  top: calc(var(--c) * var(--gh-cy, 17.7));
   width: calc(var(--c) * 53);
   height: calc(var(--c) * 7);
   margin: calc(var(--c) * -3.5) 0 0 calc(var(--c) * -26.5);
@@ -302,6 +303,14 @@
   .gh.in .gh-ring { animation: gh-draw 1s cubic-bezier(.65, 0, .35, 1) calc(1.3s + var(--gh-delay, 0s)) forwards; }
   .gh.in .gh-arrow { animation: gh-draw .6s ease calc(1.8s + var(--gh-delay, 0s)) forwards; }
   .gh.in .gh-hand { animation: gh-fade .5s ease calc(2s + var(--gh-delay, 0s)) both; }
+
+  /* grid → skyline: GithubCal tilts the plane up from the grid's spot (FLIP); the weeks
+     start rising halfway through the tilt, and the side labels and the note come in last */
+  .gh.in[data-morph] .gh-w { animation-delay: calc(var(--i) * 12ms + .45s); }
+  .gh.in[data-morph] .gh-mo { animation: gh-fade .4s ease .8s both; }
+  .gh.in[data-morph] .gh-ring { animation-delay: 1.5s; }
+  .gh.in[data-morph] .gh-arrow { animation-delay: 1.9s; }
+  .gh.in[data-morph] .gh-hand { animation-delay: 2.1s; }
 }
 
 /* ---------- responsive ---------- */

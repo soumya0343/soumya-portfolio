@@ -24,7 +24,6 @@ const USERNAME = "soumya0343";
 const PROFILE_URL = CONTACT.github || `https://github.com/${USERNAME}`;
 const PROFILE_LABEL = PROFILE_URL.replace(/^https?:\/\//, "");
 const WEEKS = 53; // 371 days: the trailing year, Sunday-aligned like GitHub's own graph
-const VIEW_KEY = "sg-gh-view";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Ten steps. Cuts are the upper bound of each level; a five-band ramp folds
@@ -69,7 +68,7 @@ const longDate = (d: Date) => `${shortDate(d)}, ${d.getFullYear()}`;
 const plural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString("en-US")} ${n === 1 ? one : many}`;
 const tipText = (day: Day) => `${plural(day.count, "contribution")} on ${longDate(day.date)}`;
 
-/* ---------- media + persisted view ---------- */
+/* ---------- media ---------- */
 
 const PHONE_MQ = "(max-width: 760px)";
 function subscribePhone(cb: () => void) {
@@ -80,12 +79,32 @@ function subscribePhone(cb: () => void) {
 const useIsPhone = () =>
   useSyncExternalStore(subscribePhone, () => window.matchMedia(PHONE_MQ).matches, () => false);
 
-function readView(): View {
-  try {
-    return localStorage.getItem(VIEW_KEY) === "2d" ? "2d" : "3d";
-  } catch {
-    return "3d";
+// The board opens as the flat grid and builds itself into the skyline once it's in view.
+// With reduced motion there is no build: it opens on the skyline.
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const initialView = (): View => (reducedMotion() ? "3d" : "2d");
+const MORPH_MS = 1000;
+const MORPH_EASE = "cubic-bezier(.65, 0, .35, 1)";
+
+/* ---------- fitting the skyline ---------- */
+
+// The plane is drawn with rotateX(55deg) rotateZ(45deg) and no perspective, so a point
+// (x, y, z) in cells from the plane's centre lands at screen y = (x + y)·K − z·S.
+const K = Math.SQRT1_2 * Math.cos((55 * Math.PI) / 180);
+const S = Math.sin((55 * Math.PI) / 180);
+const BOTTOM = 13.2; // the front corner (12.2) plus the month labels under it
+const PAD = 0.8;
+
+/** Stage height and the plane's centre line, in cells, so the board holds exactly
+    what this year's bars need: no fixed headroom for a tower that isn't there. */
+function fitStage(days: Day[], busiest: Day | null) {
+  let top = -30 * K; // back corner of the flat plane
+  for (const d of days) {
+    if (d.level > 0) top = Math.min(top, (d.w - 26.5 + d.d - 3.5) * K - HZ[d.level] * S);
   }
+  // the busiest day's handwritten note sits about six cells above its bar
+  if (busiest) top = Math.min(top, (busiest.w - 26 + busiest.d - 3) * K - HZ[busiest.level] * S - 6);
+  return { cy: PAD - top, h: PAD - top + BOTTOM };
 }
 
 /* ---------- data ---------- */
@@ -241,11 +260,12 @@ function pinStyle(day: Day): CSSProperties {
 
 export default function GithubCal() {
   const { status, byDate, retry } = useContributions();
-  const [chosen, setChosen] = useState<View>(readView);
+  const [chosen, setChosen] = useState<View>(initialView);
   const isPhone = useIsPhone();
   const view: View = isPhone ? "2d" : chosen;
 
   const model = useMemo(() => buildModel(byDate), [byDate]);
+  const fit = useMemo(() => fitStage(model.days, model.busiest), [model]);
   const ready = status === "ready";
 
   const [focusIdx, setFocusIdx] = useState<number | null>(null);
@@ -256,19 +276,71 @@ export default function GithubCal() {
   const active = activeIdx !== null ? model.days[activeIdx] : null;
 
   const planeRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  // where the flat grid sat just before the switch, so the skyline can start from exactly there
+  const fromRef = useRef<{ cx: number; cy: number; w: number; sh: number } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // After a view switch the board is already out of its pocket: skip the wait.
   const [switched, setSwitched] = useState(false);
+  // auto: still waiting to build the skyline by itself; morph: it just did, so the grid tilts and the bars rise
+  const [auto, setAuto] = useState(true);
+  const [morph, setMorph] = useState(false);
   const pickView = (v: View) => {
+    setAuto(false);
+    setMorph(false);
     setChosen(v);
     setSwitched(true);
-    try {
-      localStorage.setItem(VIEW_KEY, v);
-    } catch {
-      /* private mode: the choice just isn't remembered */
-    }
   };
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  const pending = auto && !isPhone && chosen === "2d";
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!pending || !ready || !el) return;
+    // The grid is what scrolls in; once half the board is on screen it builds, with no timer to lag behind.
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        const plane = planeRef.current;
+        const stage = stageRef.current;
+        if (plane && stage) {
+          const p = plane.getBoundingClientRect();
+          const st = stage.getBoundingClientRect();
+          fromRef.current = { cx: p.left - st.left + p.width / 2, cy: p.top - st.top + p.height / 2, w: p.width, sh: st.height };
+        }
+        setAuto(false);
+        setMorph(true);
+        setChosen("3d");
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [pending, ready]);
+
+  // FLIP: the new 3D plane starts flat on top of the old grid, then tilts into place
+  // while the stage eases to the skyline's height.
+  useLayoutEffect(() => {
+    const from = fromRef.current;
+    const plane = planeRef.current;
+    const stage = stageRef.current;
+    if (!morph || view !== "3d" || !from || !plane || !stage) return;
+    fromRef.current = null;
+    const k = from.w / plane.offsetWidth;
+    const dx = from.cx - (plane.offsetLeft + plane.offsetWidth / 2);
+    const dy = from.cy - (plane.offsetTop + plane.offsetHeight / 2);
+    const opts = { duration: MORPH_MS, easing: MORPH_EASE };
+    plane.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px) scale(${k}) rotateX(0deg) rotateZ(0deg)` },
+        { transform: "translate(0px, 0px) scale(1) rotateX(55deg) rotateZ(45deg)" },
+      ],
+      opts,
+    );
+    stage.animate([{ height: `${from.sh}px` }, { height: `${stage.offsetHeight}px` }], opts);
+  }, [morph, view]);
 
   // Phones scroll the flat grid; open it on the most recent weeks.
   useLayoutEffect(() => {
@@ -343,7 +415,15 @@ export default function GithubCal() {
   const range = `${longDate(model.from)} – ${longDate(model.to)}`;
 
   return (
-    <div className="gh rv" data-view={view} data-status={status} data-switched={switched ? "" : undefined}>
+    <div
+      ref={rootRef}
+      className="gh rv"
+      data-view={view}
+      data-status={status}
+      data-switched={switched ? "" : undefined}
+      data-auto={pending ? "" : undefined}
+      data-morph={morph && view === "3d" ? "" : undefined}
+    >
       <div className="gh-bar">
         <h3 className="gh-h">GitHub activity</h3>
         <div className="gh-r">
@@ -389,7 +469,11 @@ export default function GithubCal() {
         <div className="gh-body" aria-busy={!ready}>
           <div className="gh-box">
             <div className="gh-scroll" ref={scrollRef}>
-              <div className="gh-stage">
+              <div
+                className="gh-stage"
+                ref={stageRef}
+                style={{ "--gh-sh": fit.h, "--gh-cy": fit.cy } as CSSProperties}
+              >
                 {view === "2d" && (
                   <div className="gh-days" aria-hidden="true">
                     <span />
