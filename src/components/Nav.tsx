@@ -1,82 +1,120 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import "../styles/sections/nav.css";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { CSSProperties } from "react";
 import { RESUME_URL } from "../data/portfolio";
 
-interface NavLinkDef {
+/* "Felt pocket of cards": section cards peek out of an olive felt pocket.
+   Desktop: the pocket runs across the top, cards rise on hover, a paper ribbon
+   bookmarks the active section and slides between cards as you scroll.
+   Phone/tablet (<=860px): the pocket moves to the bottom of the screen, three
+   cards peek out of it, and tapping the felt raises the whole deck as a menu. */
+
+interface CardDef {
   sec: string;
   label: string;
+  /** Longer label used in the phone deck */
+  deck: string;
+  hue: string;
+  /** text colour on that hue */
+  ink?: string;
+  /** resting tilt (deg) on the desktop bar */
+  r: number;
+  /** resting tilt (deg) in the phone deck */
+  dr: number;
 }
 
-const LINKS: NavLinkDef[] = [
-  { sec: "about", label: "About" },
-  { sec: "work", label: "Work" },
-  { sec: "experience", label: "Experience" },
-  { sec: "skills", label: "Skills" },
-  { sec: "background", label: "Background" },
-  { sec: "ask", label: "Ask AI" },
-  { sec: "contact", label: "Contact" },
+const CARDS: CardDef[] = [
+  { sec: "about", label: "About", deck: "About", hue: "var(--w-sun)", r: -2, dr: 1 },
+  { sec: "work", label: "Work", deck: "Selected Work", hue: "var(--w-cobalt)", ink: "var(--w-paper)", r: 1, dr: -1 },
+  { sec: "experience", label: "Experience", deck: "Experience", hue: "var(--w-orange)", r: -1, dr: 1.5 },
+  { sec: "skills", label: "Skills", deck: "Skills", hue: "var(--w-green)", r: 2, dr: -1 },
+  { sec: "background", label: "Background", deck: "Background", hue: "var(--w-pink)", r: -2, dr: 1 },
+  { sec: "ask", label: "Ask AI", deck: "Ask my AI", hue: "var(--w-mint)", r: 1, dr: -1.5 },
+  { sec: "contact", label: "Contact", deck: "Contact", hue: "var(--w-sage)", r: -1, dr: 1 },
 ];
 
-const SHEET_LINKS: { href: string; num: string; label: string }[] = [
-  { href: "#home", num: "00", label: "Home" },
-  { href: "#about", num: "01", label: "About" },
-  { href: "#work", num: "02", label: "Selected Work" },
-  { href: "#experience", num: "03", label: "Experience" },
-  { href: "#skills", num: "04", label: "Skills" },
-  { href: "#background", num: "05", label: "Background" },
-  { href: "#ask", num: "06", label: "Ask my AI" },
-  { href: "#contact", num: "07", label: "Contact" },
-];
+const HOME_CARD: CardDef = { sec: "home", label: "Home", deck: "Home", hue: "var(--w-kraft)", r: 0, dr: -1.5 };
+const DECK: CardDef[] = [HOME_CARD, ...CARDS];
+const BY_SEC: Record<string, CardDef> = Object.fromEntries(DECK.map((c) => [c.sec, c]));
 
-const SunIcon = () => (
-  <svg className="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+/** The three cards that peek out of the phone pocket: Work, the current section, Contact. */
+function peekCards(active: string): CardDef[] {
+  const mid = active === "home" || active === "work" || active === "contact" ? "about" : active;
+  const midTilt: CardDef = { ...BY_SEC[mid], r: 1 };
+  return [{ ...BY_SEC.work, r: -2 }, midTilt, { ...BY_SEC.contact, r: -1 }];
+}
+
+function cardStyle(c: CardDef, extra?: Record<string, string | number>): CSSProperties {
+  return {
+    "--h": c.hue,
+    ...(c.ink ? { "--tx": c.ink } : {}),
+    ...extra,
+  } as CSSProperties;
+}
+
+/* Theme state lives in useTheme (App). The nav only needs to know which face of
+   the clasp to show, so it watches data-theme on <html>. */
+function subscribeTheme(cb: () => void) {
+  const mo = new MutationObserver(cb);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => mo.disconnect();
+}
+const readDark = () => document.documentElement.getAttribute("data-theme") === "dark";
+
+const Arrow = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M7 17 17 7" />
+    <path d="M8 7h9v9" />
   </svg>
 );
-const MoonIcon = () => (
-  <svg className="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-const HomeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 10.5 12 3l9 7.5" />
-    <path d="M5 9.5V21h14V9.5" />
-  </svg>
-);
+
+function Clasp({ dark, onToggle }: { dark: boolean; onToggle: () => void }) {
+  return (
+    <span className="nv-clasp">
+      <button className="nv-tg" type="button" aria-label="Dark theme" aria-pressed={dark} title={dark ? "Switch to light theme" : "Switch to dark theme"} onClick={onToggle}>
+        <span className="nv-tgcard" aria-hidden="true">
+          <span className="nv-tgface nv-tgsun" />
+          <span className="nv-tgface nv-tgmoon" />
+        </span>
+        <span className="nv-tgline" aria-hidden="true" />
+      </button>
+    </span>
+  );
+}
 
 export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
-  const navRef = useRef<HTMLElement>(null);
-  const linksWrapRef = useRef<HTMLDivElement>(null);
-  const pillRef = useRef<HTMLSpanElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const ribbonRef = useRef<HTMLSpanElement>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const firstDeckRef = useRef<HTMLAnchorElement>(null);
   const [active, setActive] = useState("home");
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const activeRef = useRef("home");
+  const dark = useSyncExternalStore(subscribeTheme, readDark, () => false);
 
-  const movePill = useCallback((sec: string | null) => {
-    const pill = pillRef.current;
-    if (!pill) return;
-    const link = sec ? linkRefs.current[sec] : null;
-    if (!link) {
-      pill.style.opacity = "0";
+  /* Slide the paper ribbon onto the active card (desktop bar). */
+  const moveRibbon = useCallback((sec: string) => {
+    const rib = ribbonRef.current;
+    if (!rib) return;
+    const link = linkRefs.current[sec];
+    if (!link || !link.offsetWidth) {
+      rib.classList.remove("is-on");
       return;
     }
-    pill.style.opacity = "1";
-    pill.style.transform = `translateX(${link.offsetLeft}px)`;
-    pill.style.width = `${link.offsetWidth}px`;
+    rib.style.setProperty("--x", `${link.offsetLeft + link.offsetWidth - 22}px`);
+    rib.classList.add("is-on");
   }, []);
 
+  /* Scroll-spy: same rule as before (the last section whose top is above a
+     line 34% down the viewport), rAF-throttled. Also tucks the cards deeper
+     into the pocket once the page has scrolled. */
   useEffect(() => {
-    const secIds = ["home", ...LINKS.map((l) => l.sec)];
+    const secIds = DECK.map((c) => c.sec);
     let ticking = false;
 
     const spy = () => {
-      const nav = navRef.current;
-      if (nav) nav.classList.toggle("nav--shrink", window.scrollY > 24);
+      rootRef.current?.classList.toggle("nv--tucked", window.scrollY > 24);
       const mid = window.scrollY + window.innerHeight * 0.34;
       let cur = secIds[0];
       for (const id of secIds) {
@@ -86,7 +124,6 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
       if (cur !== activeRef.current) {
         activeRef.current = cur;
         setActive(cur);
-        movePill(cur);
       }
     };
 
@@ -99,88 +136,154 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: () => void }) {
         ticking = true;
       }
     };
-    const onResize = () => movePill(activeRef.current);
+    const onResize = () => moveRibbon(activeRef.current);
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    const t = setTimeout(() => {
-      movePill("home");
-      spy();
-    }, 60);
+    const t = setTimeout(spy, 60);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       clearTimeout(t);
     };
-  }, [movePill]);
+  }, [moveRibbon]);
+
+  useEffect(() => {
+    moveRibbon(active);
+  }, [active, moveRibbon]);
+
+  /* Phone deck: lock page scroll, Escape closes, focus moves into the deck. */
+  const close = useCallback((returnFocus: boolean) => {
+    setOpen(false);
+    if (returnFocus) toggleRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const html = document.documentElement;
+    html.classList.add("nv-lock");
+    firstDeckRef.current?.focus({ preventScroll: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close(true);
+    };
+    const mq = window.matchMedia("(min-width: 861px)");
+    const onMq = () => {
+      if (mq.matches) close(false);
+    };
+    window.addEventListener("keydown", onKey);
+    mq.addEventListener("change", onMq);
+    return () => {
+      html.classList.remove("nv-lock");
+      window.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onMq);
+    };
+  }, [open, close]);
+
+  const peek = peekCards(active);
 
   return (
-    <>
-      <nav className="nav" id="nav" ref={navRef} aria-label="Primary">
-        <a
-          className={`nav__home${active === "home" ? " nav__home--active" : ""}`}
-          href="#home"
-          aria-label="Home"
-        >
-          <HomeIcon />
-        </a>
-
-        <div className="nav__links" id="navLinks" ref={linksWrapRef} onMouseLeave={() => movePill(activeRef.current)}>
-          {LINKS.map((l) => (
+    <div className={`nv${open ? " nv--open" : ""}`} ref={rootRef}>
+      {/* ---------- desktop: felt bar across the top ---------- */}
+      <nav className="nv-bar" aria-label="Primary">
+        <div className="nv-cards rv">
+          {CARDS.map((c, i) => (
             <a
-              key={l.sec}
-              href={`#${l.sec}`}
-              className={`nav__link${active === l.sec ? " nav__link--active" : ""}`}
-              data-sec={l.sec}
+              key={c.sec}
+              href={`#${c.sec}`}
+              className={`nv-c${active === c.sec ? " is-on" : ""}`}
+              style={cardStyle(c, { "--r": `${c.r}deg`, "--k": i })}
+              aria-current={active === c.sec ? "true" : undefined}
               ref={(node) => {
-                linkRefs.current[l.sec] = node;
+                linkRefs.current[c.sec] = node;
               }}
-              onMouseEnter={() => movePill(l.sec)}
             >
-              {l.label}
+              {c.label}
             </a>
           ))}
-          <span className="nav__pill" id="navPill" ref={pillRef} aria-hidden="true" />
+          <span className="nv-rib" ref={ribbonRef} aria-hidden="true" />
         </div>
-
-        <div className="nav__util">
-          <button className="nav__icon" id="themeBtn" aria-label="Toggle theme" title="Toggle theme" onClick={onToggleTheme}>
-            <SunIcon />
-            <MoonIcon />
-          </button>
-          <a className="nav__cv" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
-            Resume
+        <a className="nv-cvcard" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+          <span>
+            Resume <Arrow />
+          </span>
+          <span className="sr-only"> (PDF, opens in a new tab)</span>
+        </a>
+        <div className="nv-felt">
+          <span className="nv-hi" lang="hi">
+            नमस्ते
+          </span>
+          <a className="nv-brand" href="#home">
+            Soumya Gupta
           </a>
-          <button className="nav__burger" id="menuBtn" aria-label="Open menu" onClick={() => setSheetOpen(true)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="7" x2="21" y2="7" /><line x1="3" y1="13" x2="21" y2="13" /><line x1="3" y1="19" x2="21" y2="19" />
-            </svg>
-          </button>
+          <div className="nv-util">
+            <Clasp dark={dark} onToggle={onToggleTheme} />
+          </div>
         </div>
       </nav>
 
-      <div className={`sheet${sheetOpen ? " open" : ""}`} id="sheet">
-        <div className="sheet__top">
-          <div className="nav__brand">
-            <img className="nav__mono" src="/logo.svg" alt="SG" width={32} height={32} />
-            <span className="nav__brand-txt">Soumya Gupta</span>
-          </div>
-          <button className="sheet__close" id="sheetClose" aria-label="Close menu" onClick={() => setSheetOpen(false)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
-            </svg>
-          </button>
-        </div>
-        <nav className="sheet__links">
-          {SHEET_LINKS.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setSheetOpen(false)}>
-              <span>{l.num}</span>
-              {l.label}
+      {/* ---------- phone / tablet: name + Resume at the top of the page ---------- */}
+      <div className="nv-top">
+        <a className="nv-brand" href="#home" onClick={() => setOpen(false)}>
+          Soumya Gupta
+        </a>
+        <a className="nv-cv" href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+          Resume <Arrow />
+          <span className="sr-only"> (PDF, opens in a new tab)</span>
+          <span className="nv-cv-o" aria-hidden="true" />
+        </a>
+      </div>
+
+      {/* ---------- phone / tablet: the pocket at the bottom ---------- */}
+      <div className="nv-scrim" aria-hidden="true" onClick={() => close(false)} />
+      <nav className="nv-deck" id="nv-deck" aria-label="All sections" inert={!open}>
+        {DECK.map((c, i) => (
+          <a
+            key={c.sec}
+            href={`#${c.sec}`}
+            className={`nv-c${active === c.sec ? " is-on" : ""}`}
+            style={cardStyle(c, { "--r": `${c.dr}deg`, "--i": i, "--ri": DECK.length - 1 - i })}
+            aria-current={active === c.sec ? "true" : undefined}
+            ref={i === 0 ? firstDeckRef : undefined}
+            onClick={() => close(false)}
+          >
+            {c.deck}
+          </a>
+        ))}
+      </nav>
+      <nav className="nv-pocket" aria-label="Sections">
+        <div className="nv-pcards" inert={open}>
+          {peek.map((c) => (
+            <a
+              key={c.sec}
+              href={`#${c.sec}`}
+              className={`nv-c${active === c.sec ? " is-on" : ""}`}
+              style={cardStyle(c, { "--r": `${c.r}deg` })}
+              aria-current={active === c.sec ? "true" : undefined}
+            >
+              {c.label}
             </a>
           ))}
-        </nav>
-      </div>
-    </>
+        </div>
+        <div className="nv-felt">
+          <button
+            ref={toggleRef}
+            className="nv-open"
+            type="button"
+            aria-expanded={open}
+            aria-controls="nv-deck"
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span className="nv-hi" lang="hi" aria-hidden="true">
+              नमस्ते
+            </span>
+            <span className="nv-open-l">{open ? "Close" : "All sections"}</span>
+          </button>
+          <div className="nv-util">
+            <Clasp dark={dark} onToggle={onToggleTheme} />
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }
