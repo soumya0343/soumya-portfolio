@@ -151,17 +151,18 @@ export default function About() {
 
           <figure className="ab-photo">
             <Tape style={vars({ left: "44px", top: "-12px", "--t": "var(--w-pink)", "--tr": "-6deg" })} />
-            <div className="ab-ph" role="img" aria-label="Placeholder for a photo of Soumya; no photo provided yet">
-              <svg viewBox="0 0 40 40" aria-hidden="true">
-                <circle cx="20" cy="15" r="7" />
-                <path d="M6 36c2-8 7-12 14-12s12 4 14 12" />
-              </svg>
-              <span aria-hidden="true">
-                photo of Soumya
-                <br />
-                <small>placeholder, photo not provided</small>
-              </span>
-            </div>
+            <picture>
+              <source srcSet="/assets/soumya.webp" type="image/webp" />
+              <img
+                className="ab-pic"
+                src="/assets/soumya.jpg"
+                alt="Soumya in a black dress on the stone forecourt at BITS Pilani, Goa, with the convocation hall behind her"
+                width={480}
+                height={505}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </figure>
 
           <div className="ab-who">
@@ -239,6 +240,12 @@ export default function About() {
               {NOW.role} @ {NOW.company}
             </p>
             <p className="ab-sub">Building production software and exploring how reliable AI systems are engineered.</p>
+            <p className="ab-after">
+              <span>
+                After hours: building <b>{PROFILE.afterHours.name}</b>
+              </span>
+              <span className="ab-stealth">{PROFILE.afterHours.note}</span>
+            </p>
             <p className="ab-edu">
               {DEGREE.degree}
               <br />
