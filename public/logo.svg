@@ -1,21 +1,9 @@
-<svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Transparent background so it matches whatever background it's placed on -->
-  <rect width="100%" height="100%" fill="transparent"/>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&amp;display=swap');
-
-    .logo-text {
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-style: italic;
-      font-size: 92px;
-      fill: #e5383b;
-      font-weight: 500;
-      letter-spacing: -6px;
-    }
-  </style>
-
-  <text x="50%" y="72%" text-anchor="middle" class="logo-text">
-    SG
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Felt Notebook mark: olive felt tile, stitched seam, "SG" as tall narrow pixel
+       letters in Handjet's proportions. Hand-drawn on a 5x9 grid rather than traced from
+       the font: at favicon size Handjet's S and G close up and read as "86".
+       Drawn as shapes because favicons can't load web fonts. -->
+  <rect width="32" height="32" rx="7" fill="#4F5D2F"/>
+  <rect x="2.5" y="2.5" width="27" height="27" rx="5" fill="none" stroke="#F4EFDF" stroke-opacity=".6" stroke-width="1" stroke-dasharray="2 1.6"/>
+  <path fill="#F4EFDF" shape-rendering="crispEdges" d="M7 7h6v2h-6zM5 9h2v2h-2zM13 9h2v2h-2zM5 11h2v2h-2zM5 13h2v2h-2zM7 15h6v2h-6zM13 17h2v2h-2zM13 19h2v2h-2zM5 21h2v2h-2zM13 21h2v2h-2zM7 23h6v2h-6zM19 7h6v2h-6zM17 9h2v2h-2zM25 9h2v2h-2zM17 11h2v2h-2zM17 13h2v2h-2zM17 15h2v2h-2zM23 15h4v2h-4zM17 17h2v2h-2zM25 17h2v2h-2zM17 19h2v2h-2zM25 19h2v2h-2zM17 21h2v2h-2zM25 21h2v2h-2zM19 23h6v2h-6z"/>
 </svg>
