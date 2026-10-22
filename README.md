@@ -1,6 +1,6 @@
 # Soumya Gupta, Portfolio
 
-A precision-editorial portfolio for a backend & AI systems engineer, dark "Console" / light "Spec" themes, scroll-driven reveals, a live GitHub contribution graph, deep-dive case study pages, and an LLM agent that answers questions about my work.
+A hand-made "Felt Notebook" portfolio for a backend & AI systems engineer: a ruled notebook page with olive felt, washi tape, stickers and paper folders. It has a live GitHub skyline, deep-dive case study pages, and an LLM agent that answers questions about my work.
 
 🔗 **Live**: [soumya-portfolio-nine.vercel.app](https://soumya-portfolio-nine.vercel.app/)
 
@@ -8,6 +8,7 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 
 ## 👋 About Me
 
+💼 Software Development Engineer @ Dezerv Investments (since July 2026)
 🎓 B.E. Electronics & Communication Engineering, BITS Pilani K. K. Birla Goa Campus (graduated May 2026)
 💻 Full-stack engineer with a pull toward the AI-systems layer, multi-agent systems, RAG, LLM infrastructure
 🚀 I architect and ship production systems end to end
@@ -18,14 +19,17 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 
 ## ✨ Features
 
-- **Ask my AI**, an LLM agent grounded only in my real projects, experience, and results. Streams token-by-token over a serverless endpoint; provider-agnostic (any OpenAI-compatible API). Answers stay factual, links (resume/socials) render clickable.
-- **Case study pages**, each project opens a deep-dive route (`?id=<slug>`) with overview, challenge, approach, stack, and outcome; deep-linkable and shareable.
-- **Live GitHub graph**, real contribution calendar pulled from a public contributions API, responsive (fewer months on mobile so labels never collide).
-- **Experience roadmap**, animated vertical timeline that draws itself on scroll, dots aligned to each role.
-- **Dual themes**, dark "Console" (warm near-black + red accent) and light "Spec" (warm paper), via CSS custom properties.
-- **Motion**, Intersection Observer reveals, staggered cascades, accent-aware hovers, a Three.js canvas hero; respects `prefers-reduced-motion`.
-- **Contact form**, serverless endpoint that delivers messages over [Resend](https://resend.com), with validation and best-effort rate limiting.
-- **Fully responsive**, no horizontal scroll, mobile-tuned layouts down to 320px.
+- **Notebook hero**, my name in a hand-drawn box on a ruled page, washi-tape facts, interest stickers and a café chalkboard that links to Contact. Hovering the name moves an invert lens over it, a selection square with corner handles.
+- **Ask my AI**, an LLM agent grounded only in my real projects, experience and results. Streams token by token over a serverless endpoint, works with any OpenAI-compatible provider (Groq first, Gemini and Cerebras as fallbacks), and keeps answers short: the prompt asks for under 60 words and the server stops any reply at the end of the sentence that passes 70 words, or after 4 bullets.
+- **Selected Work folder stack**, each project is a coloured paper folder; on desktop they pin under the heading and stack like a filing drawer as you scroll, and each one ends with the result from its case study.
+- **Case study pages**, each project opens a deep-dive route (`?id=<slug>`) that leads with the outcome, then the challenge, approach and stack; deep-linkable and shareable.
+- **Live GitHub skyline**, my real contribution year opens as a flat grid and builds itself into an isometric 3D skyline as it scrolls into view (or toggle between them). The stage is sized from the data, so it only reserves room for the towers that exist.
+- **Scrapbook About**, photo, "Currently" ticket, current reading and stickers, with the GitHub board in a felt pocket below.
+- **Experience notepad, sticker-sheet Skills, rail-map Background, typewriter Writing.**
+- **Postcard contact**, the message is written on a postcard, which folds into an envelope, becomes a paper plane and flies off on a real send. Delivered over [Resend](https://resend.com) with validation and best-effort rate limiting.
+- **Themes**, always opens in light; a toggle switches to dark "felt night", where the page darkens but paper objects stay paper. The page opts out of browsers' automatic dark mode.
+- **Motion**, scroll reveals and calm hovers driven by one intensity token (`--m`); everything respects `prefers-reduced-motion`.
+- **Fully responsive**, no horizontal scroll, phone layouts tuned down to 360px.
 
 ---
 
@@ -35,10 +39,11 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 | -------------- | -------------------------------------------------------------------- |
 | **Framework**  | React 19 + TypeScript                                                 |
 | **Build**      | Vite 7 + React Compiler                                               |
-| **Styling**    | Vanilla CSS with CSS Custom Properties (dual theme via `data-theme`)  |
-| **AI agent**   | Serverless function (Vercel) → any OpenAI-compatible LLM (Groq / Gemini / Cerebras), SSE streaming |
+| **Styling**    | Plain CSS, one stylesheet per section (`src/styles/sections/`) on shared `--w-*` tokens; themes via `data-theme` |
+| **Type**       | Handjet, Petrona, Atkinson Hyperlegible Next, DM Mono, Just Me Again Down Here, Tiro Devanagari (Google Fonts) |
+| **AI agent**   | Serverless function (Vercel) → any OpenAI-compatible LLM (Groq, then Gemini / Cerebras fallbacks), SSE streaming with a server-side length guard |
 | **Contact**    | Serverless function (Vercel) → Resend email API                      |
-| **Motion**     | Intersection Observer, CSS transitions, Three.js canvas hero         |
+| **Motion**     | Intersection Observer reveals, CSS transitions, sticky stacking, CSS 3D transforms + FLIP for the GitHub skyline |
 | **Data**       | GitHub contributions API (live calendar), single typed data module   |
 | **Analytics**  | Vercel Analytics (route-level time-on-page)                          |
 | **Deployment** | Vercel                                                                |
@@ -49,8 +54,19 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 
 ## 📐 Sections
 
-| #   | Section          | Description                                                       |
-| --- | ---------------- | ---------------------------------------------------------------- |
+| #   | Section           | Description                                                                 |
+| --- | ----------------- | --------------------------------------------------------------------------- |
+| 00  | **Hero**          | Name box with invert-lens hover, tape facts, stickers, café chalkboard      |
+| 01  | **About**         | Scrapbook spread (photo, Currently, reading, stickers) + GitHub skyline pocket |
+| 02  | **Selected Work** | Sticky folder stack with expand-all, opening into case study pages          |
+| 03  | **Experience**    | Notepad of five roles, current first                                        |
+| 04  | **Skills**        | Sticker sheet: languages, frameworks, AI/core, data & tools                 |
+| 05  | **Background**    | Rail map of education and leadership / activities                           |
+| 06  | **Writing**       | Typewriter page for deep dives from the engineering process (coming soon)   |
+| 07  | **Ask my AI**     | Grounded LLM agent you can question about my work                           |
+| 08  | **Contact**       | Postcard → envelope → paper plane, plus social links                        |
+
+--- | ---------------- | ---------------------------------------------------------------- |
 | 01  | **About**        | Intro, bio, and live GitHub contribution graph                   |
 | 02  | **Selected Work**| Project grid with expand-all, opening into case study pages      |
 | 03  | **Experience**   | Animated roadmap timeline of four production roles               |
@@ -79,10 +95,11 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 
 ## 💼 Experience
 
+- **Software Development Engineer @ Dezerv Investments** (July 2026 to now), Backend + frontend AI pipeline foundations; revamping the app's onboarding as a plug-and-play module that, once released, will serve 100% of Dezerv clients.
 - **Full Stack Developer Intern @ Chakra Tech**, Blockchain esports prediction market: 10+ REST APIs, Polymarket/PandaScore pipelines, BullMQ+Redis jobs, an MCP server (~20 sub-APIs) for an AI assistant; cut endpoint latency from ~15s to <100ms.
 - **Engineering Intern @ Dezerv Investments**, Scalable Go backend automating SEBI-compliant reporting for 5,000+ clients; reusable React ops dashboards; first Flutter Web client dashboard.
 - **Tech Intern @ Jobslet**, Analytics dashboards (React + Node.js), Elasticsearch-backed search, LLM resume-parsing pipelines.
-- **Software Developer Intern @ Multigraphics**, Laravel Employee & Question Paper Management Systems handling 50,000+ documents/year.
+- **Software Developer Intern @ Multigraphics Group**, Laravel Employee & Question Paper Management Systems handling 50,000+ documents/year.
 
 ---
 
@@ -99,7 +116,7 @@ A precision-editorial portfolio for a backend & AI systems engineer, dark "Conso
 # Install dependencies
 npm install
 
-# Start dev server (Vite also bridges /api/ask locally, see vite.config.ts)
+# Start dev server (Vite also bridges /api/ask, /api/contact and /api/github locally, see vite.config.ts)
 npm run dev
 
 # Run the full serverless runtime locally (both /api functions via Vercel)
@@ -119,19 +136,19 @@ npm run lint
 
 Both serverless functions read secrets from the server only, never `VITE_`-prefixed, so they never reach the browser. Create a `.env` (gitignored; on Vercel set these as Project env vars).
 
-**Ask my AI agent**, without an LLM key the agent falls back to a scripted keyword bot:
+**Ask my AI agent**, without an LLM key the agent falls back to a scripted keyword bot. [`.env.example`](.env.example) has the full annotated list:
 
 ```bash
-LLM_API_KEY=your_provider_key                 # required
-LLM_API_KEY_2=optional_second_key             # optional fallback, tried on 429 / error
-LLM_API_KEY_3=optional_third_key              # optional fallback
-LLM_BASE_URL=https://api.groq.com/openai/v1   # default; any OpenAI-compatible API
-LLM_MODEL=llama-3.3-70b-versatile             # e.g. gemini-2.0-flash, llama-3.3-70b
+LLM_API_KEY=your_groq_key                      # required (primary provider)
+LLM_BASE_URL=https://api.groq.com/openai/v1    # default; any OpenAI-compatible API
+LLM_MODEL=openai/gpt-oss-120b                  # default
 
-# Optional cross-provider fallback, tried after all LLM_API_KEY* are exhausted:
-CEREBRAS_API_KEY=optional_cerebras_key
-CEREBRAS_BASE_URL=https://api.cerebras.ai/v1  # default
-CEREBRAS_MODEL=gpt-oss-120b                     # default; must be a model your key can access
+LLM_API_KEY_2=optional_second_groq_key         # optional, LLM_API_KEY_3 too
+
+# Optional fallbacks, tried in order when the primary is rate-limited or errors.
+# Extra Groq keys from the same org share one rate-limit pool, so use another provider.
+GEMINI_API_KEY=optional_gemini_key             # GEMINI_MODEL defaults to gemini-2.5-flash
+CEREBRAS_API_KEY=optional_cerebras_key         # CEREBRAS_MODEL defaults to gpt-oss-120b
 ```
 
 **Contact form**, delivered via Resend:
@@ -139,10 +156,14 @@ CEREBRAS_MODEL=gpt-oss-120b                     # default; must be a model your 
 ```bash
 RESEND_API_KEY=your_resend_key                # required to send mail
 CONTACT_TO=soumya0343@gmail.com               # destination inbox (default)
-CONTACT_FROM=Portfolio <onboarding@resend.dev># verify a domain to send anywhere
+CONTACT_FROM=Portfolio <onboarding@resend.dev>  # verify a domain to send anywhere
 ```
 
-The agent is grounded entirely on [`src/data/portfolio.ts`](src/data/portfolio.ts), update the data and both the page and the agent stay in sync.
+Values are read literally, so don't put inline `# comments` after values in your real `.env` (the comments above are for this README only).
+
+The agent is grounded entirely on [`src/data/portfolio.ts`](src/data/portfolio.ts): update the data and the page and the agent stay in sync.
+
+> Local dev sends real email through `/api/contact` when `RESEND_API_KEY` is set, so test the contact form with care.
 
 ---
 

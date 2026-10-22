@@ -11,7 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+*.tsbuildinfo
+.eslintcache
+
+# Secrets: every .env variant stays local; only the template is tracked
 .env
+.env.*
+!.env.example
 
 
 # Editor directories and files
@@ -25,8 +31,14 @@ dist-ssr
 *.sln
 *.sw?
 /soumya-portfolio
-.gstack/
 .vercel
+
+# Local tool state (design and agent tooling), not part of the site
+.gstack/
+.impeccable/
+.kilo/
+.kilocode/
+.claude/settings.local.json
 
 # Local design review docs, not part of the site. Pattern rather than one
 # line per file so new docs are covered automatically; it cannot match
