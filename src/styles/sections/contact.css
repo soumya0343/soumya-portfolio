@@ -1,0 +1,668 @@
+/* ============================================================
+   S11 · Contact · "the notebook letter" (spec S11-B2)
+   Prefix: ct-. Postcard -> cobalt string-tie envelope -> paper plane,
+   driven by data-phase on .ct-stage (see Contact.tsx):
+     idle -> in (request running) -> seal -> fold -> fly -> sent
+                                  \-> out (failed, card comes back) -> idle
+   Envelope geometry scales with the stage: --u is one design pixel of the
+   720px-wide stage, resolved against the stage's container width.
+   ============================================================ */
+
+.ct {
+  --ct-paper: var(--w-paper);
+  --ct-ink: var(--w-paper-ink);
+  --ct-ink-2: var(--w-paper-muted);
+  --ct-pink-soft: color-mix(in oklab, var(--w-pink) 34%, var(--w-paper));
+  --ct-pink-ink: color-mix(in oklab, var(--w-pink) 58%, var(--w-paper-ink));
+  --ct-cobalt-hi: color-mix(in oklab, var(--w-cobalt) 88%, var(--w-paper));
+  --ct-cobalt-lo: color-mix(in oklab, var(--w-cobalt) 68%, var(--w-paper-ink));
+  --ct-line: color-mix(in oklab, var(--w-cobalt) 22%, color-mix(in oklab, var(--w-paper-ink) 14%, var(--w-paper)));
+  --ct-rule: color-mix(in oklab, var(--w-cobalt) 11%, transparent);
+  --md: calc(160ms + var(--m, 1) * 60ms);
+  --me: var(--m-ease, cubic-bezier(.22, .61, .36, 1));
+  --mo: cubic-bezier(.16, 1, .3, 1);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 -.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --tear: polygon(0 0, 4% 8%, 0 16%, 4% 24%, 0 32%, 4% 40%, 0 48%, 4% 56%, 0 64%, 4% 72%, 0 80%, 4% 88%, 0 96%, 0 100%, 100% 100%, 96% 92%, 100% 84%, 96% 76%, 100% 68%, 96% 60%, 100% 52%, 96% 44%, 100% 36%, 96% 28%, 100% 20%, 96% 12%, 100% 4%, 100% 0);
+  position: relative;
+  overflow: clip;
+  color: var(--w-ink);
+  font-family: var(--w-f-body);
+  background: repeating-linear-gradient(transparent 0 33px, var(--ct-rule) 33px 34px), var(--w-bg);
+  scroll-margin-top: 64px;
+}
+.ct ::selection { background: var(--ct-pink-soft); color: var(--w-paper-ink); }
+.ct p { margin: 0; }
+.ct-in { max-width: 1240px; margin: 0 auto; padding: 84px 48px 0; }
+.ct-in--foot { padding-top: 0; }
+.ct-grid { display: grid; grid-template-columns: minmax(0, 1fr) 720px; gap: 48px; align-items: start; }
+.ct-left { padding-top: 28px; position: relative; min-width: 0; }
+.ct-lead {
+  margin: 0;
+  font: 700 84px/.88 var(--w-f-display);
+  text-transform: uppercase;
+  letter-spacing: .005em;
+  color: var(--w-ink);
+  text-wrap: balance;
+}
+.ct-lead mark {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 2px 14px 0;
+  background: var(--w-pink);
+  color: var(--w-paper-ink);
+  transform: rotate(-2deg);
+}
+.ct-copy { margin-top: 26px !important; font-size: 17px; line-height: 1.6; color: var(--w-muted); max-width: 34ch; }
+
+/* ---- paper tapes (her channels) ---- */
+.ct-tape {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 22px;
+  color: var(--w-paper-ink);
+  text-decoration: none;
+  font: 600 17px/1 var(--w-f-body);
+  transition: transform var(--md) var(--me), filter var(--md) var(--me);
+}
+.ct-tape svg { flex: none; }
+.ct-tape::before,
+.ct-tape::after { content: ""; position: absolute; inset: 0; z-index: -1; clip-path: var(--tear); }
+.ct-tape::before { background: var(--tc, var(--w-mint)); opacity: .92; }
+.ct-tape::after { background: repeating-linear-gradient(90deg, color-mix(in oklab, var(--w-paper) 24%, transparent) 0 6px, transparent 6px 14px); }
+.ct-tape:hover,
+.ct-tape:focus-visible { filter: drop-shadow(0 calc(3px + var(--m, 1) * 2px) calc(3px + var(--m, 1) * 2px) rgba(25, 21, 16, .28)); }
+.ct-mail { margin-top: 30px; font-size: 22px; padding: 13px 26px; transform: rotate(-2.5deg); --tc: var(--w-sun); max-width: 100%; overflow-wrap: anywhere; }
+.ct-tapes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.ct-tapes a:nth-child(1) { --tc: var(--w-mint); transform: rotate(1.5deg); }
+.ct-tapes a:nth-child(2) { --tc: var(--w-kraft); transform: rotate(-1deg); }
+.ct-tapes a:nth-child(3) { --tc: var(--ct-pink-soft); transform: rotate(2deg); }
+.ct-also { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 22px !important; font: 400 13px/1.4 var(--w-f-label); color: var(--w-muted); }
+.ct-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--w-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--w-link);
+  transition: text-decoration-thickness var(--md), text-underline-offset var(--md) var(--me);
+}
+.ct-also a:hover { text-decoration-thickness: 2px; text-underline-offset: calc(4px + var(--m, 1) * 1px); }
+.ct a:focus-visible,
+.ct button:focus-visible { outline: 2px dashed var(--w-link); outline-offset: 4px; border-radius: 2px; }
+.ct-card a:focus-visible,
+.ct-card button:focus-visible,
+.ct-fail a:focus-visible { outline-color: var(--w-cobalt); }
+
+/* ---- the stage ---- */
+.ct-right { min-width: 0; }
+.ct-stage {
+  --u: calc(100cqw / 720);
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 720px;
+}
+.ct-slot { position: relative; z-index: 3; }
+
+/* Amie-format postcard */
+.ct-card {
+  position: relative;
+  margin-left: calc(60 * var(--u));
+  width: calc(600 * var(--u));
+  min-height: 364px;
+  background: var(--ct-paper);
+  color: var(--ct-ink);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(25, 21, 16, .1), 0 26px 40px -20px rgba(25, 21, 16, .42);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px 212px;
+  gap: 0 22px;
+  padding: 22px 24px 20px 26px;
+  transform-origin: 50% 0;
+  transform: rotate(-1.2deg);
+  transition: opacity .3s var(--me), visibility 0s;
+}
+.ct-washi {
+  position: absolute;
+  width: 104px;
+  height: 30px;
+  opacity: .85;
+  pointer-events: none;
+  clip-path: var(--tear);
+  background: repeating-linear-gradient(90deg, color-mix(in oklab, var(--w-paper) 25%, transparent) 0 5px, transparent 5px 11px), var(--wc);
+}
+.ct-washi--a { --wc: var(--w-pink); left: -30px; top: -10px; transform: rotate(-24deg); }
+.ct-washi--b { --wc: var(--w-mint); left: -22px; bottom: -6px; transform: rotate(16deg); }
+.ct-div { background: var(--ct-line); }
+.ct-lab { font: 500 12px/1.2 var(--w-f-label); color: var(--ct-ink-2); letter-spacing: .02em; }
+.ct-msg { display: flex; flex-direction: column; min-width: 0; }
+.ct-msgbox { position: relative; margin-top: 8px; flex: 1; min-height: 240px; }
+.ct-msgbox textarea {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 2px;
+  resize: none;
+  border: 0;
+  border-radius: 2px;
+  outline: none;
+  font: 400 27px/40px var(--w-f-hand);
+  color: var(--w-cobalt);
+  caret-color: var(--w-pink);
+  background: repeating-linear-gradient(transparent 0 39px, var(--ct-line) 39px 40px);
+  background-attachment: local;
+}
+.ct-card textarea::placeholder,
+.ct-card input::placeholder { color: var(--ct-ink-2); opacity: 1; }
+.ct-card ::selection { background: var(--ct-pink-soft); color: var(--w-paper-ink); }
+.ct-addr { position: relative; display: flex; flex-direction: column; padding-top: 104px; min-width: 0; }
+.ct-stampbox {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 96px;
+  border: 1.5px dashed color-mix(in oklab, var(--w-paper-muted) 45%, transparent);
+  display: grid;
+  place-items: end center;
+  padding-bottom: 6px;
+  font: 400 9px/1.2 var(--w-f-label);
+  color: var(--ct-ink-2);
+  text-align: center;
+}
+.ct-stamp { position: absolute; left: 7px; top: 5px; width: 64px; height: 76px; transform: rotate(7deg); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .25)); }
+.ct-stamp-bg { fill: var(--w-cobalt); }
+.ct-stamp-perf { stroke: var(--w-paper); }
+.ct-stamp-sun { fill: var(--w-sun); }
+.ct-stamp-ink { fill: var(--w-paper-ink); }
+.ct-stamp-smile { stroke: var(--w-paper-ink); }
+.ct-stamp text { font-family: var(--w-f-label); fill: var(--w-paper); }
+.ct-postmark { position: absolute; top: 6px; right: 52px; width: 92px; height: 92px; color: var(--ct-pink-ink); opacity: .8; transform: rotate(-12deg); pointer-events: none; }
+.ct-pm-ring { font-family: var(--w-f-label); }
+.ct-pm-sg { font-family: var(--w-f-display); }
+.ct-to { display: flex; align-items: baseline; gap: 10px; border-bottom: 1.5px solid var(--ct-line); padding-bottom: 3px; }
+.ct-to b { font: 400 26px/1.15 var(--w-f-hand); color: var(--ct-ink); }
+.ct-f { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; min-width: 0; }
+.ct-inwrap { position: relative; }
+.ct-f input {
+  display: block;
+  width: 100%;
+  height: 34px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1.5px solid color-mix(in oklab, var(--w-paper-ink) 32%, transparent);
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+  padding: 0 2px;
+  font: 400 26px/34px var(--w-f-hand);
+  color: var(--w-cobalt);
+  caret-color: var(--w-pink);
+}
+.ct-f input[aria-invalid="true"],
+.ct-msgbox:has(textarea[aria-invalid="true"]) { border-bottom-color: var(--ct-pink-ink); }
+.ct-msgbox:has(textarea[aria-invalid="true"]) textarea { background-image: repeating-linear-gradient(transparent 0 39px, color-mix(in oklab, var(--w-pink) 45%, var(--ct-line)) 39px 40px); }
+
+/* hand-drawn pink underline: a hint on hover, drawn fully on focus */
+.ct-inwrap::after,
+.ct-msgbox::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  bottom: -5px;
+  height: 9px;
+  pointer-events: none;
+  background: var(--w-pink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 9' preserveAspectRatio='none'%3E%3Cpath d='M2 6 C 30 2, 58 8, 92 4.5 S 160 2.5, 198 5.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 9' preserveAspectRatio='none'%3E%3Cpath d='M2 6 C 30 2, 58 8, 92 4.5 S 160 2.5, 198 5.5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path calc(var(--md) * 2) var(--mo);
+}
+.ct-msgbox::after { bottom: -8px; }
+.ct-inwrap:hover::after,
+.ct-msgbox:hover::after { clip-path: inset(0 82% 0 0); }
+.ct-inwrap:focus-within::after,
+.ct-msgbox:focus-within::after { clip-path: inset(0 0 0 0); }
+
+/* field notes: small sticky notes pinned under the field until it is fixed */
+.ct-fnote {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  align-self: flex-start;
+  max-width: 100%;
+  margin-top: 10px;
+  padding: 7px 10px 7px 8px;
+  background: var(--w-kraft);
+  color: var(--ct-pink-ink);
+  font: 600 13.5px/1.35 var(--w-f-body);
+  box-shadow: 0 8px 12px -8px rgba(60, 40, 0, .45);
+  transform: rotate(-1deg);
+  animation: ct-note-in calc(260ms + var(--m, 1) * 120ms) var(--mo) both;
+}
+.ct-fnote svg { flex: none; width: 16px; height: 16px; margin-top: 1px; }
+@keyframes ct-note-in { from { opacity: 0; transform: rotate(-4deg) translateY(calc(var(--m, 1) * -6px)); } }
+
+.ct-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.ct-send {
+  margin-top: 16px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: var(--w-cobalt);
+  color: var(--w-paper);
+  font: 600 15px/1 var(--w-f-body);
+  cursor: pointer;
+  box-shadow: 0 8px 14px -8px color-mix(in oklab, var(--w-cobalt) 80%, transparent);
+  transition: translate var(--md) var(--me), scale 90ms ease-out, box-shadow var(--md) var(--me), background-color .15s;
+}
+.ct-send svg { flex: none; }
+.ct-send:hover { background: var(--ct-cobalt-lo); box-shadow: 0 4px 8px -6px color-mix(in oklab, var(--w-cobalt) 80%, transparent); }
+.ct-send:active { box-shadow: 0 1px 3px -2px color-mix(in oklab, var(--w-cobalt) 80%, transparent); }
+.ct-send[aria-disabled="true"] { cursor: progress; }
+
+/* ---- cobalt string-and-button envelope, mint polka-dot liner ---- */
+.ct-env { position: relative; margin-top: calc(78 * var(--u)); height: calc(248 * var(--u)); }
+.ct-envback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: calc(12 * var(--u));
+  background: linear-gradient(color-mix(in oklab, var(--w-cobalt) 52%, var(--w-paper-ink)), var(--ct-cobalt-lo) calc(34 * var(--u)));
+}
+.ct-liner {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: calc(-154 * var(--u));
+  height: calc(154 * var(--u));
+  z-index: 2;
+  transform-origin: 50% 100%;
+  background:
+    radial-gradient(circle, var(--w-pink) calc(5 * var(--u)), transparent calc(5.6 * var(--u))) 0 0 / calc(30 * var(--u)) calc(30 * var(--u)),
+    radial-gradient(circle, var(--w-sun) calc(4 * var(--u)), transparent calc(4.6 * var(--u))) calc(15 * var(--u)) calc(15 * var(--u)) / calc(30 * var(--u)) calc(30 * var(--u)),
+    var(--w-mint);
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
+  transition: scale var(--md) var(--me);
+}
+.ct-envfront { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.ct-front {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(34 * var(--u));
+  bottom: 0;
+  border-radius: calc(5 * var(--u)) calc(5 * var(--u)) calc(16 * var(--u)) calc(16 * var(--u));
+  background: var(--noise) 0 0 / 160px 160px, var(--w-cobalt);
+  box-shadow: 0 26px 36px -20px color-mix(in oklab, var(--ct-cobalt-lo) 65%, transparent);
+}
+.ct-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1px), color-mix(in oklab, var(--w-paper) 18%, transparent) 50%, transparent calc(50% + 1px)) left / 50% 100% no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 1px), color-mix(in oklab, var(--w-paper) 18%, transparent) 50%, transparent calc(50% + 1px)) right / 50% 100% no-repeat;
+}
+.ct-label {
+  position: absolute;
+  left: calc(36 * var(--u));
+  bottom: calc(28 * var(--u));
+  padding: calc(13 * var(--u)) calc(22 * var(--u)) calc(11 * var(--u));
+  background: var(--w-paper);
+  color: var(--w-paper-ink);
+  transform: rotate(-2.5deg);
+  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, .5);
+  clip-path: polygon(0 4%, 8% 0, 22% 5%, 40% 0, 60% 4%, 78% 0, 100% 3%, 98% 50%, 100% 96%, 80% 100%, 58% 95%, 36% 100%, 16% 96%, 0 100%, 2% 50%);
+}
+.ct-label small { display: block; font: 500 max(8px, calc(13 * var(--u)))/1 var(--w-f-label); letter-spacing: .12em; color: var(--w-paper-muted); }
+.ct-label span { display: block; margin-top: calc(5 * var(--u)); font: 400 calc(38 * var(--u))/1 var(--w-f-hand); white-space: nowrap; }
+.ct-sg {
+  position: absolute;
+  right: calc(40 * var(--u));
+  bottom: calc(30 * var(--u));
+  width: calc(86 * var(--u));
+  height: calc(86 * var(--u));
+  border-radius: 50%;
+  background: var(--w-pink);
+  display: grid;
+  place-items: center;
+  font: 700 calc(39 * var(--u))/1 var(--w-f-display);
+  color: var(--w-paper-ink);
+  transform: rotate(10deg);
+  box-shadow: inset 0 0 0 calc(5 * var(--u)) var(--w-pink), inset 0 0 0 calc(8 * var(--u)) color-mix(in oklab, var(--w-paper) 75%, transparent);
+}
+.ct-btn {
+  position: absolute;
+  width: calc(42 * var(--u));
+  height: calc(42 * var(--u));
+  margin-left: calc(-21 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--w-paper-ink) calc(2.2 * var(--u)), transparent calc(3 * var(--u))) calc(12 * var(--u)) calc(12 * var(--u)) / calc(17 * var(--u)) calc(17 * var(--u)), var(--w-sun);
+  box-shadow: inset 0 calc(-4 * var(--u)) 0 rgba(0, 0, 0, .18), 0 2px 4px rgba(0, 0, 0, .35);
+}
+.ct-btn1 { left: 50%; top: calc(141 * var(--u)); }
+.ct-flap { position: absolute; left: 0; top: 0; width: 100%; height: calc(166 * var(--u)); transform-origin: 50% 0; transform: scaleY(0); }
+.ct-flapin { position: absolute; inset: 0; background: var(--noise) 0 0 / 160px 160px, var(--ct-cobalt-hi); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.ct-flap .ct-btn { left: 50%; top: calc(107 * var(--u)); }
+.ct-string { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 6; }
+.ct-string path { stroke: var(--w-pink); stroke-dasharray: 1; stroke-dashoffset: 1; }
+
+/* ---- flight: drawn at the 720px design size, scaled to the stage ---- */
+.ct-flight {
+  position: absolute;
+  left: 0;
+  top: var(--ct-fy, 0px);
+  width: 720px;
+  height: 690px;
+  transform-origin: 0 0;
+  transform: scale(var(--ct-s, 1));
+  z-index: 5;
+  pointer-events: none;
+  visibility: hidden;
+}
+.ct-trail { position: absolute; inset: 0; overflow: visible; }
+.ct-trail .ct-dots { stroke: var(--ct-pink-ink); }
+[data-theme="dark"] .ct-trail .ct-dots { stroke: color-mix(in oklab, var(--w-pink) 70%, var(--w-paper)); }
+.ct-mpath { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.ct-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 216px;
+  height: 106px;
+  opacity: 0;
+  offset-path: path("M 360 566 C 480 604 620 552 640 470 C 660 388 548 372 544 436 C 540 500 700 500 724 400 C 748 306 732 206 860 156 C 950 122 1010 52 1090 -70");
+  offset-anchor: 50% 50%;
+  offset-rotate: auto;
+  offset-distance: 0%;
+}
+.ct-plane svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ct-pl-tail { stroke: var(--w-pink); }
+.ct-pl-top { fill: var(--ct-cobalt-hi); stroke: var(--w-paper-ink); }
+.ct-pl-wing { fill: var(--w-mint); stroke: var(--w-paper-ink); }
+.ct-pl-pink { fill: var(--w-pink); }
+.ct-pl-sun { fill: var(--w-sun); }
+.ct-pl-fold { fill: var(--ct-cobalt-lo); }
+.ct-pl-btn { fill: var(--w-sun); stroke: var(--w-paper-ink); }
+
+/* ---- confirmation ---- */
+.ct-done {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(404 * var(--u));
+  min-height: 360px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.ct-pm { position: relative; width: 200px; height: 200px; transform: rotate(-8deg); animation: ct-pm calc(500ms + var(--m, 1) * 200ms) var(--mo) both; }
+.ct-sticker {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--w-pink);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 14px 22px -12px color-mix(in oklab, var(--ct-pink-ink) 60%, transparent);
+}
+.ct-sticker::after { content: ""; position: absolute; inset: 10px; border-radius: 50%; border: 2px dashed color-mix(in oklab, var(--w-paper) 85%, transparent); }
+.ct-sticker b { font: 700 68px/1 var(--w-f-display); color: var(--w-paper-ink); letter-spacing: .02em; }
+.ct-wave { position: absolute; left: 150px; top: 62px; width: 170px; height: 80px; color: var(--w-link); }
+.ct-dtxt { display: flex; flex-direction: column; align-items: center; gap: 14px; animation: ct-rise calc(380ms + var(--m, 1) * 140ms) var(--mo) calc(var(--m, 1) * 260ms) both; }
+.ct-dline { font: 400 34px/1.1 var(--w-f-hand); color: var(--w-ink); text-align: center; outline: none; }
+.ct-dline:focus-visible { outline: 2px dashed var(--w-link); outline-offset: 6px; }
+.ct-again {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  background: var(--w-cobalt);
+  color: var(--w-paper);
+  font: 600 15px/1 var(--w-f-body);
+  cursor: pointer;
+  transition: translate var(--md) var(--me), background-color .15s;
+}
+.ct-again:hover { background: var(--ct-cobalt-lo); }
+@keyframes ct-pm {
+  from { opacity: 0; transform: scale(1.7) rotate(-26deg); }
+  to { opacity: 1; transform: scale(1) rotate(-8deg); }
+}
+@keyframes ct-rise { from { opacity: 0; transform: translateY(calc(var(--m, 1) * 10px)); } }
+
+/* ---- below the stage: posting line + failure note ---- */
+.ct-posting { min-height: 32px; margin-top: 14px !important; font: 400 26px/32px var(--w-f-hand); color: var(--w-muted); text-align: center; }
+.ct-fail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 460px;
+  margin: 18px 0 0 40px;
+  padding: 18px 18px 16px;
+  background: var(--w-mint);
+  color: var(--w-paper-ink);
+  font: 400 15px/1.45 var(--w-f-body);
+  box-shadow: 0 12px 18px -12px rgba(60, 40, 0, .45);
+  transform: rotate(1deg);
+  outline: none;
+  animation: ct-note-in calc(300ms + var(--m, 1) * 140ms) var(--mo) both;
+  transition: translate var(--md) var(--me), box-shadow var(--md) var(--me);
+}
+.ct-fail::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  width: 70px;
+  height: 22px;
+  margin-left: -35px;
+  background: color-mix(in oklab, var(--w-pink) 55%, transparent);
+  clip-path: var(--tear);
+  transform: rotate(-4deg);
+}
+.ct-fail:focus-visible { outline: 2px dashed var(--w-cobalt); outline-offset: 5px; }
+.ct-fail:hover { box-shadow: 0 calc(14px + var(--m, 1) * 4px) calc(20px + var(--m, 1) * 4px) -12px rgba(60, 40, 0, .5); }
+.ct-err { display: flex; gap: 8px; align-items: flex-start; color: var(--ct-pink-ink); font-weight: 600; }
+.ct-err svg { flex: none; margin-top: 2px; }
+.ct-why { font-family: var(--w-f-label); font-size: 13.5px; }
+.ct-fail a { color: var(--ct-cobalt-lo); font-weight: 600; text-underline-offset: 3px; }
+
+/* ---- footer ---- */
+.ct-foot {
+  margin-top: 70px;
+  border-top: 2px solid var(--w-ink);
+  padding: 20px 0 26px;
+  display: flex;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  font: 400 13px/1.4 var(--w-f-label);
+  color: var(--w-muted);
+}
+.ct-foot b { font-weight: 500; color: var(--w-ink); }
+
+/* ==== the send sequence (data-phase on .ct-stage) ==== */
+
+/* in: the postcard slides into the envelope and waits there while the request runs */
+.ct-stage:is([data-phase="in"], [data-phase="out"], [data-phase="seal"]) { clip-path: inset(-400px -400px 0 -400px); }
+[data-phase="in"] .ct-card { animation: ct-in 1150ms cubic-bezier(.55, 0, .75, .35) forwards; }
+[data-phase="in"] :is(.ct-envback, .ct-envfront, .ct-liner) { animation: ct-bump 320ms cubic-bezier(.2, .7, .3, 1) 1080ms both; }
+@keyframes ct-in {
+  0% { transform: rotate(-1.2deg); }
+  52% { transform: translateY(calc(var(--ct-dy, 300px) * .6)) rotate(.6deg) scale(.88); animation-timing-function: linear; }
+  64% { transform: translateY(calc(var(--ct-dy, 300px) * .6)) rotate(.6deg) scale(.88); animation-timing-function: cubic-bezier(.55, 0, .75, .35); }
+  100% { transform: translateY(var(--ct-dy, 300px)) rotate(0deg) scale(.88); }
+}
+@keyframes ct-bump { 0%, 100% { translate: 0 0; } 45% { translate: 0 7px; } }
+
+/* out: the request failed, the postcard comes back out with her words on it */
+[data-phase="out"] .ct-card { animation: ct-out 650ms cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes ct-out {
+  from { transform: translateY(var(--ct-dy, 300px)) rotate(0deg) scale(.88); }
+  to { transform: rotate(-1.2deg); }
+}
+
+/* sealed and gone: the card stays hidden inside */
+.ct-stage:is([data-phase="seal"], [data-phase="fold"], [data-phase="fly"], [data-phase="sent"]) .ct-card {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s var(--me), visibility 0s .3s;
+}
+
+/* seal: liner tucks in, flap closes, string ties */
+[data-phase="seal"] .ct-liner { animation: ct-liner-in 200ms cubic-bezier(.5, 0, 1, 1) forwards; }
+[data-phase="seal"] .ct-flap { animation: ct-flap-close 220ms cubic-bezier(0, 0, .2, 1) 200ms forwards; }
+[data-phase="seal"] .ct-string path { animation: ct-tie 380ms cubic-bezier(.4, 0, .2, 1) 430ms forwards; }
+:is([data-phase="fold"], [data-phase="fly"], [data-phase="sent"]) .ct-liner { transform: scaleY(0); opacity: 0; }
+:is([data-phase="fold"], [data-phase="fly"], [data-phase="sent"]) .ct-flap { transform: scaleY(1); }
+:is([data-phase="fold"], [data-phase="fly"], [data-phase="sent"]) .ct-string path { stroke-dashoffset: 0; }
+@keyframes ct-liner-in { to { transform: scaleY(0); } }
+@keyframes ct-flap-close { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes ct-tie { to { stroke-dashoffset: 0; } }
+
+/* fold: the envelope creases into a paper plane */
+[data-phase="fold"] .ct-env { transform-origin: 50% 50%; animation: ct-fold 560ms cubic-bezier(.65, 0, .35, 1) forwards; }
+@keyframes ct-fold {
+  0% { opacity: 1; transform: none; clip-path: polygon(0% 0%, 50% 0%, 100% 0%, 100% 50%, 100% 100%, 50% 100%, 0% 100%, 0% 50%); }
+  90% { opacity: 1; transform: scale(.3) rotate(-4deg); clip-path: polygon(0% 4%, 42% 32%, 100% 50%, 100% 50%, 100% 50%, 42% 68%, 0% 96%, 20% 50%); }
+  100% { opacity: 0; transform: scale(.3) rotate(-4deg); clip-path: polygon(0% 4%, 42% 32%, 100% 50%, 100% 50%, 100% 50%, 42% 68%, 0% 96%, 20% 50%); }
+}
+:is([data-phase="fly"], [data-phase="sent"]) .ct-env { opacity: 0; visibility: hidden; transition: opacity .3s var(--me), visibility 0s .3s; }
+
+/* fly: the plane loops off along the dotted trail */
+:is([data-phase="fly"], [data-phase="sent"]) .ct-flight { visibility: visible; }
+[data-phase="fly"] .ct-plane { animation: ct-fly 1500ms cubic-bezier(.45, .05, .55, .95) forwards; }
+[data-phase="fly"] .ct-mpath { animation: ct-draw 1500ms cubic-bezier(.45, .05, .55, .95) forwards; }
+[data-phase="sent"] .ct-mpath { stroke-dashoffset: 0; }
+[data-phase="sent"] .ct-trail { opacity: .55; transition: opacity .6s var(--me); }
+@keyframes ct-fly {
+  0% { opacity: 1; offset-distance: 0%; transform: scale(1); }
+  96% { opacity: 1; }
+  100% { opacity: 0; offset-distance: 100%; transform: scale(.55); }
+}
+@keyframes ct-draw { to { stroke-dashoffset: 0; } }
+
+/* write another: a fresh postcard drops in above a fresh envelope */
+.ct-stage[data-again] .ct-card { animation: ct-drop calc(380ms + var(--m, 1) * 140ms) var(--mo) backwards; }
+.ct-stage[data-again] :is(.ct-envback, .ct-envfront, .ct-liner) { animation: ct-envin calc(380ms + var(--m, 1) * 140ms) var(--mo) backwards; }
+@keyframes ct-drop { from { opacity: 0; transform: translateY(calc(var(--m, 1) * -16px)) rotate(-1.2deg); } }
+@keyframes ct-envin { from { opacity: 0; translate: 0 calc(var(--m, 1) * 24px); } }
+
+/* ---- hovers ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .ct .ct-tape:hover,
+  .ct .ct-tape:focus-visible { transform: rotate(0deg) translateY(calc(var(--m, 1) * -2px)); }
+  .ct-stampbox:hover .ct-stamp { animation: ct-wig calc(420ms + var(--m, 1) * 120ms) ease-in-out 1; }
+  .ct-send:hover { translate: 0 calc(var(--m, 1) * 1px); }
+  .ct-send:active { translate: 0 calc(var(--m, 1) * 2px); scale: .97; }
+  .ct-stage[data-phase="idle"] .ct-env:hover .ct-liner { scale: 1 calc(1 + var(--m, 1) * .045); }
+  .ct-fail:hover { translate: 0 calc(var(--m, 1) * -3px); }
+  .ct-again:hover { translate: 0 calc(var(--m, 1) * -1.5px); }
+}
+@keyframes ct-wig {
+  25% { transform: rotate(calc(7deg + var(--m, 1) * 5deg)) scale(calc(1 + var(--m, 1) * .04)); }
+  55% { transform: rotate(calc(7deg - var(--m, 1) * 3.5deg)) scale(calc(1 + var(--m, 1) * .04)); }
+  80% { transform: rotate(calc(7deg + var(--m, 1) * 1.5deg)); }
+}
+
+/* ---- entrance stagger (reveal system adds .in) ---- */
+.ct .rv[data-d="1"] { transition-delay: calc(var(--m, 1) * 45ms); }
+.ct .rv[data-d="2"] { transition-delay: calc(var(--m, 1) * 90ms); }
+.ct .rv[data-d="3"] { transition-delay: calc(var(--m, 1) * 135ms); }
+.ct .rv[data-d="4"] { transition-delay: calc(var(--m, 1) * 180ms); }
+
+/* ---- responsive ---- */
+@media (max-width: 1080px) {
+  .ct-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .ct-right { justify-self: center; width: 100%; max-width: 720px; }
+}
+@media (max-width: 860px) {
+  .ct-foot { flex-direction: column; gap: 4px; }
+  .ct-sep { display: none; }
+}
+@media (max-width: 760px) {
+  .ct-in { padding: 52px 16px 0; }
+  .ct-left { padding-top: 0; }
+  .ct-lead { font-size: 64px; }
+  .ct-mail { font-size: 18px; padding: 12px 20px; }
+  .ct-foot { margin-top: 48px; }
+}
+@media (max-width: 620px) {
+  .ct-stage { margin-top: 12px; }
+  .ct-card {
+    margin-left: 4px;
+    width: calc(100% - 8px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 18px 16px 18px 18px;
+    transform: rotate(-.8deg);
+  }
+  .ct-washi--a { left: -14px; top: -12px; width: 84px; }
+  .ct-washi--b { left: -10px; width: 84px; }
+  .ct-msgbox { min-height: 200px; }
+  .ct-div { height: 1px; margin: 18px 0 14px; }
+  .ct-addr { padding-top: 84px; }
+  .ct-stampbox { width: 62px; height: 74px; font-size: 8px; }
+  .ct-stamp { left: 5px; top: 4px; width: 50px; height: 59px; }
+  .ct-postmark { top: 4px; right: 40px; width: 70px; height: 70px; }
+  .ct-send { align-self: stretch; justify-content: center; padding: 14px 16px; }
+  .ct-done { min-height: 320px; }
+  .ct-pm { width: 150px; height: 150px; }
+  .ct-sticker b { font-size: 52px; }
+  .ct-wave { left: 112px; top: 46px; width: 128px; height: 60px; }
+  .ct-dline { font-size: 30px; }
+  .ct-fail { margin-left: 4px; }
+  @keyframes ct-in {
+    0% { transform: rotate(-.8deg); }
+    52% { transform: translateY(calc(var(--ct-dy, 300px) * .6)) rotate(.6deg) scale(.88); animation-timing-function: linear; }
+    64% { transform: translateY(calc(var(--ct-dy, 300px) * .6)) rotate(.6deg) scale(.88); animation-timing-function: cubic-bezier(.55, 0, .75, .35); }
+    100% { transform: translateY(var(--ct-dy, 300px)) rotate(0deg) scale(.88); }
+  }
+}
+@media (max-width: 540px) {
+  .ct-lead { font-size: 56px; }
+}
+
+/* ---- reduced motion: no sequence, crossfade straight to the result ---- */
+@media (prefers-reduced-motion: reduce) {
+  .ct *,
+  .ct *::before,
+  .ct *::after { animation: none !important; }
+  .ct .ct-flight { display: none; }
+  .ct-stage { clip-path: none !important; }
+  .ct-stage:is([data-phase="sent"]) :is(.ct-card, .ct-env) {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility 0s .3s !important;
+    transition-duration: .3s, 0s !important;
+  }
+  .ct-stage[data-phase="sent"] .ct-done,
+  .ct-stage[data-phase="sent"] .ct-done * { animation: ct-fade .3s ease both !important; animation-duration: .3s !important; }
+  .ct-stage[data-phase="sent"] .ct-pm { transform: rotate(-8deg); }
+  .ct-inwrap::after,
+  .ct-msgbox::after { transition: none; }
+}
+@keyframes ct-fade { from { opacity: 0; } }

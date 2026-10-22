@@ -2,7 +2,7 @@ import { defineConfig, loadEnv, type PluginOption, type ViteDevServer } from 'vi
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
 
-// Runs the /api/ask serverless function locally during `npm run dev`
+// Runs the /api/* serverless functions locally during `npm run dev`
 // (in production Vercel serves api/ask.ts directly).
 function apiDevServer(): PluginOption {
   return {
@@ -12,7 +12,7 @@ function apiDevServer(): PluginOption {
       // dev handler can read them — Vite only exposes VITE_-prefixed vars by default.
       const env = loadEnv(mode, process.cwd(), '')
       for (const key of Object.keys(env)) {
-        const forwarded = ['LLM_', 'GITHUB_', 'CEREBRAS_', 'GEMINI_']
+        const forwarded = ['LLM_', 'GITHUB_', 'CEREBRAS_', 'GEMINI_', 'RESEND_', 'CONTACT_']
         if (forwarded.some((p) => key.startsWith(p)) && !process.env[key]) process.env[key] = env[key]
       }
     },
@@ -30,6 +30,7 @@ function apiDevServer(): PluginOption {
         })
       mount('/api/ask', '/api/ask.ts')
       mount('/api/github', '/api/github.ts')
+      mount('/api/contact', '/api/contact.ts')
     },
   }
 }
@@ -44,6 +45,10 @@ export default defineConfig({
     }),
     apiDevServer(),
   ],
+  // Stamped at build time; the footer shows it as "Updated <date>".
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
