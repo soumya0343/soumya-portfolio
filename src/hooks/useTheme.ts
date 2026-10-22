@@ -2,27 +2,21 @@ import { useCallback, useEffect, useState } from "react";
 
 export type Theme = "dark" | "light";
 
-function readTheme(): Theme {
-  try {
-    const t = localStorage.getItem("sg-theme");
-    if (t === "light" || t === "dark") return t;
-  } catch {
-    /* ignore */
-  }
-  return "light";
-}
-
-/** Owns data-theme on <html> + persistence. Mirrors the no-flash script in the prototype. */
+/** Owns data-theme on <html>. Every visit opens in light; the toggle only lasts for the visit. */
 export function useTheme(): [Theme, () => void] {
-  const [theme, setTheme] = useState<Theme>(readTheme);
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    /* the old site saved a theme for every visitor; drop it so nobody reopens in dark */
     try {
-      localStorage.setItem("sg-theme", theme);
+      localStorage.removeItem("sg-theme");
     } catch {
       /* ignore */
     }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   const toggle = useCallback(() => {

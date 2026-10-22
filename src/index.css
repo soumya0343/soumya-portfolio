@@ -56,7 +56,7 @@
 
   --maxw: 1280px;
   --pad: clamp(16px, 4vw, 56px);
-  color-scheme: light;
+  color-scheme: only light;  /* opts out of browser auto-dark; the toggle sets dark below */
 }
 
 /* ---- Tokens · dark "felt night": the page ground darkens, paper stays paper ---- */
