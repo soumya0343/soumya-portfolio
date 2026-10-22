@@ -27,6 +27,8 @@ export interface Project {
   live?: string;
   liveLabel?: string;
   image: string | null;
+  /** One plain sentence condensed from deepdive.outcome, shown on the Work card and the case-study TL;DR. */
+  result?: string;
   deepdive: DeepDive;
 }
 
@@ -135,6 +137,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/curate",
     live: "https://curate--app.vercel.app",
     image: "/assets/projects/curate-preview.png",
+    result: "Deployed two-tier system serving 6,000 real products across 109 categories, with 270 tests that need neither network nor credentials.",
     deepdive: {
       role: "Solo, AI systems & full-stack engineering",
       type: "RAG · semantic product search",
@@ -184,6 +187,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/saral",
     live: "https://soumya0343-saral.hf.space",
     image: "/assets/projects/saral-preview.png",
+    result: "On the offline tier that gates CI: 171 scenarios at an 88.3% pass rate, 100% of attacks blocked, 0% of benign look-alikes wrongly blocked.",
     deepdive: {
       role: "Solo, AI systems engineering",
       type: "Multi-agent AI · RAG",
@@ -215,6 +219,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/repolens",
     live: "https://repolenss.duckdns.org",
     image: "/assets/projects/repolens-preview.png",
+    result: "Live on an Azure VM: the API, ingestor, four analysis workers and frontend run behind Caddy with automatic TLS, with per-service tests in CI.",
     deepdive: {
       role: "Solo, full-stack & data engineering",
       type: "SDLC analytics platform",
@@ -247,6 +252,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/chatbot",
     live: "https://chatbot-frontend-7zw7.onrender.com",
     image: "/assets/projects/inferlog-preview.png",
+    result: "A live LLM platform where inference logging is non-blocking, PII-safe by construction, and horizontally scalable.",
     deepdive: {
       role: "Solo, backend & LLM infrastructure",
       type: "LLM observability platform",
@@ -278,6 +284,7 @@ export const PROJECTS: Project[] = [
     live: "https://marketplace.visualstudio.com/items?itemName=SoumyaGupta.codesentinel",
     liveLabel: "Marketplace",
     image: "/assets/projects/codesentinel-preview.png",
+    result: "A published VS Code and Cursor extension with zero telemetry, where code leaves the machine only if an AI key is configured.",
     deepdive: {
       role: "Solo, AI engineering & tooling",
       type: "Developer tool · AI",
@@ -324,6 +331,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/zync",
     live: "https://zync-steel.vercel.app",
     image: "/assets/projects/zync-preview.png",
+    result: "A working full-stack app on Vercel and Render where goals, tasks and daily journaling live behind an authenticated, per-user-isolated API.",
     deepdive: {
       role: "Solo, design, frontend & backend",
       type: "Full-stack productivity app",
@@ -370,6 +378,7 @@ export const PROJECTS: Project[] = [
     tech: ["Flutter", "Dart", "Riverpod", "Claude", "OCR", "UPI"],
     link: "https://github.com/soumya0343/splitsense",
     image: null,
+    result: "A concept that cleared round 1 of 400 teams on the deck alone; the app is in active development.",
     deepdive: {
       role: "Hackathon, Team Lib Gang Lite (with Sakshi Shahani)",
       type: "Fintech mobile · AI (in progress)",
@@ -415,6 +424,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js 16", "React 19", "Phaser 3.90", "TypeScript", "Zustand", "Tailwind CSS", "Gemini 2.0 Flash", "Turbopack"],
     link: "https://github.com/soumya0343/gemini-hackathon",
     image: "/assets/projects/gemini-preview.png",
+    result: "A fully playable, accessible roguelike built under hackathon pressure, whose core loop never breaks even with no Gemini key set.",
     deepdive: {
       role: "Hackathon, full-stack & AI",
       type: "Game · AI",
@@ -461,6 +471,7 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/soumya0343/stockwise",
     live: "https://stockwise-mu.vercel.app",
     image: "/assets/projects/stockwise-preview.png",
+    result: "A game that teaches dry financial concepts, built and shipped end-to-end in a day and deployed live on Vercel.",
     deepdive: {
       role: "Hackathon, full-stack",
       type: "Fintech / edtech",
@@ -510,6 +521,7 @@ export const PROJECTS: Project[] = [
     tech: ["React 19", "Vite 7", "Framer Motion", "Web Audio API", "html2canvas", "ESLint 9"],
     link: "https://github.com/soumya0343/mandala-zen",
     image: "/assets/projects/mandala-preview.png",
+    result: "A calming, shareable creative tool built entirely client-side, with no network dependency at runtime.",
     deepdive: {
       role: "Solo, design & build",
       type: "Interactive art",
@@ -556,6 +568,7 @@ export const PROJECTS: Project[] = [
     live: "https://soumya-portfolio-nine.vercel.app",
     liveLabel: "Live Site",
     image: "/assets/projects/portfolio-preview.png",
+    result: "A live portfolio where the page and its own AI agent are guaranteed to agree, with deep-linkable case studies and a real contact pipeline.",
     deepdive: {
       role: "Solo, design & build",
       type: "Creative portfolio",
@@ -594,10 +607,9 @@ export const EXPERIENCE: Experience[] = [
     role: "Software Development Engineer",
     company: "Dezerv Investments",
     loc: "Bengaluru, India",
-    metrics: [{ value: "100%", label: "of clients once live" }],
     points: [
-      "Revamping the onboarding flow in the Dezerv app, architected as a plug-and-play module so any surface needing Dezerv onboarding reuses one flow instead of reimplementing it; on release it serves 100% of Dezerv clients.",
-      "Building backend and frontend AI pipeline serving foundations that the wider engineering team builds on, alongside Go, React, and Flutter/Dart.",
+      "Revamping the onboarding flow in the Dezerv app, architected as a plug-and-play module so any surface needing Dezerv onboarding reuses one flow instead of reimplementing it. In progress: once released, it will serve 100% of Dezerv clients.",
+      "Building the backend and frontend foundations for serving AI pipelines that the wider engineering team builds on, working across Go, React and Flutter/Dart.",
     ],
     stack: ["Python", "Go", "React", "Flutter", "Dart", "TypeScript"],
   },
@@ -784,7 +796,7 @@ export const AGENT_KB: KBItem[] = [
     key: ["yoe", "experience", "years", "notice", "available", "availability", "join", "start", "when can", "on notice", "join date", "start date"],
     q: "What's her experience and availability?",
     tools: ["query_profile", "get_experience"],
-    a: "She's a 2026 ECE graduate from BITS Pilani, Goa, with hands-on experience from internships and 10+ shipped projects (Dezerv, Chakra Tech, Saral, and more). She's not currently in a notice period, she's available and joins Dezerv Investments as a Software Engineer in July 2026. For anything specific, reach her at soumya0343@gmail.com.",
+    a: "She's a 2026 ECE graduate from BITS Pilani, Goa, with hands-on experience from internships and 10+ shipped projects (Dezerv, Chakra Tech, Saral, and more). She joined Dezerv Investments in July 2026 as a full-time Software Development Engineer and is currently on a six-month probation period; she can still join immediately for the right opportunity. For anything specific, reach her at soumya0343@gmail.com.",
   },
   {
     key: ["contact", "email", "reach", "linkedin", "github", "get in touch", "resume", "cv", "connect", "dm"],
