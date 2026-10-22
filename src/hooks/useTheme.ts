@@ -9,7 +9,7 @@ function readTheme(): Theme {
   } catch {
     /* ignore */
   }
-  return "dark";
+  return "light";
 }
 
 /** Owns data-theme on <html> + persistence. Mirrors the no-flash script in the prototype. */

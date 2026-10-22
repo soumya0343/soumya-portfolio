@@ -3,7 +3,7 @@ import { useEffect } from "react";
 /**
  * Reveal-on-scroll, ported from app.js.
  * Observes every `.rv` node, adds `.in` when it enters the viewport.
- * Anything inside `.hero` is revealed immediately (it's the centerpiece), but
+ * Anything inside the hero (`.hr`) is revealed immediately (it's the centerpiece), but
  * on the next frame rather than synchronously — see below.
  * Re-runs whenever `deps` change so freshly rendered nodes get observed.
  */
@@ -15,7 +15,7 @@ export function useScrollReveal(deps: unknown[] = []): void {
     // (.06s/.12s/.18s in index.css) is skipped entirely. One rAF gives the
     // initial state a frame to land, after which the transition runs.
     const heroRaf = requestAnimationFrame(() => {
-      document.querySelectorAll<HTMLElement>(".hero .rv").forEach((n) => n.classList.add("in"));
+      document.querySelectorAll<HTMLElement>(".hr .rv, .hr.rv").forEach((n) => n.classList.add("in"));
     });
 
     const io = new IntersectionObserver(
