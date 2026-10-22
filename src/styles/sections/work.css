@@ -20,14 +20,14 @@
   color: var(--w-ink);
   font-family: var(--w-f-body);
   padding: 96px 0 112px;
-  overflow: hidden;
+  overflow: clip; /* not hidden: hidden makes a scroll container, and the folder stack's sticky would stop working */
   scroll-margin-top: 72px;
 }
 .wk *, .wk *::before, .wk *::after { box-sizing: border-box; }
 .wk-in { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
 
 /* ---- heading ---- */
-.wk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 40px; }
+.wk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 16px; }
 .wk-h {
   display: flex; align-items: center; gap: 20px; margin: 0;
   font: 800 112px/.8 var(--w-f-display); text-transform: uppercase; letter-spacing: 0;
@@ -43,6 +43,37 @@
 
 /* ---- a folder (chapter) ---- */
 .wk-ch { position: relative; margin-top: 88px; }
+/* the first folder only needs room for its tab (46px) under the heading */
+.wk-stack > .wk-head + .wk-ch { margin-top: 58px; }
+
+/* Folder stack: on screens with room, the heading pins under the nav and each
+   featured folder pins under the heading (its tab clear of it), a little lower
+   than the one before, so the next folder slides up over it and the earlier tabs
+   stay showing like a filing drawer. The stack wrapper ends at the last folder,
+   so heading and folders all leave together. --wk-hh is the heading's height,
+   measured in Work.tsx. */
+@media (min-width: 861px) and (min-height: 700px) {
+  /* A sticky box lets go when its margin box meets the end of the stack. The heading's
+     bottom margin reaches down to where the last folder ends once pinned
+     (62px + 3 × 16px below the heading, plus that folder's height), so heading and
+     folders let go together. The first folder's negative margin cancels it out:
+     the two margins collapse to the usual 74px gap. */
+  .wk-stack > .wk-head {
+    position: sticky; top: 132px; z-index: 2;
+    margin-bottom: calc(110px + var(--wk-last, 480px));
+  }
+  .wk-stack > .wk-head + .wk-ch { margin-top: calc(74px - 110px - var(--wk-last, 480px)); }
+  .wk-stack > .wk-ch {
+    position: sticky;
+    top: calc(132px + var(--wk-hh, 94px) + 62px + var(--k, 0) * 16px);
+    transform-origin: 50% 0;
+    scale: calc(1 - var(--cover, 0) * .04);
+    filter: brightness(calc(1 - var(--cover, 0) * .18));
+  }
+}
+@media (min-width: 861px) and (min-height: 700px) and (prefers-reduced-motion: reduce) {
+  .wk-stack > .wk-ch { scale: none; }
+}
 .wk-tab {
   position: absolute; top: -46px; left: 0; z-index: 0; height: 48px;
   display: flex; align-items: center; gap: 14px; padding: 0 54px 0 26px; max-width: 100%;

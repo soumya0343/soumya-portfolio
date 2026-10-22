@@ -75,10 +75,12 @@ interface FolderProps {
   look: Look;
   right?: boolean;
   mini?: boolean;
+  /** place in the sticky stack (featured folders only) */
+  k?: number;
   onOpen: (p: Project, e: MouseEvent<HTMLAnchorElement>) => void;
 }
 
-function Folder({ p, look, right, mini, onOpen }: FolderProps) {
+function Folder({ p, look, right, mini, k, onOpen }: FolderProps) {
   const shown = mini ? 3 : 4;
   const extra = p.tech.length - shown;
   const style = {
@@ -89,6 +91,7 @@ function Folder({ p, look, right, mini, onOpen }: FolderProps) {
     "--tape": look.tape,
     "--tilt": look.tilt,
     ...(look.ring ? { "--ring": look.ring } : {}),
+    ...(k !== undefined ? { "--k": k } : {}),
   } as CSSProperties;
   const cls = ["wk-ch", "rv", right && "wk-ch--r", mini && "wk-ch--mini"].filter(Boolean).join(" ");
   const nameId = `wk-name-${p.slug}`;
@@ -161,6 +164,7 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
   const moreRef = useRef<HTMLDivElement>(null);
   const beforeTop = useRef<number | null>(null);
   const featured = PROJECTS.slice(0, FEATURED);
+  const stackRef = useRef<HTMLDivElement>(null);
   const others = PROJECTS.slice(FEATURED);
 
   // Record the button's viewport position at click time.
@@ -202,6 +206,47 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
   // Open a case study. Plain clicks stay in the app (with a shared-element
   // lift of the print into the case-study hero where the browser supports
   // view transitions); modified clicks fall through to the real `?id=` link.
+  // Sticky stack: as the next folder slides up over one, that one sinks back a little
+  // (--cover 0 → 1 drives a small scale and dim in work.css). Without sticky (phones)
+  // folders never overlap, so --cover stays 0.
+  useEffect(() => {
+    const stack = stackRef.current;
+    if (!stack) return;
+    const folders = Array.from(stack.querySelectorAll<HTMLElement>(":scope > .wk-ch"));
+    // the heading pins too: the folders pin just under however tall it wraps, and
+    // the last folder's height decides when the heading lets go (see work.css)
+    const head = stack.querySelector<HTMLElement>(":scope > .wk-head");
+    const last = folders[folders.length - 1];
+    const ro = new ResizeObserver(() => {
+      if (head) stack.style.setProperty("--wk-hh", `${head.offsetHeight}px`);
+      if (last) stack.style.setProperty("--wk-last", `${last.offsetHeight}px`);
+    });
+    if (head) ro.observe(head);
+    if (last) ro.observe(last);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      for (let i = 0; i < folders.length - 1; i++) {
+        const a = folders[i].getBoundingClientRect();
+        const b = folders[i + 1].getBoundingClientRect();
+        const cover = Math.min(1, Math.max(0, (a.bottom - b.top) / a.height));
+        folders[i].style.setProperty("--cover", cover.toFixed(3));
+      }
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   const open = (p: Project, e: MouseEvent<HTMLAnchorElement>) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
@@ -221,21 +266,24 @@ export default function Work({ onOpen }: { onOpen: (slug: string) => void }) {
   return (
     <section id="work" className="wk" aria-labelledby="wk-h">
       <div className="wk-in">
-        <header className="wk-head rv">
-          <h2 className="wk-h" id="wk-h">
-            <span className="wk-num" aria-hidden="true">
-              02
-            </span>
-            Selected work
-          </h2>
-          <p className="wk-note">
-            {NUMBER_WORDS[featured.length] ?? featured.length} folders. Each one ends with the result from its case study.
-          </p>
-        </header>
 
-        {featured.map((p, i) => (
-          <Folder key={p.slug} p={p} look={FEATURED_LOOKS[i % FEATURED_LOOKS.length]} right={i % 2 === 1} onOpen={open} />
-        ))}
+        <div className="wk-stack" ref={stackRef}>
+          <header className="wk-head rv">
+            <h2 className="wk-h" id="wk-h">
+              <span className="wk-num" aria-hidden="true">
+                02
+              </span>
+              Selected work
+            </h2>
+            <p className="wk-note">
+              {NUMBER_WORDS[featured.length] ?? featured.length} folders. Each one ends with the result from its case study.
+            </p>
+          </header>
+
+          {featured.map((p, i) => (
+            <Folder key={p.slug} p={p} look={FEATURED_LOOKS[i % FEATURED_LOOKS.length]} right={i % 2 === 1} k={i} onOpen={open} />
+          ))}
+        </div>
 
         {others.length > 0 && (
           <>
