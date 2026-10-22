@@ -1,0 +1,215 @@
+/* ============================================================
+   Proof · "Clothesline tickets" (spec S03-C)
+   Pegged tickets on a drawn line on a cobalt band. Every ticket is a
+   paper object, so its text uses --w-paper-ink in both themes; the band
+   is a cobalt fill, so its own text is paper.
+   Phones and small tablets: a snap-scroll rail on a straight line.
+   ============================================================ */
+
+.pf {
+  --pf-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --pf-string: #f6f1e7;
+  --mm: var(--m, 1);
+  --me: var(--m-ease, cubic-bezier(.22, .61, .36, 1));
+  --mt: calc(160ms + var(--mm) * 60ms);
+  --ma: calc(.6 + var(--mm) * .4);
+  --cf: calc(12px + var(--mm) * 6px);
+  position: relative;
+  background: var(--pf-noise), var(--w-cobalt);
+  padding: 40px 40px 70px;
+  font-family: var(--w-f-body);
+  color: var(--w-paper);
+  overflow: hidden;
+}
+/* the section is the reveal trigger, not a fading block */
+.pf.rv, .pf.rv.in { opacity: 1; transform: none; transition: none; }
+.pf *, .pf *::before, .pf *::after { box-sizing: border-box; }
+.pf ::selection { background: var(--w-sun); color: var(--w-paper-ink); }
+
+.pf-h {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.pf-h p { margin: 0; font: 400 34px/1 var(--w-f-hand); transform: rotate(-2deg); color: var(--w-paper); }
+.pf-h span { font: 500 15px/1 var(--w-f-label); color: color-mix(in oklab, var(--w-cobalt) 10%, var(--w-paper)); white-space: nowrap; }
+
+.pf-line {
+  position: absolute; left: 0; top: 96px; width: 100%; height: 120px;
+  fill: none; stroke: var(--pf-string); stroke-width: 2.4; stroke-linecap: round;
+}
+
+.pf-row {
+  position: relative;
+  max-width: 1200px;
+  margin: 22px auto 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px;
+}
+
+.pf-t {
+  position: relative;
+  margin-top: var(--dy);
+  transform-origin: 50% -10px;
+  color: var(--w-paper-ink);
+  filter: drop-shadow(0 14px 14px rgba(10, 20, 60, .35));
+  animation: pf-swing 4.2s ease-in-out var(--sd) infinite;
+  transition: translate var(--mt) var(--me), filter var(--mt) ease;
+}
+@keyframes pf-swing {
+  0%, 100% { transform: rotate(calc(var(--rr) * var(--ma))); }
+  50% { transform: rotate(calc(var(--rr) * -1 * var(--ma))); }
+}
+
+.pf-peg {
+  position: absolute; left: 50%; top: -22px; width: 16px; height: 40px; margin-left: -8px; z-index: 2;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #c99a5b, #e2bd85 50%, #b88648);
+  box-shadow: inset 0 -14px 0 -10px rgba(0, 0, 0, .18);
+  transition: scale var(--mt) var(--me), translate var(--mt) var(--me);
+}
+
+/* the main ticket: notched at the bottom corners, its top-right corner folds over on hover */
+.pf-main {
+  position: relative;
+  container-type: inline-size;
+  padding: 26px 22px 22px;
+  background: var(--pf-noise), var(--bg);
+  border-radius: 6px 6px 0 0;
+  -webkit-mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask: radial-gradient(circle 10px at 0 100%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) right / 51% 100% no-repeat;
+  clip-path: polygon(-4px -4px, calc(100% + 4px) -4px, calc(100% + 4px) -4px, calc(100% + 4px) calc(100% + 4px), -4px calc(100% + 4px));
+  transition: clip-path var(--mt) var(--me);
+}
+.pf-main::after {
+  content: ""; position: absolute; top: 0; right: 0; width: var(--cf); height: var(--cf);
+  background: linear-gradient(225deg, transparent 50%, color-mix(in oklab, var(--bg) 76%, var(--w-paper-ink)) 50%, color-mix(in oklab, var(--bg) 88%, var(--w-paper-ink)));
+  scale: 0; transform-origin: 100% 0; transition: scale var(--mt) var(--me); pointer-events: none;
+}
+.pf-main p { margin: 0; }
+/* long figures shrink to fit their ticket instead of widening the column */
+.pf-fig {
+  font: 800 min(54px, calc(100cqi / (var(--len) * .5))) / 1 var(--w-f-display);
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.pf-fig-v { display: inline-grid; }
+.pf-fig-ghost, .pf-fig-live { grid-area: 1 / 1; }
+.pf-fig-ghost { visibility: hidden; }
+.pf-fig-live { font-variant-numeric: tabular-nums; }
+.pf-main .pf-cap { margin-top: 12px; font-size: 17px; line-height: 1.45; text-wrap: pretty; }
+
+/* the stub: the source, torn along a dashed line; it is the link */
+.pf-stub {
+  position: relative;
+  display: grid; gap: 4px;
+  padding: 18px 22px 20px;
+  background: var(--pf-noise), var(--bg);
+  border-top: 2.5px dashed color-mix(in oklab, var(--w-paper-ink) 45%, transparent);
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  color: var(--w-paper-ink);
+  transform-origin: 0 0;
+  cursor: pointer;
+  animation: pf-tear 7s ease-in-out calc(var(--sd) * 2) infinite;
+  transition: rotate var(--mt) var(--me);
+  -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+@keyframes pf-tear {
+  0%, 70%, 100% { transform: rotate(0); }
+  78%, 90% { transform: rotate(calc(7deg * var(--ma))) translateY(3px); }
+}
+.pf-co { font: italic 700 21px/1.15 var(--w-f-serif); text-decoration: underline 0 transparent; text-underline-offset: 4px; transition: text-decoration-color var(--mt) ease; }
+.pf-wh { display: grid; font: 500 14px/1.4 var(--w-f-label); }
+.pf-stub:hover .pf-co, .pf-stub:focus-visible .pf-co { text-decoration: underline 2px currentColor; }
+.pf-stub:focus-visible { outline: 2.5px solid var(--w-cobalt); outline-offset: -6px; border-radius: 0 0 6px 6px; }
+
+/* hover / focus: the ticket stops swinging and lifts, the peg pinches, the corner folds, the stub tilts */
+.pf-t:hover, .pf-t:focus-within {
+  filter: drop-shadow(0 calc(14px + var(--mm) * 5px) calc(14px + var(--mm) * 5px) color-mix(in oklab, color-mix(in oklab, var(--w-night) 70%, var(--w-cobalt)) 42%, transparent));
+}
+.pf-t:hover .pf-main, .pf-t:focus-within .pf-main {
+  clip-path: polygon(-4px -4px, calc(100% - var(--cf) - 4px) -4px, calc(100% + 4px) calc(var(--cf) + 4px), calc(100% + 4px) calc(100% + 4px), -4px calc(100% + 4px));
+}
+.pf-t:hover .pf-main::after, .pf-t:focus-within .pf-main::after { scale: 1; }
+
+@keyframes pf-in { from { opacity: 0; translate: 0 calc(var(--mm) * -16px); } }
+@keyframes pf-peg { from { scale: 1.35 1; } }
+@keyframes pf-line { from { stroke-dashoffset: 1400; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pf-t:hover, .pf-t:focus-within { translate: 0 calc(var(--mm) * -5px); animation-play-state: paused; }
+  .pf-t:hover .pf-peg, .pf-t:focus-within .pf-peg { scale: .74 1; translate: 0 calc(var(--mm) * -1.5px); }
+  .pf-t:hover .pf-stub, .pf-t:focus-within .pf-stub { animation-play-state: paused; }
+  .pf-stub:hover, .pf-stub:focus-visible { rotate: calc(var(--mm) * 1.6deg); }
+
+  /* entrance, once the band scrolls in: the line strings across, tickets drop onto it in turn, each peg clamps */
+  .pf:not(.in) .pf-t { opacity: 0; }
+  .pf:not(.in) .pf-line path { stroke-dashoffset: 1400; }
+  .pf-line path { stroke-dasharray: 1400; }
+  .pf.in .pf-line path { animation: pf-line calc(560ms + var(--mm) * 140ms) cubic-bezier(.65, 0, .35, 1) both; }
+  .pf.in .pf-t {
+    animation: pf-in calc(460ms + var(--mm) * 120ms) cubic-bezier(.16, 1, .3, 1) calc(180ms + var(--k, 0) * (40ms + var(--mm) * 30ms)) both,
+      pf-swing 4.2s ease-in-out var(--sd) infinite;
+  }
+  .pf.in .pf-peg { animation: pf-peg calc(260ms + var(--mm) * 80ms) var(--me) calc(420ms + var(--k, 0) * (40ms + var(--mm) * 30ms)) both; }
+}
+
+/* small laptops: same line, slightly tighter tickets */
+@media (max-width: 1080px) {
+  .pf { padding: 36px 28px 60px; }
+  .pf-row { gap: 22px; }
+  .pf-main { padding: 24px 18px 20px; }
+  .pf-stub { padding: 16px 18px 18px; }
+  .pf-main .pf-cap { font-size: 16px; }
+}
+
+/* tablets and phones: a snap-scroll rail on a straight string */
+@media (max-width: 980px) {
+  .pf { padding: 32px 0 44px; }
+  .pf-h { padding: 0 var(--pad, 16px); flex-wrap: wrap; row-gap: 10px; }
+  .pf-line { display: none; }
+  .pf-row {
+    display: flex;
+    max-width: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--pad, 16px);
+    gap: 18px;
+    margin-top: 18px;
+    padding: 34px var(--pad, 16px) 26px;
+    /* the string, drawn through the pegs and scrolling with them */
+    background: linear-gradient(var(--pf-string), var(--pf-string)) 0 22px / 100% 2.4px no-repeat local;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--w-paper) 55%, transparent) transparent;
+  }
+  .pf-t { flex: 0 0 min(320px, 74%); scroll-snap-align: start; margin-top: 0; }
+  .pf-h p { font-size: 30px; }
+}
+@media (max-width: 540px) {
+  .pf-t { flex-basis: 80%; }
+  .pf-h p { font-size: 27px; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 980px) {
+  /* no swing on the rail: the tickets would knock into each other while you scroll */
+  .pf-t, .pf.in .pf-t { animation: none; }
+  .pf.in .pf-t { animation: pf-in calc(460ms + var(--mm) * 120ms) cubic-bezier(.16, 1, .3, 1) calc(var(--k, 0) * 60ms) both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf *, .pf *::before, .pf *::after { animation: none !important; }
+  .pf-t, .pf-peg, .pf-stub, .pf-main, .pf-main::after { transition-property: filter, box-shadow, color; }
+}
