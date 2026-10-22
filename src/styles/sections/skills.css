@@ -1,0 +1,212 @@
+/* ============================================================
+   Skills · "die-cut sticker sheet" (spec S07-A)
+   The sheet and its stickers are paper and never flip; the
+   ground, the handwritten aside and the sheet's turned corner do.
+   ============================================================ */
+
+.sk {
+  --md: calc(160ms + var(--m, 1) * 60ms);
+  --me: var(--m-ease, cubic-bezier(.22, .61, .36, 1));
+  --mi: calc(380ms + var(--m, 1) * 140ms);
+  --mo: cubic-bezier(.16, 1, .3, 1);
+  --rise: calc(var(--m, 1) * 8px);
+  --stg: calc(var(--m, 1) * 45ms);
+  --sk-cut: #FFFFFF; /* the die-cut white border around every sticker */
+
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--w-bg);
+  color: var(--w-ink);
+  font-family: var(--w-f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  padding: clamp(48px, 6vw, 72px) 0 clamp(56px, 7vw, 92px);
+  scroll-margin-top: 40px;
+}
+.sk ::selection { background: var(--w-sun); color: var(--w-paper-ink); }
+.sk :where(h2, h3, p, ul, li) { margin: 0; padding: 0; }
+.sk :where(ul) { list-style: none; }
+.sk-in { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---- heading on a sunburst ---- */
+.sk-head { position: relative; display: flex; align-items: center; gap: 12px 26px; margin: 0 0 30px 18px; }
+.sk-burst { position: relative; flex: none; width: 270px; height: 160px; display: grid; place-items: center; }
+.sk-burst svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sk-head h2 {
+  position: relative;
+  font-family: var(--w-f-display);
+  font-weight: 700;
+  font-size: 96px;
+  line-height: .85;
+  color: var(--w-paper-ink);
+  /* a sun-coloured keyline, so any letter that pokes past the burst still
+     reads on the ground in both themes */
+  text-shadow:
+    3px 0 0 var(--w-sun), -3px 0 0 var(--w-sun), 0 3px 0 var(--w-sun), 0 -3px 0 var(--w-sun),
+    2px 2px 0 var(--w-sun), -2px 2px 0 var(--w-sun), 2px -2px 0 var(--w-sun), -2px -2px 0 var(--w-sun);
+}
+.sk-head p {
+  font-family: var(--w-f-hand);
+  font-size: 30px;
+  line-height: 1.05;
+  max-width: 22ch;
+  color: var(--w-ink);
+  transform: rotate(-2deg);
+}
+
+/* ---- the sheet ---- */
+.sk-sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 34px 40px;
+  padding: 36px 40px 42px;
+  border-radius: 28px;
+  background: var(--w-paper) radial-gradient(rgba(25, 21, 16, .07) 1px, transparent 1.5px) 0 0 / 16px 16px;
+  color: var(--w-paper-ink);
+  box-shadow: 0 2px 0 rgba(25, 21, 16, .06), 0 30px 50px -34px rgba(25, 21, 16, .65);
+  rotate: -.35deg;
+}
+[data-theme="dark"] .sk-sheet { box-shadow: 0 2px 0 rgba(0, 0, 0, .2), 0 30px 50px -30px rgba(0, 0, 0, .9); }
+/* the sheet's own top-right corner, peeled back to show the ground */
+.sk-sheet::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 74px;
+  height: 74px;
+  border-radius: 0 28px 0 0;
+  background: linear-gradient(225deg, var(--w-bg) 49%, #E7E1D2 50%, #F7F3EA 70%, #E7E1D2 100%);
+  box-shadow: -6px 6px 10px -6px rgba(25, 21, 16, .45);
+}
+
+/* group: handwritten label with an arrow, then its stickers */
+.sk-z { min-width: 0; }
+.sk-z h3 {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 14px;
+  font-family: var(--w-f-hand);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--w-paper-ink);
+  background: linear-gradient(var(--c), var(--c)) no-repeat 0 100% / 0% calc(2px + var(--m, 1) * 1px);
+  transition: background-size calc(var(--md) * 1.6) var(--mo);
+}
+.sk-z h3 svg { width: 46px; height: 24px; flex: none; transition: translate var(--md) var(--me); }
+.sk-z:hover h3 { background-size: calc(100% - 52px) calc(2px + var(--m, 1) * 1px); }
+.sk-z ul { display: flex; flex-wrap: wrap; gap: 14px 12px; }
+
+/* sticker */
+.sk-s {
+  position: relative;
+  background: var(--c);
+  color: var(--ci);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+  padding: 9px 16px;
+  border-radius: var(--sh);
+  box-shadow: 0 0 0 4px var(--sk-cut), 0 0 0 5px rgba(25, 21, 16, .12), 0 8px 12px -6px rgba(25, 21, 16, .45);
+  transform: rotate(var(--r));
+  transition: transform var(--md) var(--me), box-shadow var(--md) var(--me);
+}
+/* shine that sweeps across on hover */
+.sk-s::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, color-mix(in oklab, var(--w-paper) 62%, transparent) 50%, transparent 62%) no-repeat 160% 0 / 260% 100%;
+}
+/* peeled corner: always on .sk-peel, appears on hover for the rest */
+.sk-s::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 0 0 10px 0;
+  pointer-events: none;
+  background: linear-gradient(315deg, transparent 48%, #ECE6D8 50%, #FFFFFF 78%);
+  box-shadow: -3px -3px 5px -2px rgba(25, 21, 16, .35);
+  transform-origin: 100% 100%;
+  scale: 0;
+  transition: scale var(--md) var(--me);
+}
+.sk-peel::after { scale: 1; }
+.sk-s:hover { box-shadow: 0 0 0 4px var(--sk-cut), 0 0 0 5px rgba(25, 21, 16, .12), 0 calc(10px + var(--m, 1) * 4px) calc(14px + var(--m, 1) * 4px) -8px rgba(25, 21, 16, .5); }
+
+@keyframes sk-lift {
+  0%, 55%, 100% { transform: rotate(var(--r)); box-shadow: 0 0 0 4px var(--sk-cut), 0 0 0 5px rgba(25, 21, 16, .12), 0 8px 12px -6px rgba(25, 21, 16, .45); }
+  70%, 85% { transform: rotate(-7deg) translate(-2px, -8px) scale(1.04); box-shadow: 0 0 0 4px var(--sk-cut), 0 0 0 5px rgba(25, 21, 16, .12), 0 22px 22px -10px rgba(25, 21, 16, .5); }
+}
+@keyframes sk-slap {
+  0%, 78%, 100% { transform: rotate(var(--r)) scale(1); }
+  84% { transform: rotate(-10deg) translateY(-10px) scale(1.18); }
+  90% { transform: rotate(var(--r)) scale(.94); }
+  94% { transform: rotate(var(--r)) scale(1); }
+}
+@keyframes sk-pop { from { opacity: 0; scale: calc(1 + var(--m, 1) * .08); } }
+@keyframes sk-rise { from { opacity: 0; translate: 0 var(--rise); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .sk-burst svg { animation: sk-spin 24s linear infinite; }
+  @keyframes sk-spin { to { transform: rotate(360deg); } }
+
+  .sk-s:hover { transform: rotate(calc(var(--r) - var(--m, 1) * 1.2deg)) translateY(calc(var(--m, 1) * -3px)) scale(calc(1 + var(--m, 1) * .02)); }
+  .sk-s:hover::after { scale: calc(1.1 + var(--m, 1) * .3); }
+  .sk-s:hover::before { background-position: -60% 0; transition: background-position calc(420ms + var(--m, 1) * 90ms) cubic-bezier(.4, 0, .2, 1); }
+  .sk-z:hover h3 svg { translate: calc(var(--m, 1) * 2px) calc(var(--m, 1) * 2px); }
+
+  /* entrance, keyed off the reveal: burst pops, groups rise, stickers slap on in a capped stagger */
+  .sk-head .sk-burst { opacity: 0; }
+  .sk-head.in .sk-burst { opacity: 1; animation: sk-pop var(--mi) var(--me) 60ms both; }
+  .sk-sheet .sk-z, .sk-sheet .sk-s { opacity: 0; }
+  .sk-sheet.in .sk-z {
+    --zd: calc(160ms + var(--zi, 0) * var(--stg) * 1.4);
+    opacity: 1;
+    animation: sk-rise var(--mi) var(--mo) var(--zd) both;
+  }
+  .sk-sheet.in .sk-s {
+    --sd: calc(var(--zd) + 80ms + var(--si, 0) * var(--m, 1) * 18ms);
+    opacity: 1;
+    animation: sk-pop calc(var(--mi) * .8) var(--me) var(--sd) both;
+  }
+  .sk-sheet.in .sk-s.sk-lift { animation: sk-pop calc(var(--mi) * .8) var(--me) var(--sd) both, sk-lift 5s cubic-bezier(.3, 0, .2, 1) 2s infinite; transform-origin: 0 100%; }
+  .sk-sheet.in .sk-s.sk-slap { animation: sk-pop calc(var(--mi) * .8) var(--me) var(--sd) both, sk-slap 6s var(--m-ease) 2s infinite; }
+  .sk-sheet.in .sk-s.sk-lift:hover,
+  .sk-sheet.in .sk-s.sk-slap:hover { animation: sk-pop calc(var(--mi) * .8) var(--me) var(--sd) both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk *, .sk *::before, .sk *::after { animation: none !important; }
+  .sk-s, .sk-z h3 svg { transition: box-shadow var(--md) var(--me); }
+}
+
+/* ---- responsive ---- */
+@media (max-width: 980px) {
+  .sk-sheet { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 34px; }
+}
+@media (max-width: 760px) {
+  .sk-head { flex-wrap: wrap; margin-left: 0; }
+  .sk-head { gap: 18px 26px; }
+  .sk-head p { margin-top: 22px; }
+  .sk-burst { width: 220px; height: 134px; }
+  .sk-head h2 { font-size: 68px; }
+  .sk-head p { font-size: 27px; }
+  .sk-sheet { padding: 30px 24px 34px; border-radius: 22px; rotate: none; }
+  .sk-sheet::after { width: 54px; height: 54px; border-radius: 0 22px 0 0; }
+}
+@media (max-width: 620px) {
+  .sk-sheet { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 26px 20px 30px; }
+  .sk-z h3 { font-size: 30px; }
+  .sk-s { font-size: 16px; padding: 8px 14px; }
+}

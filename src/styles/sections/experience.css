@@ -1,0 +1,506 @@
+/* ============================================================
+   Experience · "spiral notepad" (spec S06-B2)
+   One notepad, one tab per role, two points per page.
+   Paper (pad, sheets, tabs, sticky) never flips with the theme;
+   the kraft ground darkens in "felt night".
+   ============================================================ */
+
+@property --ex-curl { syntax: "<length>"; inherits: true; initial-value: 24px; }
+@property --ex-xc { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
+.ex {
+  /* materials, derived from the tokens */
+  --ex-ground: var(--w-kraft);
+  --ex-page: color-mix(in oklab, var(--w-paper) 94%, var(--w-paper-ink));
+  --ex-under: color-mix(in oklab, var(--ex-page) 92%, var(--w-paper-ink));
+  --ex-rule: color-mix(in oklab, var(--ex-page) 86%, var(--w-paper-ink));
+  --ex-edge: color-mix(in oklab, var(--ex-page) 74%, var(--w-paper-ink));
+  --ex-shadow: rgba(25, 21, 16, .8);
+  /* motion */
+  --md: calc(160ms + var(--m, 1) * 60ms);
+  --me: var(--m-ease, cubic-bezier(.22, .61, .36, 1));
+  --mi: calc(380ms + var(--m, 1) * 140ms);
+  --mo: cubic-bezier(.16, 1, .3, 1);
+  --rise: calc(var(--m, 1) * 8px);
+  --stg: calc(var(--m, 1) * 45ms);
+
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--w-ink);
+  font-family: var(--w-f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  background: var(--ex-ground) radial-gradient(color-mix(in oklab, var(--w-ink) 22%, transparent) 1.2px, transparent 1.7px) 0 0 / 22px 22px;
+  padding: clamp(48px, 6vw, 80px) 0 clamp(56px, 7vw, 96px);
+  scroll-margin-top: 40px;
+}
+[data-theme="dark"] .ex {
+  --ex-ground: color-mix(in oklab, var(--w-bg) 84%, var(--w-kraft));
+  --ex-shadow: rgba(0, 0, 0, .85);
+}
+.ex::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .55;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.ex ::selection { background: var(--w-sun); color: var(--w-paper-ink); }
+.ex :where(h2, h3, p, ul, li) { margin: 0; padding: 0; }
+.ex :where(ul) { list-style: none; }
+
+.ex-in { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---- header ---- */
+.ex-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+  margin: 0 4px 34px;
+}
+.ex-top h2 {
+  position: relative;
+  font-family: var(--w-f-display);
+  font-weight: 700;
+  font-size: clamp(56px, 7.5vw, 96px);
+  line-height: .85;
+  color: var(--w-ink);
+}
+.ex-top h2 svg { position: absolute; left: -4px; bottom: -16px; width: 104%; height: 22px; overflow: visible; }
+.ex-top h2 path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.ex-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
+.ex-meta p:first-child { font-family: var(--w-f-label); font-size: 14px; letter-spacing: .04em; color: var(--w-ink); }
+.ex-meta b { font-weight: 500; background: var(--w-ink); color: var(--w-bg); padding: 1px 8px; border-radius: 3px; white-space: nowrap; }
+.ex-meta p + p {
+  font-family: var(--w-f-hand);
+  font-size: 30px;
+  line-height: 1.05;
+  color: var(--w-link);
+  transform: rotate(-2deg);
+}
+
+/* ---- the book: a notepad on the left, one tab per role on the right ---- */
+.ex-book { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 176px; align-items: start; }
+
+.ex-pad {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  border-radius: 12px 12px 8px 8px;
+  perspective: 1800px;
+  background: var(--ex-under) repeating-linear-gradient(to bottom, transparent 0 35px, var(--ex-rule) 35px 36px);
+  box-shadow:
+    0 3px 0 -1px var(--ex-page),
+    0 4px 0 -1px var(--ex-edge),
+    0 7px 0 -2px var(--ex-page),
+    0 8px 0 -2px var(--ex-edge),
+    0 30px 40px -28px var(--ex-shadow);
+}
+.ex-rings {
+  position: absolute;
+  z-index: 6;
+  left: 34px;
+  right: 34px;
+  top: -12px;
+  height: 34px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 74%, var(--ex-ground) 0 5px, transparent 5.5px) 0 0 / 34px 34px,
+    radial-gradient(ellipse 7px 16px at 50% 40%, transparent 0 4px, color-mix(in oklab, var(--w-paper-ink) 78%, var(--ex-page)) 4.5px 6.5px, transparent 7px) 0 0 / 34px 34px;
+  background-repeat: space no-repeat;
+}
+
+/* tabs */
+.ex-tabs { grid-column: 2; grid-row: 1; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; padding-top: 70px; }
+.ex-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  min-height: 66px;
+  margin-left: -14px;
+  padding: 9px 14px 9px 30px;
+  background: var(--c);
+  color: var(--w-paper-ink);
+  border: 1.5px solid color-mix(in oklab, var(--w-paper-ink) 40%, transparent);
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+  cursor: pointer;
+  box-shadow: 0 10px 14px -12px rgba(25, 21, 16, .7);
+  transition: transform var(--md) var(--me), background-color .2s, box-shadow var(--md) var(--me);
+}
+.ex-tab b { font-weight: 700; font-size: 16px; line-height: 1.2; }
+.ex-tab > span { font-family: var(--w-f-label); font-size: 13px; line-height: 1.35; }
+.ex-tab:hover { box-shadow: calc(var(--m, 1) * 3px) calc(10px + var(--m, 1) * 2px) calc(14px + var(--m, 1) * 4px) -12px rgba(25, 21, 16, .75); }
+.ex-tab.is-on { z-index: 3; background: var(--ex-page); box-shadow: 6px 10px 16px -12px rgba(25, 21, 16, .7); }
+.ex-tab:focus-visible { outline: 3px solid var(--w-link); outline-offset: 2px; border-radius: 0 14px 14px 0; }
+.ex-cur {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  font-family: var(--w-f-label);
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: var(--w-cobalt);
+  color: var(--w-paper);
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+/* pages: every page shares one grid cell, so the pad is as tall as its
+   longest page and turning never changes the height */
+.ex-pages { display: grid; }
+.ex-pg {
+  grid-area: 1 / 1;
+  position: relative;
+  visibility: hidden;
+  perspective: calc(9000px - var(--m, 1) * 2200px);
+  transition: --ex-xc calc(var(--md) * 1.4) var(--me);
+}
+.ex-pg.is-on { visibility: visible; z-index: 1; }
+
+.ex-sheet {
+  position: relative;
+  height: 100%;
+  min-height: 530px;
+  border-radius: 12px 12px 8px 8px;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 70px 56px 26px 0;
+  color: var(--w-paper-ink);
+  background: var(--ex-page) repeating-linear-gradient(to bottom, transparent 0 35px, var(--ex-rule) 35px 36px);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--ex-curl) - var(--ex-xc)), calc(100% - var(--ex-curl) - var(--ex-xc)) 100%, 0 100%);
+}
+.ex-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 240px;
+  width: 2px;
+  background: color-mix(in oklab, var(--w-pink) 50%, transparent);
+}
+
+/* margin column */
+.ex-mg { position: relative; padding-right: 26px; text-align: right; }
+.ex-date { display: block; font-family: var(--w-f-hand); font-size: 32px; line-height: 1.02; }
+.ex-loc { display: block; margin-top: 10px; font-family: var(--w-f-label); font-size: 14px; color: var(--w-paper-muted); letter-spacing: .04em; }
+.ex-pn { display: block; margin-top: 22px; font-family: var(--w-f-hand); font-size: 26px; line-height: 1; color: var(--w-cobalt); }
+.ex-dot { position: absolute; right: -21px; top: 2px; width: 40px; height: 40px; z-index: 1; }
+
+/* body */
+.ex-body { padding-left: 34px; max-width: 760px; min-width: 0; }
+.ex-body h3 {
+  font-family: var(--w-f-serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 31px;
+  line-height: 1.1;
+  letter-spacing: -.005em;
+  text-wrap: balance;
+}
+.ex-co { margin: 6px 0 14px; font-size: 18px; font-weight: 600; }
+.ex-co mark { background: linear-gradient(transparent 52%, var(--c) 52% 92%, transparent 92%); color: inherit; padding: 0 3px; }
+.ex-co em { font-family: var(--w-f-hand); font-style: normal; font-weight: 400; font-size: 26px; color: var(--w-cobalt); margin-left: 10px; }
+.ex-now {
+  display: inline-block;
+  font-family: var(--w-f-label);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--w-cobalt);
+  border: 1.5px solid var(--w-cobalt);
+  border-radius: 999px;
+  padding: 1px 10px;
+  margin-left: 12px;
+  vertical-align: 2px;
+  line-height: 1.4;
+}
+.ex-mets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 26px;
+  margin-bottom: 14px;
+  font-family: var(--w-f-hand);
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--w-paper-muted);
+}
+.ex-mets span { display: inline-flex; align-items: baseline; gap: 8px; }
+.ex-mets b {
+  position: relative;
+  font-family: var(--w-f-display);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--w-paper-ink);
+  letter-spacing: .02em;
+  padding: 0 13px;
+}
+.ex-ring { position: absolute; left: -6px; top: -7px; width: calc(100% + 12px); height: calc(100% + 12px); color: var(--w-paper-ink); overflow: visible; }
+.ex-pts { display: flex; flex-direction: column; gap: 10px; max-width: 66ch; border-radius: 6px; }
+.ex-pts:focus { outline: none; }
+.ex-pts:focus-visible { outline: 2px dashed var(--w-cobalt); outline-offset: 6px; }
+.ex-pts li { position: relative; padding-left: 22px; font-size: 17px; }
+.ex-pts li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: .72em;
+  width: 11px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--w-cobalt);
+}
+.ex-stack { margin-top: 14px; font-family: var(--w-f-label); font-size: 14px; color: var(--w-paper-muted); }
+
+/* the current role: points in a dashed box, a sticky note on its tape */
+.ex-box {
+  position: relative;
+  border: 2px dashed var(--w-cobalt);
+  border-radius: 14px;
+  padding: 16px 20px;
+  background: color-mix(in oklab, var(--w-paper) 70%, transparent);
+  margin-right: 220px;
+}
+.ex-sticky {
+  position: absolute;
+  right: -232px;
+  top: -34px;
+  width: 228px;
+  padding: 18px 18px 22px;
+  background: var(--w-sun);
+  color: var(--w-paper-ink);
+  box-shadow: 0 14px 22px -14px rgba(25, 21, 16, .55);
+  transform: rotate(3deg);
+  transform-origin: 50% 0;
+  transition: transform var(--md) var(--me), box-shadow var(--md) var(--me);
+}
+.ex-sticky::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  width: 84px;
+  height: 22px;
+  margin-left: -42px;
+  background: color-mix(in oklab, var(--w-mint) 85%, transparent);
+  transform: rotate(-4deg);
+}
+.ex-sticky b { display: block; font-family: var(--w-f-hand); font-weight: 400; font-size: 29px; line-height: 1; }
+.ex-sticky span { display: block; margin-top: 8px; font-family: var(--w-f-hand); font-size: 24px; line-height: 1.1; }
+.ex-sticky:hover { box-shadow: 0 calc(16px + var(--m, 1) * 4px) calc(24px + var(--m, 1) * 4px) -14px rgba(25, 21, 16, .6); }
+
+/* footer: page controls */
+.ex-foot { grid-column: 2; display: flex; align-items: center; gap: 12px; padding: 14px 0 0 34px; }
+.ex-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--w-paper-ink);
+  background: var(--w-paper);
+  color: var(--w-paper-ink);
+  font-family: var(--w-f-label);
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: transform var(--md) var(--me), background-color .15s, box-shadow var(--md) var(--me);
+}
+.ex-btn svg { flex: none; transition: translate var(--md) var(--me); }
+.ex-btn:hover { background: var(--w-kraft); box-shadow: 0 calc(4px + var(--m, 1) * 2px) calc(8px + var(--m, 1) * 3px) -6px rgba(25, 21, 16, .45); }
+.ex-btn--go { background: var(--w-cobalt); border-color: var(--w-cobalt); color: var(--w-paper); }
+.ex-btn--go:hover { background: color-mix(in oklab, var(--w-cobalt) 85%, var(--w-paper-ink)); }
+.ex-btn:active { transform: translateY(1px); }
+.ex-btn:focus-visible { outline: 3px solid var(--w-cobalt); outline-offset: 3px; border-radius: 999px; }
+.ex-foot small { margin-left: auto; margin-right: 96px; font-family: var(--w-f-label); font-size: 14px; color: var(--w-paper-muted); font-variant-numeric: tabular-nums; }
+
+/* the curl: the page's own bottom-right corner, lifted; clicking it turns the page */
+.ex-curl {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 120px;
+  height: 120px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.ex-curl::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--ex-curl) + var(--ex-xc));
+  height: calc(var(--ex-curl) + var(--ex-xc));
+  border-radius: 0 0 8px 0;
+  background: linear-gradient(to bottom right, color-mix(in oklab, var(--w-paper) 92%, var(--w-paper-ink)) 0%, color-mix(in oklab, var(--ex-page) 86%, var(--w-paper-ink)) 49.5%, transparent 50%);
+  filter: drop-shadow(-1px -1px 0 color-mix(in oklab, var(--ex-rule) 70%, transparent)) drop-shadow(5px 5px 6px rgba(25, 21, 16, .28));
+}
+
+/* the turned page: a copy of the old page lifts off over the spiral */
+.ex-leaf {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 12px;
+  transform-origin: 50% 0;
+  pointer-events: none;
+  box-shadow: 0 20px 30px -20px rgba(25, 21, 16, .6);
+  animation: ex-leaf calc(520ms + var(--m, 1) * 120ms) cubic-bezier(.45, 0, .2, 1) both;
+}
+.ex-leaf .ex-sheet { min-height: 0; }
+
+@keyframes ex-curl { 0%, 38% { --ex-curl: 24px; } 52% { --ex-curl: 132px; } 60% { --ex-curl: 124px; } 74%, 100% { --ex-curl: 24px; } }
+@keyframes ex-leaf { 0% { transform: rotateX(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: rotateX(100deg); opacity: 0; } }
+@keyframes ex-draw { 0% { stroke-dashoffset: 1; } 55%, 100% { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ex-pg.is-on { animation: ex-curl 6.5s cubic-bezier(.3, 0, .2, 1) 1.2s infinite; }
+  .ex-pg.is-on:has(.ex-curl:hover) { animation: none; --ex-xc: calc(10px + var(--m, 1) * 16px); }
+  .ex-pg.is-on:has(.ex-btn--go:hover) { --ex-xc: calc(4px + var(--m, 1) * 6px); }
+  .ex-tab:hover { transform: translateX(calc(3px + var(--m, 1) * 4px)); }
+  .ex-tab.is-on:hover { transform: translateX(calc(var(--m, 1) * 2px)); }
+  .ex-btn:hover { transform: translateY(calc(var(--m, 1) * -1.5px)); }
+  .ex-btn:active { transform: translateY(1px); }
+  .ex-btn--go:hover svg { animation: ex-nudge calc(520ms + var(--m, 1) * 80ms) var(--me) 2; }
+  .ex-btn:not(.ex-btn--go):hover svg { translate: calc(var(--m, 1) * -3px) 0; }
+  .ex-sticky:hover { transform: rotate(calc(3deg - var(--m, 1) * 1deg)) translateY(calc(var(--m, 1) * -2px)); }
+
+  @keyframes ex-nudge { 50% { translate: calc(var(--m, 1) * 4px) 0; } }
+  @keyframes ex-tabin { from { opacity: 0; translate: calc(var(--m, 1) * -18px) 0; } }
+  @keyframes ex-land { from { opacity: 0; translate: 0 calc(var(--m, 1) * 5px); } }
+
+  /* entrance, keyed off the reveal: header line draws, tabs slide out from behind the pad */
+  .ex-top h2 path { stroke-dashoffset: 1; }
+  .ex-top.in h2 path { animation: ex-draw 2.4s ease-out .3s both; }
+  .ex-book .ex-tab { opacity: 0; }
+  .ex-book.in .ex-tab { opacity: 1; animation: ex-tabin var(--mi) var(--me) calc(220ms + var(--ti, 0) * var(--stg)) both; }
+
+  /* a page turn: the new page's margin, body and footer settle in stagger */
+  .ex-pg.is-on .ex-mg,
+  .ex-pg.is-on .ex-body,
+  .ex-pg.is-on .ex-foot { animation: ex-land calc(var(--mi) * .9) var(--mo) calc(260ms + var(--li, 0) * var(--stg)) both; }
+  .ex-pg.is-on .ex-body { --li: 1; }
+  .ex-pg.is-on .ex-foot { --li: 2; }
+}
+
+/* reduced motion: a static dog-ear, no lifting leaf (the page swaps instantly),
+   hover is colour and shadow only */
+@media (prefers-reduced-motion: reduce) {
+  .ex *, .ex *::before, .ex *::after { animation: none !important; transition: none !important; }
+  .ex-pg { --ex-curl: 34px; }
+  .ex-leaf { display: none; }
+}
+
+/* ---- tablet: the sticky note drops under the points ---- */
+@media (max-width: 1080px) {
+  .ex-sheet { grid-template-columns: 196px minmax(0, 1fr); padding-right: 40px; }
+  .ex-sheet::before { left: 196px; }
+  .ex-mg { padding-right: 24px; }
+  .ex-date { font-size: 29px; }
+  .ex-box { margin-right: 0; }
+  .ex-sticky {
+    position: relative;
+    right: auto;
+    top: auto;
+    width: auto;
+    max-width: 320px;
+    margin: 22px 4px 4px auto;
+  }
+  .ex-foot { flex-wrap: wrap; }
+  .ex-foot small { margin-right: 84px; }
+}
+
+/* ---- tabs move to the top edge; the margin becomes a row ---- */
+@media (max-width: 860px) {
+  .ex-top { margin: 0 4px 22px; }
+  .ex-meta { align-items: flex-start; text-align: left; }
+  .ex-book { grid-template-columns: minmax(0, 1fr); }
+  .ex-tabs {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 14px 6px 18px;
+    margin: 0 0 -16px;
+    scrollbar-width: none;
+    scroll-padding-inline: 8px;
+  }
+  .ex-tabs::-webkit-scrollbar { display: none; }
+  .ex-tab {
+    flex: none;
+    min-height: 56px;
+    margin: 0;
+    padding: 8px 14px 22px;
+    border: 1.5px solid color-mix(in oklab, var(--w-paper-ink) 40%, transparent);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
+  .ex-tab:focus-visible { border-radius: 12px 12px 0 0; outline-offset: -3px; }
+  .ex-cur { right: 8px; }
+  .ex-pad { grid-row: 2; }
+  .ex-rings { left: 18px; right: 18px; }
+  .ex-sheet {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding: 46px 18px 22px;
+  }
+  .ex-sheet::before { left: 10px; }
+  .ex-mg {
+    text-align: left;
+    padding: 0 0 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 14px;
+  }
+  .ex-dot { display: none; }
+  .ex-date { font-size: 27px; }
+  .ex-date br { display: none; }
+  .ex-loc, .ex-pn { margin-top: 0; }
+  .ex-pn { font-size: 23px; }
+  .ex-body { padding-left: 16px; }
+  .ex-body h3 { font-size: 27px; }
+  .ex-mets { gap: 4px 18px; }
+  .ex-foot { grid-column: 1; padding: 16px 0 0 16px; }
+  .ex-foot small { margin-right: 64px; }
+}
+
+@media (max-width: 540px) {
+  .ex-top h2 { font-size: 56px; }
+  .ex-meta p:first-child { font-size: 13px; }
+  .ex-meta p + p { font-size: 26px; }
+  .ex-body h3 { font-size: 25px; }
+  .ex-co { font-size: 17px; }
+  .ex-co em { font-size: 23px; }
+  .ex-mets { font-size: 22px; }
+  .ex-mets b { font-size: 26px; padding: 0 11px; }
+  .ex-pts li { font-size: 16px; }
+  .ex-box { padding: 14px 14px 14px 12px; }
+  .ex-sticky { max-width: none; margin: 16px 4px 0; padding: 12px 14px 14px; }
+  .ex-sticky b { font-size: 25px; }
+  .ex-sticky span { font-size: 21px; }
+  .ex-foot { gap: 10px; }
+  .ex-foot small { display: none; }
+  .ex-btn { padding: 6px 14px; }
+}
